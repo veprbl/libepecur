@@ -1,5 +1,5 @@
-#ifndef __MAIN_HPP
-#define __MAIN_HPP
+#ifndef __MOMENTUMDISPERSIONAPP_HPP
+#define __MOMENTUMDISPERSIONAPP_HPP
 
 class	MomentumDistributionApp: public TApplication
 {

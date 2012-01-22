@@ -14,7 +14,7 @@
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
 
-#include "main.hpp"
+#include "MomentumDispersionApp.hpp"
 #include "EvSumHook.hpp"
 
 namespace po = boost::program_options;

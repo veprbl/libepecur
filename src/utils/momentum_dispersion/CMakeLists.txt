@@ -1,7 +1,7 @@
 set( MOMENTUM_DISPERSION_SRCS
 
 	EvSumHook.cpp
-	main.cpp
+	MomentumDispersionApp.cpp
 
 )
 
