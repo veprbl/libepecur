@@ -1,3 +1,6 @@
+#ifndef __LOADFILE_HPP
+#define __LOADFILE_HPP
+
 enum device_type_t
 {
 	DEV_TYPE_PROP	= 0,
@@ -21,3 +24,5 @@ struct load_hooks_t
 };
 
 void	loadfile( std::string filename, load_hooks_t &hooks );
+
+#endif

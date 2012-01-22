@@ -1,3 +1,6 @@
+#ifndef __GEOMETRY_HPP
+#define __GEOMETRY_HPP
+
 #include <vector>
 #include <istream>
 
@@ -21,3 +24,5 @@ public:
 	wire_pos_t	get_wire_pos( int, char );
 	plane_id_t	get_device_plane( int );
 };
+
+#endif
