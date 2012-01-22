@@ -36,13 +36,13 @@ execute_process(COMMAND git diff --cached --quiet
 math(EXPR c "${a} | ${b}")
 
 if (${c} EQUAL 1)
-	set(GIT_COMMIT_ID "")
+	set(GIT_COMMIT_ID "durty working tree")
 	message(AUTHOR_WARNING "Git working tree isn't clean! Please don't use compiled uncommited code for real work. You will never remember what exactly changes you did to obtain your results.")
-elseif(${c} EQUAL 0)
-	add_definitions(-DGIT_COMMIT_ID="${GIT_COMMIT_ID}")
 else()
 	message(FATAL_ERROR "Error while retrieving last commit id.")
 endif()
+
+add_definitions(-DGIT_COMMIT_ID="${GIT_COMMIT_ID}")
 
 set(CMAKE_CXX_FLAGS_RELEASE "-std=c++0x -Wall -pedantic -O2")
 set(CMAKE_CXX_FLAGS_DEBUG "-std=c++0x -Wall -pedantic -g")
