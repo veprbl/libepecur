@@ -94,7 +94,8 @@ void	MomentumDistributionApp::PlotResults( uint planes[][WIRES_COUNT] )
 	for(int plane_id = 0; plane_id < MAX_PLANE_ID; plane_id++)
 	{
 		string	name = boost::lexical_cast<string>(plane_id);
-		TH1I*	hist = new TH1I(name.c_str(), "qwe", WIRES_COUNT, -WIRES_COUNT/2, WIRES_COUNT/2);
+		string	title = geometry_filepath + ":" + name + " " + GIT_COMMIT_ID;
+		TH1I*	hist = new TH1I(name.c_str(), title.c_str(), WIRES_COUNT, -WIRES_COUNT/2, WIRES_COUNT/2);
 
 		main_canvas->cd(plane_id + 1);
 
