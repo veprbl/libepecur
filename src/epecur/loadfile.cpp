@@ -22,7 +22,7 @@ typedef struct
 	ulittle32_t	length;		// full record length in bytes
 	ulittle32_t	id;		// id of event in file
 	ulittle32_t	flags;		// bit flags
-} cycle_event_header_t;
+} event_header_t;
 
 typedef struct
 {
@@ -191,7 +191,7 @@ void	handle_trig_end_cycle( const char* &pos, const char* max_pos )
 	skip_magic_data(pos, max_pos);
 }
 
-void	read_cycle_stream( const char* &pos, const char* max_pos, int32_t flags, load_hooks_t &hooks )
+void	read_event( const char* &pos, const char* max_pos, int32_t flags, load_hooks_t &hooks )
 {
 	ubig16_t	stream_header;
 	uint16_t	dev_id;
@@ -243,13 +243,13 @@ void	read_cycle_stream( const char* &pos, const char* max_pos, int32_t flags, lo
 
 void	read_cycle( const char* &pos, const char *max_pos, load_hooks_t &hooks )
 {
-	cycle_event_header_t	ev;
+	event_header_t	event;
 
 	while(pos < max_pos)
 	{
-		mem_read(pos, ev);
+		mem_read(pos, event);
 
-		read_cycle_stream(pos, pos + ev.length - sizeof(ev), ev.flags, hooks);
+		read_event(pos, pos + event.length - sizeof(event), event.flags, hooks);
 	}
 }
 
@@ -294,8 +294,8 @@ void	resync( const char* &pos, const char* file_end )
 			}
 		}
 
-		auto	event_pos = pos - offsetof(cycle_event_header_t, flags);
-		auto	&event = *reinterpret_cast<const cycle_event_header_t*>(event_pos);
+		auto	event_pos = pos - offsetof(event_header_t, flags);
+		auto	&event = *reinterpret_cast<const event_header_t*>(event_pos);
 
 		pos++; // Increment pos now, so we move forward on next iteration.
 
