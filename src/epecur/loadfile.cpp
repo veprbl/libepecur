@@ -102,23 +102,20 @@ void	skip_magic_data( const char* &pos, const char* max_pos )
 void	read_prop_data(
 	const char* &pos, const char* max_pos,
 	int	dev_id,
-	load_hooks_t &hooks
+	LoadHook &hook
 	)
 {
 	auto	orig_pos = pos;
 
 	skip_magic_data(pos, max_pos);
 
-	if (hooks.prop_handler)
-	{
-		hooks.prop_handler(orig_pos, pos, dev_id, nullptr);
-	}
+	hook.handle_prop_data(orig_pos, pos, dev_id, nullptr);
 }
 
 void	read_drift_data(
 	const char* &pos, const char* max_pos,
 	int	dev_id,
-	load_hooks_t &hooks
+	LoadHook &hook
 	)
 {
 	while(pos < max_pos)
@@ -191,7 +188,7 @@ void	handle_trig_end_cycle( const char* &pos, const char* max_pos )
 	skip_magic_data(pos, max_pos);
 }
 
-void	read_event( const char* &pos, const char* max_pos, int32_t flags, load_hooks_t &hooks )
+void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook &hook )
 {
 	ubig16_t	stream_header;
 	uint16_t	dev_id;
@@ -216,12 +213,12 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, load_hook
 		{
 		case DEV_TYPE_PROP:
 
-			read_prop_data(pos, max_pos, dev_id, hooks);
+			read_prop_data(pos, max_pos, dev_id, hook);
 
 			break;
 		case DEV_TYPE_DRIFT:
 
-			read_drift_data(pos, max_pos, dev_id, hooks);
+			read_drift_data(pos, max_pos, dev_id, hook);
 
 			break;
 		case DEV_TYPE_TRIG:
@@ -241,7 +238,7 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, load_hook
 	}
 }
 
-void	read_cycle( const char* &pos, const char *max_pos, load_hooks_t &hooks )
+void	read_cycle( const char* &pos, const char *max_pos, LoadHook &hook )
 {
 	event_header_t	event;
 
@@ -249,7 +246,7 @@ void	read_cycle( const char* &pos, const char *max_pos, load_hooks_t &hooks )
 	{
 		mem_read(pos, event);
 
-		read_event(pos, pos + event.length - sizeof(event), event.flags, hooks);
+		read_event(pos, pos + event.length - sizeof(event), event.flags, hook);
 	}
 }
 
@@ -325,7 +322,7 @@ void	resync( const char* &pos, const char* file_end )
 	pos = next_rec_pos - sizeof(next_rec);
 }
 
-void	loadfile( string filename, load_hooks_t &hooks )
+void	loadfile( string filename, LoadHook &hook )
 {
 
 	boost::iostreams::mapped_file_source m_file_(filename.c_str());
@@ -388,7 +385,7 @@ void	loadfile( string filename, load_hooks_t &hooks )
 		{
 		case REC_TYPE_CYCLE:
 
-			read_cycle(pos, record_end, hooks);
+			read_cycle(pos, record_end, hook);
 
 			break;
 		case REC_TYPE_SLOW:

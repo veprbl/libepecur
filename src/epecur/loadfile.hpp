@@ -17,12 +17,15 @@ enum record_type_t
 	REC_TYPE_RAW	= 0x10000
 };
 
-struct load_hooks_t
+class	LoadHook
 {
-	void	(*prop_handler)( const char* begin, const char* end, uint16_t dev_id, void* data );
-	void	(*drift_handler)( char wire_id, uint16_t time );
+public:
+
+	virtual void	handle_prop_data( const char* begin, const char* end, uint16_t dev_id, void* data ) {};
+	virtual void	handle_drift_data( char wire_id, uint16_t time ) {};
+	virtual void	handle_event_end() {};
 };
 
-void	loadfile( std::string filename, load_hooks_t &hooks );
+void	loadfile( std::string filename, LoadHook &hook );
 
 #endif

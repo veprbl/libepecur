@@ -14,26 +14,11 @@
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
 
+#include "EvSumHook.hpp"
+
 namespace po = boost::program_options;
 
 using namespace std;
-
-const int	MAX_PLANE_ID = 16;
-
-Geometry	*g;
-uint	planes[MAX_PLANE_ID][200];
-
-void	h( const char* begin, const char* end, uint16_t dev_id, void* data )
-{
-	plane_id_t	plane_id = g->get_device_plane(dev_id);
-
-	for(auto pos = begin; pos < end; pos++)
-	{
-		int	wire_pos = g->get_wire_pos(dev_id, *pos);
-
-		planes[plane_id][wire_pos + 100] += 1;
-	}
-}
 
 class	MomentumDistributionApp: public TApplication
 {
@@ -53,7 +38,7 @@ public:
 	string	geometry_filepath;
 
 	void	Init();
-	void	PlotResults();
+	void	PlotResults( uint planes[][200] );
 };
 
 MomentumDistributionApp::MomentumDistributionApp(
@@ -116,7 +101,7 @@ void	MomentumDistributionApp::ParseCommandLine( int argc, char* argv[] )
 	geometry_filepath = vm["geometry-file"].as<string>();
 }
 
-void	MomentumDistributionApp::PlotResults()
+void	MomentumDistributionApp::PlotResults( uint planes[][WIRES_COUNT] )
 {
 	main_canvas = new TCanvas("main_canvas", ApplicationName(), 200, 10, 1000, 500);
 	main_canvas->Connect("Closed()", "TApplication", this, "Terminate()");
@@ -147,10 +132,6 @@ void	MomentumDistributionApp::PlotResults()
 
 void	MomentumDistributionApp::Init()
 {
-	load_hooks_t	hooks;
-
-	hooks.prop_handler = h;
-
 	ifstream	file(geometry_filepath, ios::in);
 
 	if (!file.is_open())
@@ -158,12 +139,12 @@ void	MomentumDistributionApp::Init()
 		throw "Couldn't open geometry file!";
 	}
 
-	Geometry a(file);
-	g = &a;
+	Geometry	geom(file);
+	EvSumHook	hook(geom);
 
-	loadfile(data_filepath, hooks);
+	loadfile(data_filepath, hook);
 
-	PlotResults();
+	PlotResults(hook.planes);
 }
 
 int	main( int argc, char* argv[] )
