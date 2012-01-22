@@ -114,13 +114,13 @@ void	MomentumDistributionApp::PlotResults( uint planes[][WIRES_COUNT] )
 	for(int plane_id = 0; plane_id < MAX_PLANE_ID; plane_id++)
 	{
 		string	name = boost::lexical_cast<string>(plane_id);
-		TH1I*	hist = new TH1I(name.c_str(), "qwe", 200, -100, 100);
+		TH1I*	hist = new TH1I(name.c_str(), "qwe", WIRES_COUNT, -WIRES_COUNT/2, WIRES_COUNT/2);
 
 		main_canvas->cd(plane_id + 1);
 
-		for(int wire_id = 0; wire_id < 200; wire_id++)
+		for(int wire_id = 0; wire_id < WIRES_COUNT; wire_id++)
 		{
-			hist->Fill(wire_id - 100, planes[plane_id][wire_id]);
+			hist->Fill(wire_id - WIRES_COUNT/2, planes[plane_id][wire_id]);
 		}
 
 		hist->Draw();
