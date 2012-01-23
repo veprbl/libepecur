@@ -87,7 +87,7 @@ void	MomentumDistributionApp::PlotResults( uint planes[][WIRES_COUNT] )
 	int	rows_count = floor(sqrt(MAX_PLANE_ID));
 	int	cols_count = ceil(MAX_PLANE_ID / rows_count);
 
-	main_canvas->Divide(rows_count, cols_count);
+	main_canvas->Divide(rows_count, cols_count, 0, 0);
 
 	for(int plane_id = 0; plane_id < MAX_PLANE_ID; plane_id++)
 	{
