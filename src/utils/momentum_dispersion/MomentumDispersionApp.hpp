@@ -7,12 +7,10 @@ private:
 	TCanvas*	main_canvas;
 	vector<TH1I*>	th;
 
-	void	ParseCommandLine( int argc, char* argv[] );
+	void	ParseCommandLine();
 
 public:
-	MomentumDistributionApp(
-		const char* appClassName, Int_t* argc, char** argv, void* options = 0, Int_t numOptions = 0
-		);
+	MomentumDistributionApp( const char* app_name, int &argc, char* argv[] );
 	~MomentumDistributionApp();
 
 	string	data_filepath;

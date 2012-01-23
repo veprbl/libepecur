@@ -21,12 +21,10 @@ namespace po = boost::program_options;
 
 using namespace std;
 
-MomentumDistributionApp::MomentumDistributionApp(
-	const char* appClassName, Int_t* argc, char** argv, void* options, Int_t numOptions
-	)
-		: TApplication(appClassName, nullptr, nullptr, options, numOptions)
+MomentumDistributionApp::MomentumDistributionApp( const char* app_name, int &argc, char* argv[] )
+	: TApplication(app_name, &argc, argv, nullptr, -1)
 {
-	ParseCommandLine(*argc, argv);
+	ParseCommandLine();
 
 	Init();
 }
@@ -40,7 +38,7 @@ MomentumDistributionApp::~MomentumDistributionApp()
 	delete(main_canvas);
 }
 
-void	MomentumDistributionApp::ParseCommandLine( int argc, char* argv[] )
+void	MomentumDistributionApp::ParseCommandLine()
 {
 	po::options_description cmdline_options;
 
@@ -64,14 +62,14 @@ void	MomentumDistributionApp::ParseCommandLine( int argc, char* argv[] )
 
 	po::variables_map vm;
 
-	po::store(po::command_line_parser(argc, argv).
+	po::store(po::command_line_parser(Argc(), Argv()).
 		  options(cmdline_options).positional(p).run(), vm);
 
 	po::notify(vm);
 
 	if (vm.count("help") || !vm.count("input-file") || !vm.count("geometry-file"))
 	{
-		cerr << "Usage: " << argv[0] << " data-file -g geometry-file [options]" << endl;
+		cerr << "Usage: " << Argv(0) << " data-file -g geometry-file [options]" << endl;
 		cerr << endl;
 		cerr << visible << endl;
 		Terminate(1);
@@ -130,7 +128,7 @@ void	MomentumDistributionApp::Init()
 
 int	main( int argc, char* argv[] )
 {
-	MomentumDistributionApp	app("Momentum distribution", &argc, argv);
+	MomentumDistributionApp	app("Momentum distribution", argc, argv);
 
 	while(1) { app.Run(); };
 
