@@ -21,7 +21,7 @@ class	LoadHook
 {
 public:
 
-	virtual void	handle_prop_data( const char* begin, const char* end, uint16_t dev_id, void* data ) {};
+	virtual void	handle_prop_data( const char* begin, const char* end, uint16_t dev_id ) {};
 	virtual void	handle_drift_data( char wire_id, uint16_t time ) {};
 	virtual void	handle_event_end() {};
 };

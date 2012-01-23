@@ -109,7 +109,7 @@ void	read_prop_data(
 
 	skip_magic_data(pos, max_pos);
 
-	hook.handle_prop_data(orig_pos, pos, dev_id, nullptr);
+	hook.handle_prop_data(orig_pos, pos, dev_id);
 }
 
 void	read_drift_data(

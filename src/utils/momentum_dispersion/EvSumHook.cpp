@@ -7,7 +7,7 @@ EvSumHook::EvSumHook( Geometry &g ) : geom(g)
 	memset(planes, 0, sizeof(planes));
 }
 
-void	EvSumHook::handle_prop_data( const char* begin, const char* end, uint16_t dev_id, void* data )
+void	EvSumHook::handle_prop_data( const char* begin, const char* end, uint16_t dev_id )
 {
 	plane_id_t	plane_id = geom.get_device_plane(dev_id);
 

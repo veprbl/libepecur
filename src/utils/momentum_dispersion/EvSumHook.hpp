@@ -18,7 +18,7 @@ public:
 
 	EvSumHook( Geometry &g );
 
-	virtual void	handle_prop_data( const char* begin, const char* end, uint16_t dev_id, void* data );
+	virtual void	handle_prop_data( const char* begin, const char* end, uint16_t dev_id );
 };
 
 #endif

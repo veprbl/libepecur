@@ -9,7 +9,7 @@ EvShowHook::EvShowHook( Geometry &g ) : geom(g)
 	memset(last_wire_place, 0, sizeof(last_wire_place));
 }
 
-void	EvShowHook::handle_prop_data( const char* begin, const char* end, uint16_t dev_id, void* data )
+void	EvShowHook::handle_prop_data( const char* begin, const char* end, uint16_t dev_id )
 {
 	plane_id_t	plane_id = geom.get_device_plane(dev_id);
 
