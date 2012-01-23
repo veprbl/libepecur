@@ -236,6 +236,8 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook 
 			break;
 		}
 	}
+
+	hook.handle_event_end();
 }
 
 void	read_cycle( const char* &pos, const char *max_pos, LoadHook &hook )
