@@ -54,7 +54,6 @@ T	read_magic_integer( const char* &pos, uint bytes )
 
 		if(c & 0xC0)
 		{
-			cerr << int(pos) << ", *(pos-1) = " << int(c) << endl;
 			throw "Non-zero 7-8th bits in magic integer";
 		}
 
