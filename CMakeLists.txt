@@ -1,9 +1,11 @@
 cmake_minimum_required (VERSION 2.6)
 project (EPECUR)
 
+enable_testing()
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 
-find_package( Boost 1.34 COMPONENTS iostreams program_options regex )
+find_package( Boost 1.48 COMPONENTS iostreams program_options regex test_exec_monitor )
 find_package( BoostEndian )
 find_package( ROOT )
 
@@ -52,3 +54,4 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}) 
 
 add_subdirectory(src)
+add_subdirectory(tests)
