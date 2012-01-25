@@ -40,8 +40,6 @@ math(EXPR c "${a} | ${b}")
 if (${c} EQUAL 1)
 	set(GIT_COMMIT_ID "durty working tree")
 	message(AUTHOR_WARNING "Git working tree isn't clean! Please don't use compiled uncommited code for real work. You will never remember what exactly changes you did to obtain your results.")
-else()
-	message(FATAL_ERROR "Error while retrieving last commit id.")
 endif()
 
 add_definitions(-DGIT_COMMIT_ID="${GIT_COMMIT_ID}")
