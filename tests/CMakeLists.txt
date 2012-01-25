@@ -15,3 +15,19 @@ add_test(
 	NAME loadfile
 	COMMAND $<TARGET_FILE:loadfile_test>
 )
+
+add_executable (
+	track_test
+	track_test.cpp
+        )
+
+target_link_libraries (
+        track_test
+	${Boost_LIBRARIES}
+        epecur
+        )
+
+add_test(
+	NAME track
+	COMMAND $<TARGET_FILE:track_test>
+)

@@ -19,6 +19,7 @@
 
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
+#include <epecur/track.hpp>
 #include <epecur/types.hpp>
 
 #include "ShowEventsApp.hpp"
@@ -181,10 +182,17 @@ void	ShowEventsApp::PlotResults()
 
 	event_pad->cd();
 
+	vector< vector<wire_pos_t> >	block;
+
 	for(auto plane : event)
 	{
 		plane_id_t	plane_id = plane.first;
-		vector<wire_pos_t>	plane_wires = plane.second;
+		vector<wire_pos_t>	&plane_wires = plane.second;
+
+		if ((plane_id % 2 == 0) && (plane_id < 8))
+		{
+			block.push_back(plane_wires);
+		}
 
 		for(auto wire : plane_wires)
 		{
@@ -200,6 +208,20 @@ void	ShowEventsApp::PlotResults()
 
 			wires_lines.push_back(line);
 		}
+	}
+
+	track_info_t	track = prop_recognize_track(block);
+
+	{
+		const int	WIRES_COUNT = 200;
+		double	y1 = (track.c0 + WIRES_COUNT/2) / float(WIRES_COUNT);
+		double	y2 = (track.c0 + track.c1 * 4 + WIRES_COUNT/2) / float(WIRES_COUNT);
+
+		auto line = new TLine(0, y1, 1, y2);
+
+		line->Draw();
+
+		wires_lines.push_back(line);
 	}
 
 	main_canvas->Show();
