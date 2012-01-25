@@ -4,9 +4,10 @@
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
 
+#include <vector>
+#include <unordered_map>
+
 const uint	LOAD_EVENTS_COUNT = 10;
-const uint	MAX_PLANE_ID = 16;
-const uint	WIRES_COUNT = 200;
 
 class	EvShowHook: public LoadHook
 {
@@ -16,8 +17,7 @@ private:
 public:
 
 	uint	event_id;
-	uint	last_wire_place[LOAD_EVENTS_COUNT][MAX_PLANE_ID];
-	char	wire_ids[LOAD_EVENTS_COUNT][MAX_PLANE_ID][WIRES_COUNT];
+	unordered_map< int, vector<char> >	events[LOAD_EVENTS_COUNT];
 
 	EvShowHook( Geometry &g );
 

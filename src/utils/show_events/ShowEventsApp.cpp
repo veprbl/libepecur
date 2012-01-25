@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include <iterator>
 #include <cstring>
 
@@ -175,16 +176,24 @@ Long_t	ShowEventsApp::ProcessLine( const char* line, Bool_t sync, Int_t* error )
 
 void	ShowEventsApp::PlotResults()
 {
+	auto	&event = hook->events[displayed_event_id];
+
 	event_pad->cd();
 
-	for(uint plane_id = 0; plane_id < MAX_PLANE_ID; plane_id++)
+	for(auto plane : event)
 	{
-		for(uint i = 0; i < hook->last_wire_place[displayed_event_id][plane_id]; i++)
+		int	plane_id = plane.first;
+		vector<char>	plane_wires = plane.second;
+
+		for(auto wire : plane_wires)
 		{
-			auto line = new TLine(plane_id / 16.0,
-					      hook->wire_ids[displayed_event_id][plane_id][i]/float(WIRES_COUNT),
-					      (plane_id+1) / 16.0,
-					      hook->wire_ids[displayed_event_id][plane_id][i]/float(WIRES_COUNT));
+			const int	PLANES_COUNT = 16;
+			const int	WIRES_COUNT = 200;
+			double	x1 = plane_id / float(PLANES_COUNT);
+			double	x2 = (plane_id + 1) / float(PLANES_COUNT);
+			double	y = (wire + WIRES_COUNT/2) / float(WIRES_COUNT);
+
+			auto line = new TLine(x1, y, x2, y);
 
 			line->Draw();
 
