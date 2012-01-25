@@ -89,12 +89,12 @@ public:
 
 	TestPropLoadHook() : prop_data_calls(0), event_end_calls(0) {};
 
-	void	handle_prop_data( const char* begin, const char* end, uint16_t dev_id );
+	void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, uint16_t dev_id );
 	void	handle_event_end();
 };
 
 void TestPropLoadHook::handle_prop_data(
-	const char* begin, const char* end, uint16_t dev_id
+	const wire_id_t* begin, const wire_id_t* end, uint16_t dev_id
 	)
 {
 	BOOST_REQUIRE(prop_data_calls < PROP_EVENTS_COUNT);

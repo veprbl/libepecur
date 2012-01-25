@@ -4,10 +4,9 @@
 #include <vector>
 #include <istream>
 
-using namespace std;
+#include "types.hpp"
 
-typedef	int	wire_pos_t;
-typedef	int	plane_id_t;
+using namespace std;
 
 struct device_props_t
 {

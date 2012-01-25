@@ -19,6 +19,7 @@
 
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
+#include <epecur/types.hpp>
 
 #include "ShowEventsApp.hpp"
 #include "EvShowHook.hpp"
@@ -182,8 +183,8 @@ void	ShowEventsApp::PlotResults()
 
 	for(auto plane : event)
 	{
-		int	plane_id = plane.first;
-		vector<char>	plane_wires = plane.second;
+		plane_id_t	plane_id = plane.first;
+		vector<wire_pos_t>	plane_wires = plane.second;
 
 		for(auto wire : plane_wires)
 		{

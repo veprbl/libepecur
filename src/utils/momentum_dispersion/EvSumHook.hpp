@@ -3,9 +3,10 @@
 
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
+#include <epecur/types.hpp>
 
-const int	MAX_PLANE_ID = 16;
-const int	WIRES_COUNT = 200;
+const plane_id_t	MAX_PLANE_ID = 16;
+const wire_id_t		WIRES_COUNT = 200;
 
 class	EvSumHook: public LoadHook
 {
@@ -18,7 +19,7 @@ public:
 
 	EvSumHook( Geometry &g );
 
-	virtual void	handle_prop_data( const char* begin, const char* end, uint16_t dev_id );
+	virtual void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, uint16_t dev_id );
 };
 
 #endif

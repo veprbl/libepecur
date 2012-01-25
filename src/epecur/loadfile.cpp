@@ -10,6 +10,7 @@
 
 #include <boost/endian/integers.hpp>
 
+#include "types.hpp"
 #include "loadfile.hpp"
 
 using namespace boost::endian;
@@ -108,7 +109,11 @@ void	read_prop_data(
 
 	skip_magic_data(pos, max_pos);
 
-	hook.handle_prop_data(orig_pos, pos, dev_id);
+	hook.handle_prop_data(
+		reinterpret_cast<const wire_id_t*>(orig_pos),
+		reinterpret_cast<const wire_id_t*>(pos),
+		dev_id
+		);
 }
 
 void	read_drift_data(

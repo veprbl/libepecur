@@ -13,6 +13,7 @@
 
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
+#include <epecur/types.hpp>
 
 #include "MomentumDispersionApp.hpp"
 #include "EvSumHook.hpp"
@@ -89,7 +90,7 @@ void	MomentumDistributionApp::PlotResults( uint planes[][WIRES_COUNT] )
 
 	main_canvas->Divide(rows_count, cols_count, 0, 0);
 
-	for(int plane_id = 0; plane_id < MAX_PLANE_ID; plane_id++)
+	for(plane_id_t plane_id = 0; plane_id < MAX_PLANE_ID; plane_id++)
 	{
 		string	name = boost::lexical_cast<string>(plane_id);
 		string	title = geometry_filepath + ":" + name + " " + GIT_COMMIT_ID;

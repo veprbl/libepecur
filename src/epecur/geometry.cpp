@@ -2,6 +2,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
+#include "types.hpp"
 #include "geometry.hpp"
 
 using namespace std;
