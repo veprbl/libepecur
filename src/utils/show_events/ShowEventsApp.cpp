@@ -271,7 +271,7 @@ void	ShowEventsApp::Init()
 
 int	main( int argc, char* argv[] )
 {
-	ShowEventsApp	app("Momentum distribution", argc, argv);
+	ShowEventsApp	app("Show event", argc, argv);
 
 	while(1) { app.Run(); };
 
