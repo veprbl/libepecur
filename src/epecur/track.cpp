@@ -39,7 +39,7 @@ bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int plan
 
 track_info_t	prop_recognize_track( const vector< vector<wire_pos_t> > &data )
 {
-	const auto	planes_count = data.size();
+	const plane_id_t	planes_count = data.size();
 	unique_ptr<wire_pos_ptr_t[]>	best_wire_pos_ptr(new wire_pos_ptr_t[planes_count]);
 	unique_ptr<wire_pos_ptr_t[]>	wire_pos_ptr(new wire_pos_ptr_t[planes_count]);
 	unique_ptr<int[]>		wire_count(new int[planes_count]);
@@ -93,7 +93,7 @@ track_info_t	prop_recognize_track( const vector< vector<wire_pos_t> > &data )
 			}
 		}
 	}
-	while(next(&wire_pos_ptr[0], &wire_count[0], planes_count ));
+	while(next( wire_pos_ptr.get(), &wire_count[0], planes_count ));
 
 	return track_info_t{best_c0, best_c1, move(best_wire_pos_ptr)};
 }
