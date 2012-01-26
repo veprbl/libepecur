@@ -47,12 +47,12 @@ BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 
 BOOST_AUTO_TEST_CASE( check_prop_recognize_track )
 {
-	vector< vector<wire_pos_t> >	data
+	vector< vector<wire_pos_t>* >	data
 	{
-		vector<wire_pos_t> { 1,2,3 },
-		vector<wire_pos_t> { 1,2,3 },
-		vector<wire_pos_t> { 3,4,5 },
-		vector<wire_pos_t> { 4 }
+		new vector<wire_pos_t>({ 1,2,3 }),
+		new vector<wire_pos_t>({ 1,2,3 }),
+		new vector<wire_pos_t>({ 3,4,5 }),
+		new vector<wire_pos_t>({ 4 })
 	};
 
 	prop_recognize_track(data);

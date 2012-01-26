@@ -37,7 +37,7 @@ bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int plan
 	return true;
 }
 
-recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t> > &data )
+recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data )
 {
 	const plane_id_t	planes_count = data.size();
 	unique_ptr<wire_pos_ptr_t[]>	best_wire_pos_ptr(new wire_pos_ptr_t[planes_count]);
@@ -51,7 +51,7 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t> > &dat
 		for(auto plane_data : data)
 		{
 			wire_pos_ptr[plane_id] = 0;
-			wire_count[plane_id] = plane_data.size();
+			wire_count[plane_id] = plane_data->size();
 
 			plane_id++;
 		}
@@ -71,7 +71,7 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t> > &dat
 		// fill array with values to fit
 		for(auto plane_data : data)
 		{
-			wire_pos_t	wire_id = plane_data[wire_pos_ptr[i]];
+			wire_pos_t	wire_id = (*plane_data)[wire_pos_ptr[i]];
 
 			wires.push_back(wire_id);
 			xs.push_back(i); /* temporary. we should use x from geomerty */
@@ -105,7 +105,10 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t> > &dat
 		};
 }
 
-vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t> > data )
+vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data )
+/*
+ * Warning: This function will delete recognized wires from your original vectors.
+ */
 {
 	vector<track_info_t>	result;
 	bool	next_track_clearance = true;
@@ -120,7 +123,7 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t> > dat
 	// check if there is empty plane
 	for(auto &plane_data : data)
 	{
-		if (plane_data.empty())
+		if (plane_data->empty())
 		{
 			// return no tracks
 			return vector<track_info_t>();
@@ -136,11 +139,11 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t> > dat
 
 		plane_id_t	plane_id = 0;
 
-		for(auto &plane_data : data)
+		for(auto plane_data : data)
 		{
-			plane_data.erase(plane_data.begin() + info.wire_pos_ptr[plane_id]);
+			plane_data->erase(plane_data->begin() + info.wire_pos_ptr[plane_id]);
 
-			if (plane_data.empty())
+			if (plane_data->empty())
 			{
 				next_track_clearance = false;
 				break;
