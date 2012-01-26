@@ -3,6 +3,7 @@
 
 #include "types.hpp"
 
+#include <memory>
 #include <vector>
 
 using namespace std;
@@ -11,6 +12,7 @@ struct track_info_t
 {
 	double	c0;
 	double	c1;
+	unique_ptr<wire_pos_ptr_t[]>	wire_pos_ptr;
 };
 
 bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int planes_count );
