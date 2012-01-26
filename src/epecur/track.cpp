@@ -44,6 +44,7 @@ track_info_t	prop_recognize_track( const vector< vector<wire_pos_t> > &data )
 	unique_ptr<wire_pos_ptr_t[]>	wire_pos_ptr(new wire_pos_ptr_t[planes_count]);
 	unique_ptr<int[]>		wire_count(new int[planes_count]);
 
+	// initialize variables
 	{
 		int plane_id = 0;
 
@@ -67,6 +68,7 @@ track_info_t	prop_recognize_track( const vector< vector<wire_pos_t> > &data )
 		double	c0, c1, cov00, cov01, cov11, sumsq;
 		int i = 0;
 
+		// fill array with values to fit
 		for(auto plane_data : data)
 		{
 			wire_pos_t	wire_id = plane_data[wire_pos_ptr[i]];
@@ -77,6 +79,7 @@ track_info_t	prop_recognize_track( const vector< vector<wire_pos_t> > &data )
 			i++;
 		}
 
+		// perform linear fit
 		gsl_fit_linear(xs.data(), 1, wires.data(), 1, wires.size(),
 			       &c0, &c1, &cov00, &cov01, &cov11, &sumsq);
 
@@ -87,6 +90,7 @@ track_info_t	prop_recognize_track( const vector< vector<wire_pos_t> > &data )
 			best_c1 = c1;
 			first = false;
 
+			// save best wires array positions
 			for(plane_id_t plane_id = 0; plane_id < planes_count; plane_id++)
 			{
 				best_wire_pos_ptr[plane_id] = wire_pos_ptr[plane_id];
