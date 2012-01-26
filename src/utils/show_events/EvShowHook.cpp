@@ -32,6 +32,23 @@ void	EvShowHook::handle_prop_data( const wire_id_t* begin, const wire_id_t* end,
 
 void	EvShowHook::handle_event_end()
 {
+	auto	&event = events[event_id];
+
+	vector< vector<wire_pos_t> >	block;
+
+	for(auto plane : event)
+	{
+		plane_id_t	plane_id = plane.first;
+		vector<wire_pos_t>	&plane_wires = plane.second;
+
+		if ((plane_id % 2 == 0) && (plane_id < 8))
+		{
+			block.push_back(plane_wires);
+		}
+	}
+
+	tracks[event_id] = prop_recognize_all_tracks(block);
+
 	event_id++;
 
 	if (event_id >= LOAD_EVENTS_COUNT)

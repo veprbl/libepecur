@@ -182,17 +182,10 @@ void	ShowEventsApp::PlotResults()
 
 	event_pad->cd();
 
-	vector< vector<wire_pos_t> >	block;
-
 	for(auto plane : event)
 	{
 		plane_id_t	plane_id = plane.first;
 		vector<wire_pos_t>	&plane_wires = plane.second;
-
-		if ((plane_id % 2 == 0) && (plane_id < 8))
-		{
-			block.push_back(plane_wires);
-		}
 
 		for(auto wire : plane_wires)
 		{
@@ -210,7 +203,7 @@ void	ShowEventsApp::PlotResults()
 		}
 	}
 
-	auto	tracks = prop_recognize_all_tracks(block);
+	auto	&tracks = hook->tracks[displayed_event_id];
 
 	for(track_info_t &track : tracks)
 	{

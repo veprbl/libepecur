@@ -110,6 +110,23 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t> > dat
 	vector<track_info_t>	result;
 	bool	next_track_clearance = true;
 
+	// check if there is any data
+	if (data.size() == 0)
+	{
+			// return no tracks
+			return vector<track_info_t>();
+	}
+
+	// check if there is empty plane
+	for(auto &plane_data : data)
+	{
+		if (plane_data.empty())
+		{
+			// return no tracks
+			return vector<track_info_t>();
+		}
+	}
+
 	do
 	{
 		recognized_track_t	info = prop_recognize_track(data);

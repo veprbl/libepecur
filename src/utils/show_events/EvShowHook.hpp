@@ -3,6 +3,7 @@
 
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
+#include <epecur/track.hpp>
 #include <epecur/types.hpp>
 
 #include <vector>
@@ -19,6 +20,7 @@ public:
 
 	uint	event_id;
 	unordered_map< int, vector<wire_pos_t> >	events[LOAD_EVENTS_COUNT];
+	vector<track_info_t>				tracks[LOAD_EVENTS_COUNT];
 
 	EvShowHook( Geometry &g );
 
