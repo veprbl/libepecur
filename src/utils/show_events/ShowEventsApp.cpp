@@ -210,40 +210,20 @@ void	ShowEventsApp::PlotResults()
 		}
 	}
 
-	bool	next_track_clearance = true;
+	auto	tracks = prop_recognize_all_tracks(block);
 
-	do
+	for(track_info_t &track : tracks)
 	{
-		track_info_t	track = prop_recognize_track(block);
+		const int	WIRES_COUNT = 200;
+		double	y1 = (track.c0 + WIRES_COUNT/2) / float(WIRES_COUNT);
+		double	y2 = (track.c0 + track.c1 * 4 + WIRES_COUNT/2) / float(WIRES_COUNT);
 
-		{
-			const int	WIRES_COUNT = 200;
-			double	y1 = (track.c0 + WIRES_COUNT/2) / float(WIRES_COUNT);
-			double	y2 = (track.c0 + track.c1 * 4 + WIRES_COUNT/2) / float(WIRES_COUNT);
+		auto line = new TLine(0, y1, 1, y2);
 
-			auto line = new TLine(0, y1, 1, y2);
+		line->Draw();
 
-			line->Draw();
-
-			wires_lines.push_back(line);
-		}
-
-		plane_id_t	plane_id = 0;
-
-		for(auto &plane_data : block)
-		{
-			plane_data.erase(plane_data.begin() + track.wire_pos_ptr[plane_id]);
-
-			if (plane_data.empty())
-			{
-				next_track_clearance = false;
-				break;
-			}
-
-			plane_id++;
-		}
+		wires_lines.push_back(line);
 	}
-	while(next_track_clearance);
 
 	main_canvas->Show();
 }
