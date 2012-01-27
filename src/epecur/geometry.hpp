@@ -9,6 +9,11 @@
 
 using namespace std;
 
+struct plane_props_t
+{
+	double	normal_pos;
+};
+
 struct device_props_t
 {
 	chamber_id_t	chamber_id;
@@ -17,11 +22,7 @@ struct device_props_t
 	group_id_t	group_id;
 	device_axis_t	axis;
 	plane_id_t	plane_id;
-};
-
-struct plane_props_t
-{
-	double	normal_pos;
+	plane_props_t*	plane;
 };
 
 class Geometry
@@ -33,7 +34,6 @@ private:
 	bool	parse_plane_property_comment( string& );
 	bool	parse_plane_relation_comment( string&, group_id_t&, device_axis_t&, plane_id_t& );
 	bool	parse_chamber_info_text( string&, chamber_id_t&, wire_id_t&, wire_id_t& );
-	bool	check();
 
 public:
 

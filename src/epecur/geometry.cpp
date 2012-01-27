@@ -115,6 +115,7 @@ Geometry::Geometry( istream &in )
 	group_id_t	current_group;
 	device_axis_t	current_axis;
 	plane_id_t	current_plane;
+	device_id_t	device_id = 0;
 	string	line;
 
 
@@ -151,38 +152,26 @@ Geometry::Geometry( istream &in )
 			dev_props.axis		= current_axis;
 			dev_props.plane_id	= current_plane;
 
+			pair<device_id_t, plane_id_t>	plane_index(dev_props.group_id, dev_props.plane_id);
+
+			if (dev_props.chamber_id != INVALID_CHAMBER_ID)
+			{
+				if (plane.count(plane_index) == 0)
+				{
+					cerr << "Warning: no plane information for F" << int(dev_props.group_id) << "*" << int(dev_props.plane_id) <<
+						" (device_id = " << device_id << ")" << endl;
+				}
+				else
+				{
+					dev_props.plane = &(plane[plane_index]);
+				}
+			}
+
 			device.push_back(dev_props);
+
+			device_id++;
 		}
 	}
-
-	check();
-}
-
-bool	Geometry::check()
-{
-	bool	no_warnings = true;
-	device_id_t	device_id = 0;
-
-	for(auto dev : device)
-	{
-		if (dev.chamber_id == INVALID_CHAMBER_ID)
-		{
-			continue;
-		}
-
-		if (plane.count(
-			    pair<device_id_t, plane_id_t>( dev.group_id, dev.plane_id )
-			    ) == 0)
-		{
-			cerr << "Warning: no plane information for F" << int(dev.group_id) << "*" << int(dev.plane_id) <<
-				" (device_id = " << device_id << ")" << endl;
-			no_warnings = false;
-		}
-
-		device_id++;
-	}
-
-	return no_warnings;
 }
 
 chamber_id_t	Geometry::get_device_chamber( device_id_t device_id )
