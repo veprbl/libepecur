@@ -98,16 +98,16 @@ Geometry::Geometry( istream &in )
 			    shift
 			    ))
 		{
-			device_props_t*	dev_props = new device_props_t();
+			device_props_t	dev_props;
 
-			dev_props->chamber	= chamber;
-			dev_props->step		= step;
-			dev_props->shift	= shift;
-			dev_props->group	= current_group;
-			dev_props->axis		= current_axis;
-			dev_props->plane	= current_plane;
+			dev_props.chamber	= chamber;
+			dev_props.step		= step;
+			dev_props.shift	= shift;
+			dev_props.group	= current_group;
+			dev_props.axis		= current_axis;
+			dev_props.plane	= current_plane;
 
-			props.push_back(*dev_props);
+			props.push_back(dev_props);
 		}
 	}
 }
