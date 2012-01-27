@@ -78,8 +78,10 @@ bool	Geometry::parse_plane_relation_comment( string &line, group_id_t &group, de
 	return false;
 }
 
-bool	Geometry::parse_chamber_info_text( string &line, chamber_id_t &chamber, wire_id_t &step, wire_id_t &shift )
+bool	Geometry::parse_chamber_info_text( string &line, group_id_t current_group, device_axis_t current_axis, plane_id_t current_plane )
 {
+	static device_id_t	device_id = 0;
+
 	auto	begin = line.find('{');
 	auto	end = line.rfind('}');
 
@@ -100,22 +102,42 @@ bool	Geometry::parse_chamber_info_text( string &line, chamber_id_t &chamber, wir
 		throw "Tuple with wrong size in geometry file!";
 	}
 
-	chamber	= boost::lexical_cast<int>(value[0]);
-	step	= boost::lexical_cast<int>(value[1]);
-	shift	= boost::lexical_cast<int>(value[2]);
+	device_props_t	dev_props;
+
+	dev_props.chamber_id	= boost::lexical_cast<int>(value[0]);
+	dev_props.step		= boost::lexical_cast<int>(value[1]);
+	dev_props.shift		= boost::lexical_cast<int>(value[2]);
+	dev_props.group_id	= current_group;
+	dev_props.axis		= current_axis;
+	dev_props.plane_id	= current_plane;
+
+	pair<device_id_t, plane_id_t>	plane_index(dev_props.group_id, dev_props.plane_id);
+
+	if (dev_props.chamber_id != INVALID_CHAMBER_ID)
+	{
+		if (plane.count(plane_index) == 0)
+		{
+			cerr << "Warning: no plane information for F" << int(dev_props.group_id) << "*" << int(dev_props.plane_id) <<
+				" (device_id = " << device_id << ")" << endl;
+		}
+		else
+		{
+			dev_props.plane = &(plane[plane_index]);
+		}
+	}
+
+	device.push_back(dev_props);
+
+	device_id++;
 
 	return true;
 }
 
 Geometry::Geometry( istream &in )
 {
-	chamber_id_t	chamber;
-	wire_id_t	step;
-	wire_id_t	shift;
 	group_id_t	current_group;
 	device_axis_t	current_axis;
 	plane_id_t	current_plane;
-	device_id_t	device_id = 0;
 	string	line;
 
 
@@ -138,38 +160,12 @@ Geometry::Geometry( istream &in )
 
 		if (parse_chamber_info_text(
 			    line,
-			    chamber,
-			    step,
-			    shift
+			    current_group,
+			    current_axis,
+			    current_plane
 			    ))
 		{
-			device_props_t	dev_props;
-
-			dev_props.chamber_id	= chamber;
-			dev_props.step		= step;
-			dev_props.shift	= shift;
-			dev_props.group_id	= current_group;
-			dev_props.axis		= current_axis;
-			dev_props.plane_id	= current_plane;
-
-			pair<device_id_t, plane_id_t>	plane_index(dev_props.group_id, dev_props.plane_id);
-
-			if (dev_props.chamber_id != INVALID_CHAMBER_ID)
-			{
-				if (plane.count(plane_index) == 0)
-				{
-					cerr << "Warning: no plane information for F" << int(dev_props.group_id) << "*" << int(dev_props.plane_id) <<
-						" (device_id = " << device_id << ")" << endl;
-				}
-				else
-				{
-					dev_props.plane = &(plane[plane_index]);
-				}
-			}
-
-			device.push_back(dev_props);
-
-			device_id++;
+			continue;
 		}
 	}
 }
