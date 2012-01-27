@@ -5,7 +5,7 @@
 
 #include "EvShowHook.hpp"
 
-EvShowHook::EvShowHook( Geometry &g ) : geom(g)
+EvShowHook::EvShowHook( Geometry &g ) : geom(g), event_id(0)
 {
 	// nothing
 }
