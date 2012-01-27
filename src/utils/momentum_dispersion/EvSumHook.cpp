@@ -9,7 +9,7 @@ EvSumHook::EvSumHook( Geometry &g ) : geom(g)
 	memset(chambers, 0, sizeof(chambers));
 }
 
-void	EvSumHook::handle_prop_data( const wire_id_t* begin, const wire_id_t* end, uint16_t dev_id )
+void	EvSumHook::handle_prop_data( const wire_id_t* begin, const wire_id_t* end, device_id_t dev_id )
 {
 	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
 

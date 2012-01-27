@@ -19,7 +19,7 @@ public:
 
 	EvSumHook( Geometry &g );
 
-	virtual void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, uint16_t dev_id );
+	virtual void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, device_id_t dev_id );
 };
 
 #endif

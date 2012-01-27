@@ -101,7 +101,7 @@ void	skip_magic_data( const char* &pos, const char* max_pos )
 
 void	read_prop_data(
 	const char* &pos, const char* max_pos,
-	int	dev_id,
+	device_id_t	dev_id,
 	LoadHook &hook
 	)
 {
@@ -118,7 +118,7 @@ void	read_prop_data(
 
 void	read_drift_data(
 	const char* &pos, const char* max_pos,
-	int	dev_id,
+	device_id_t	dev_id,
 	LoadHook &hook
 	)
 {
@@ -195,7 +195,7 @@ void	handle_trig_end_cycle( const char* &pos, const char* max_pos )
 void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook &hook )
 {
 	ubig16_t	stream_header;
-	uint16_t	dev_id;
+	device_id_t	dev_id;
 	device_type_t	dev_type;
 
 	while(pos < max_pos)
