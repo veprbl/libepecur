@@ -17,7 +17,7 @@ public:
 	string	geometry_filepath;
 
 	void	Init();
-	void	PlotResults( uint planes[][200] );
+	void	PlotResults( uint chambers[][200] );
 };
 
 #endif

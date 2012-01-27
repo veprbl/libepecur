@@ -80,27 +80,27 @@ void	MomentumDistributionApp::ParseCommandLine()
 	geometry_filepath = vm["geometry-file"].as<string>();
 }
 
-void	MomentumDistributionApp::PlotResults( uint planes[][WIRES_COUNT] )
+void	MomentumDistributionApp::PlotResults( uint chambers[][WIRES_COUNT] )
 {
 	main_canvas = new TCanvas("main_canvas", ApplicationName(), 200, 10, 1000, 500);
 	main_canvas->Connect("Closed()", "TApplication", this, "Terminate()");
 
-	int	rows_count = floor(sqrt(MAX_PLANE_ID));
-	int	cols_count = ceil(MAX_PLANE_ID / rows_count);
+	int	rows_count = floor(sqrt(MAX_CHAMBER_ID));
+	int	cols_count = ceil(MAX_CHAMBER_ID / rows_count);
 
 	main_canvas->Divide(rows_count, cols_count, 0, 0);
 
-	for(plane_id_t plane_id = 0; plane_id < MAX_PLANE_ID; plane_id++)
+	for(chamber_id_t chamber_id = 0; chamber_id < MAX_CHAMBER_ID; chamber_id++)
 	{
-		string	name = boost::lexical_cast<string>(plane_id);
+		string	name = boost::lexical_cast<string>(chamber_id);
 		string	title = geometry_filepath + ":" + name + " " + GIT_COMMIT_ID;
 		TH1I*	hist = new TH1I(name.c_str(), title.c_str(), WIRES_COUNT, -WIRES_COUNT/2, WIRES_COUNT/2);
 
-		main_canvas->cd(plane_id + 1);
+		main_canvas->cd(chamber_id + 1);
 
 		for(int wire_id = 0; wire_id < WIRES_COUNT; wire_id++)
 		{
-			hist->Fill(wire_id - WIRES_COUNT/2, planes[plane_id][wire_id]);
+			hist->Fill(wire_id - WIRES_COUNT/2, chambers[chamber_id][wire_id]);
 		}
 
 		hist->Draw();
@@ -124,7 +124,7 @@ void	MomentumDistributionApp::Init()
 
 	loadfile(data_filepath, hook);
 
-	PlotResults(hook.planes);
+	PlotResults(hook.chambers);
 }
 
 int	main( int argc, char* argv[] )

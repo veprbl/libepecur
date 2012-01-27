@@ -8,7 +8,7 @@
 
 using namespace std;
 
-bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int planes_count )
+bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int chambers_count )
 /*
  * iterates over all possible wire_pos_ptr combinations
  * if next combination is not avaliable returns false
@@ -20,7 +20,7 @@ bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int plan
 	{
 		i++;
 
-		if (i == planes_count)
+		if (i == chambers_count)
 		{
 			/* reached last combination */
 			return false;
@@ -39,21 +39,21 @@ bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int plan
 
 recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data )
 {
-	const plane_id_t	planes_count = data.size();
-	unique_ptr<wire_pos_ptr_t[]>	best_wire_pos_ptr(new wire_pos_ptr_t[planes_count]);
-	unique_ptr<wire_pos_ptr_t[]>	wire_pos_ptr(new wire_pos_ptr_t[planes_count]);
-	unique_ptr<int[]>		wire_count(new int[planes_count]);
+	const chamber_id_t	chambers_count = data.size();
+	unique_ptr<wire_pos_ptr_t[]>	best_wire_pos_ptr(new wire_pos_ptr_t[chambers_count]);
+	unique_ptr<wire_pos_ptr_t[]>	wire_pos_ptr(new wire_pos_ptr_t[chambers_count]);
+	unique_ptr<int[]>		wire_count(new int[chambers_count]);
 
 	// initialize variables
 	{
-		int plane_id = 0;
+		int chamber_id = 0;
 
-		for(auto plane_data : data)
+		for(auto chamber_data : data)
 		{
-			wire_pos_ptr[plane_id] = 0;
-			wire_count[plane_id] = plane_data->size();
+			wire_pos_ptr[chamber_id] = 0;
+			wire_count[chamber_id] = chamber_data->size();
 
-			plane_id++;
+			chamber_id++;
 		}
 	}
 
@@ -69,9 +69,9 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 		int i = 0;
 
 		// fill array with values to fit
-		for(auto plane_data : data)
+		for(auto chamber_data : data)
 		{
-			wire_pos_t	wire_id = (*plane_data)[wire_pos_ptr[i]];
+			wire_pos_t	wire_id = (*chamber_data)[wire_pos_ptr[i]];
 
 			wires.push_back(wire_id);
 			xs.push_back(i); /* temporary. we should use x from geomerty */
@@ -91,13 +91,13 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 			first = false;
 
 			// save best wires array positions
-			for(plane_id_t plane_id = 0; plane_id < planes_count; plane_id++)
+			for(chamber_id_t chamber_id = 0; chamber_id < chambers_count; chamber_id++)
 			{
-				best_wire_pos_ptr[plane_id] = wire_pos_ptr[plane_id];
+				best_wire_pos_ptr[chamber_id] = wire_pos_ptr[chamber_id];
 			}
 		}
 	}
-	while(next( wire_pos_ptr.get(), &wire_count[0], planes_count ));
+	while(next( wire_pos_ptr.get(), &wire_count[0], chambers_count ));
 
 	return recognized_track_t{
 		track_info_t{best_c0, best_c1},
@@ -120,10 +120,10 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 			return vector<track_info_t>();
 	}
 
-	// check if there is empty plane
-	for(auto &plane_data : data)
+	// check if there is empty chamber
+	for(auto &chamber_data : data)
 	{
-		if (plane_data->empty())
+		if (chamber_data->empty())
 		{
 			// return no tracks
 			return vector<track_info_t>();
@@ -137,19 +137,19 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 
 		result.push_back(track);
 
-		plane_id_t	plane_id = 0;
+		chamber_id_t	chamber_id = 0;
 
-		for(auto plane_data : data)
+		for(auto chamber_data : data)
 		{
-			plane_data->erase(plane_data->begin() + info.wire_pos_ptr[plane_id]);
+			chamber_data->erase(chamber_data->begin() + info.wire_pos_ptr[chamber_id]);
 
-			if (plane_data->empty())
+			if (chamber_data->empty())
 			{
 				next_track_clearance = false;
 				break;
 			}
 
-			plane_id++;
+			chamber_id++;
 		}
 	}
 	while(next_track_clearance);

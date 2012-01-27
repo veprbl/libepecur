@@ -5,7 +5,7 @@
 #include <epecur/loadfile.hpp>
 #include <epecur/types.hpp>
 
-const plane_id_t	MAX_PLANE_ID = 16;
+const chamber_id_t	MAX_CHAMBER_ID = 16;
 const wire_id_t		WIRES_COUNT = 200;
 
 class	EvSumHook: public LoadHook
@@ -15,7 +15,7 @@ private:
 
 public:
 
-	uint	planes[MAX_PLANE_ID][WIRES_COUNT];
+	uint	chambers[MAX_CHAMBER_ID][WIRES_COUNT];
 
 	EvSumHook( Geometry &g );
 

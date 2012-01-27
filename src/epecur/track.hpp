@@ -20,7 +20,7 @@ struct recognized_track_t
 	unique_ptr<wire_pos_ptr_t[]>	wire_pos_ptr;
 };
 
-bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int planes_count );
+bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int chambers_count );
 recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data );
 vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data );
 

@@ -13,20 +13,20 @@ EvShowHook::EvShowHook( Geometry &g ) : geom(g)
 void	EvShowHook::handle_prop_data( const wire_id_t* begin, const wire_id_t* end, uint16_t dev_id )
 {
 	auto	&event = events[event_id];
-	plane_id_t	plane_id = geom.get_device_plane(dev_id);
+	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
 
-	if (event.count(plane_id) == 0)
+	if (event.count(chamber_id) == 0)
 	{
-		event[plane_id] = vector<wire_pos_t>();
+		event[chamber_id] = vector<wire_pos_t>();
 	}
 
-	auto &plane = event[plane_id];
+	auto &chamber = event[chamber_id];
 
 	for(auto pos = begin; pos < end; pos++)
 	{
 		wire_pos_t	wire_pos = geom.get_wire_pos(dev_id, *pos);
 
-		plane.push_back(wire_pos);
+		chamber.push_back(wire_pos);
 	}
 }
 
@@ -36,14 +36,14 @@ void	EvShowHook::handle_event_end()
 
 	vector< vector<wire_pos_t>* >	block;
 
-	for(auto &plane : event)
+	for(auto &chamber : event)
 	{
-		plane_id_t	plane_id = plane.first;
-		vector<wire_pos_t>	&plane_wires = plane.second;
+		chamber_id_t	chamber_id = chamber.first;
+		vector<wire_pos_t>	&chamber_wires = chamber.second;
 
-		if ((plane_id % 2 == 0) && (plane_id < 8))
+		if ((chamber_id % 2 == 0) && (chamber_id < 8))
 		{
-			block.push_back(&plane_wires);
+			block.push_back(&chamber_wires);
 		}
 	}
 

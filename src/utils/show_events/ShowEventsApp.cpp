@@ -182,17 +182,17 @@ void	ShowEventsApp::PlotResults()
 
 	event_pad->cd();
 
-	for(auto plane : event)
+	for(auto chamber : event)
 	{
-		plane_id_t	plane_id = plane.first;
-		vector<wire_pos_t>	&plane_wires = plane.second;
+		chamber_id_t	chamber_id = chamber.first;
+		vector<wire_pos_t>	&chamber_wires = chamber.second;
 
-		for(auto wire : plane_wires)
+		for(auto wire : chamber_wires)
 		{
-			const int	PLANES_COUNT = 16;
+			const int	CHAMBERS_COUNT = 16;
 			const int	WIRES_COUNT = 200;
-			double	x1 = plane_id / float(PLANES_COUNT);
-			double	x2 = (plane_id + 1) / float(PLANES_COUNT);
+			double	x1 = chamber_id / float(CHAMBERS_COUNT);
+			double	x2 = (chamber_id + 1) / float(CHAMBERS_COUNT);
 			double	y = (wire + WIRES_COUNT/2) / float(WIRES_COUNT);
 
 			auto line = new TLine(x1, y, x2, y);

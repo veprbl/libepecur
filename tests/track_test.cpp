@@ -9,12 +9,12 @@ using namespace std;
 
 BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 {
-	const int	PLANES_COUNT = 4;
-	const int	count[PLANES_COUNT] = { 3, 3, 3, 1 };
-	unsigned char	x[PLANES_COUNT];
+	const int	CHAMBERS_COUNT = 4;
+	const int	count[CHAMBERS_COUNT] = { 3, 3, 3, 1 };
+	unsigned char	x[CHAMBERS_COUNT];
 	int		num_combinations = 1, combination_id = 0;
 
-	for(int i = 0; i < PLANES_COUNT; i++)
+	for(int i = 0; i < CHAMBERS_COUNT; i++)
 	{
 		x[i] = 0;
 		num_combinations *= count[i];
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 
 		uint hash = 0;
 
-		for(int i = PLANES_COUNT - 1; i >= 0; i--)
+		for(int i = CHAMBERS_COUNT - 1; i >= 0; i--)
 		{
 			hash += x[i];
 
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 
 		combination_id++;
 	}
-	while(next(x, count, PLANES_COUNT ));
+	while(next(x, count, CHAMBERS_COUNT ));
 
 	BOOST_CHECK_EQUAL(combination_id, num_combinations);
 }
