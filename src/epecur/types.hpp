@@ -1,3 +1,6 @@
+#ifndef __TYPES_HPP
+#define __TYPES_HPP
+
 #include <cstdint>
 #include <boost/static_assert.hpp>
 
@@ -21,3 +24,5 @@ enum device_axis_t
 	DEV_AXIS_X,
 	DEV_AXIS_Y
 };
+
+#endif
