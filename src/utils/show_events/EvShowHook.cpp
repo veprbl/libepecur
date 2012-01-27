@@ -36,15 +36,11 @@ void	EvShowHook::handle_event_end()
 
 	vector< vector<wire_pos_t>* >	block;
 
-	for(auto &chamber : event)
+	for(chamber_id_t chamber_id : geom.group_chambers[1][DEV_AXIS_X] )
 	{
-		chamber_id_t	chamber_id = chamber.first;
-		vector<wire_pos_t>	&chamber_wires = chamber.second;
+		vector<wire_pos_t>	&chamber_wires = event[chamber_id];
 
-		if ((chamber_id % 2 == 0) && (chamber_id < 8))
-		{
-			block.push_back(&chamber_wires);
-		}
+		block.push_back(&chamber_wires);
 	}
 
 	tracks[event_id] = prop_recognize_all_tracks(block);

@@ -1,4 +1,5 @@
 #include <string>
+#include <algorithm>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
@@ -25,16 +26,9 @@ bool	Geometry::parse_plane_property_comment( string &line )
 		param_name	= mt[3];
 		param_value	= mt[4];
 
-		pair<group_id_t, plane_id_t>	plane_index(group_id, plane_id);
-
-		if (!plane.count(plane_index))
-		{
-			plane[plane_index] = plane_props_t();
-		}
-
 		if (param_name == "normal_pos")
 		{
-			plane[plane_index].normal_pos = boost::lexical_cast<double>(param_value);
+			group[group_id][plane_id].normal_pos = boost::lexical_cast<double>(param_value);
 		}
 		else
 		{
@@ -80,8 +74,6 @@ bool	Geometry::parse_plane_relation_comment( string &line, group_id_t &group, de
 
 bool	Geometry::parse_chamber_info_text( string &line, group_id_t current_group, device_axis_t current_axis, plane_id_t current_plane )
 {
-	static device_id_t	device_id = 0;
-
 	auto	begin = line.find('{');
 	auto	end = line.rfind('}');
 
@@ -111,26 +103,54 @@ bool	Geometry::parse_chamber_info_text( string &line, group_id_t current_group, 
 	dev_props.axis		= current_axis;
 	dev_props.plane_id	= current_plane;
 
-	pair<device_id_t, plane_id_t>	plane_index(dev_props.group_id, dev_props.plane_id);
-
-	if (dev_props.chamber_id != INVALID_CHAMBER_ID)
-	{
-		if (plane.count(plane_index) == 0)
-		{
-			cerr << "Warning: no plane information for F" << int(dev_props.group_id) << "*" << int(dev_props.plane_id) <<
-				" (device_id = " << device_id << ")" << endl;
-		}
-		else
-		{
-			dev_props.plane = &(plane[plane_index]);
-		}
-	}
-
 	device.push_back(dev_props);
 
-	device_id++;
-
 	return true;
+}
+
+void	Geometry::fill_arrays()
+{
+	device_id_t	device_id = 0;
+
+	for(device_props_t &dev : device)
+	{
+		if (dev.chamber_id != INVALID_CHAMBER_ID)
+		{
+			// check if there is no plane information associated with
+			// this (group_id, plane_id) pair
+
+			if ((group.count(dev.group_id) == 0)
+			    || (group[dev.group_id].count(dev.plane_id) == 0))
+			{
+				// if we dont have it, give warning and move to next device
+
+				cerr << "Warning: no plane information for F" 
+				     << int(dev.group_id) << "*" << int(dev.plane_id)
+				     << " (device_id = " << device_id << ")" << endl;
+
+				continue;
+			}
+
+			// otherwise, we will have use of a pointer to it
+
+			plane_props_t*	plane = &(group[dev.group_id][dev.plane_id]);
+
+			// so if there is no dev.chamber_id in our array
+
+			vector<plane_props_t*>	&planes = group_planes[dev.group_id][dev.axis];
+			vector<chamber_id_t>	&chambers = group_chambers[dev.group_id][dev.axis];
+
+			if (find(chambers.begin(), chambers.end(), dev.chamber_id) == chambers.end())
+			{
+				// insert our pointer and chamber_id pair into arrays
+
+				planes.push_back(plane);
+				chambers.push_back(dev.chamber_id);
+			}
+		}
+
+		device_id++;
+	}
 }
 
 Geometry::Geometry( istream &in )
@@ -168,6 +188,8 @@ Geometry::Geometry( istream &in )
 			continue;
 		}
 	}
+
+	fill_arrays();
 }
 
 chamber_id_t	Geometry::get_device_chamber( device_id_t device_id )

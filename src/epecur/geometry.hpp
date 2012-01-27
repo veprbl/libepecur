@@ -22,7 +22,6 @@ struct device_props_t
 	group_id_t	group_id;
 	device_axis_t	axis;
 	plane_id_t	plane_id;
-	plane_props_t*	plane;
 };
 
 class Geometry
@@ -30,12 +29,16 @@ class Geometry
 private:
 
 	vector<device_props_t>	device;
-	map< pair<group_id_t, plane_id_t>, plane_props_t >	plane;
+	map< group_id_t, map<plane_id_t, plane_props_t> >	group;
 	bool	parse_plane_property_comment( string& );
 	bool	parse_plane_relation_comment( string&, group_id_t&, device_axis_t&, plane_id_t& );
 	bool	parse_chamber_info_text( string&, group_id_t, device_axis_t, plane_id_t );
+	void	fill_arrays();
 
 public:
+
+	map< group_id_t, map< device_axis_t, vector<plane_props_t*> > >	group_planes;
+	map< group_id_t, map< device_axis_t, vector<chamber_id_t> > >	group_chambers;
 
 	Geometry( istream& );
 	wire_pos_t	get_wire_pos( device_id_t, wire_id_t );
