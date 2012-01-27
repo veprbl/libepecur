@@ -8,13 +8,53 @@
 
 using namespace std;
 
-boost::regex	plane_info_regexp("//[[:space:]]?F([0-9])([XY])([0-9])[[:space:]]?");
+boost::regex	plane_property_regexp("//[[:space:]]?F([0-9])plane([0-9])\\.([[:word:]]+)[[:space:]]?=[[:space:]]?([^[:space:]]+)");
 
-bool	Geometry::parse_plane_info_comment( string &line, group_id_t &group, device_axis_t &axis, plane_id_t &plane )
+bool	Geometry::parse_plane_property_comment( string &line )
+{
+	group_id_t	group_id;
+	plane_id_t	plane_id;
+	string		param_name;
+	string		param_value;
+	boost::smatch	mt;
+
+	if (boost::regex_match(line, mt, plane_property_regexp))
+	{
+		group_id	= boost::lexical_cast<int>(mt[1]);
+		plane_id	= boost::lexical_cast<int>(mt[2]);
+		param_name	= mt[3];
+		param_value	= mt[4];
+
+		pair<group_id_t, plane_id_t>	plane_index(group_id, plane_id);
+
+		if (!plane.count(plane_index))
+		{
+			plane[plane_index] = plane_props_t();
+		}
+
+		if (param_name == "normal_pos")
+		{
+			plane[plane_index].normal_pos = boost::lexical_cast<double>(param_value);
+		}
+		else
+		{
+			throw "Unknown param type";
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+
+boost::regex	plane_relation_regexp("//[[:space:]]?F([0-9])([XY])([0-9])[[:space:]]?");
+
+bool	Geometry::parse_plane_relation_comment( string &line, group_id_t &group, device_axis_t &axis, plane_id_t &plane )
 {
 	boost::smatch	mt;
 
-	if (boost::regex_match(line, mt, plane_info_regexp))
+	if (boost::regex_match(line, mt, plane_relation_regexp))
 	{
 		group	= boost::lexical_cast<int>(mt[1]);
 		plane	= boost::lexical_cast<int>(mt[3]);
@@ -80,7 +120,7 @@ Geometry::Geometry( istream &in )
 
 	while(getline(in, line))
 	{
-		if (parse_plane_info_comment(
+		if (parse_plane_relation_comment(
 			    line,
 			    current_group,
 			    current_axis,
@@ -90,6 +130,10 @@ Geometry::Geometry( istream &in )
 			continue;
 		}
 
+		if (parse_plane_property_comment(line))
+		{
+			continue;
+		}
 
 		if (parse_chamber_info_text(
 			    line,
@@ -107,19 +151,19 @@ Geometry::Geometry( istream &in )
 			dev_props.axis		= current_axis;
 			dev_props.plane	= current_plane;
 
-			props.push_back(dev_props);
+			device.push_back(dev_props);
 		}
 	}
 }
 
 chamber_id_t	Geometry::get_device_chamber( device_id_t device_id )
 {
-	return props[device_id].chamber;
+	return device[device_id].chamber;
 }
 
 wire_pos_t	Geometry::get_wire_pos( device_id_t device_id, wire_id_t wire_id )
 {
-	device_props_t	*p = &props[device_id];
+	device_props_t	*p = &device[device_id];
 
 	return p->shift + p->step * wire_id;
 }

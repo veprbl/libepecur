@@ -2,6 +2,7 @@
 #define __GEOMETRY_HPP
 
 #include <vector>
+#include <map>
 #include <istream>
 
 #include "types.hpp"
@@ -18,12 +19,19 @@ struct device_props_t
 	plane_id_t	plane;
 };
 
+struct plane_props_t
+{
+	double	normal_pos;
+};
+
 class Geometry
 {
 private:
 
-	vector<device_props_t>	props;
-	bool	parse_plane_info_comment( string&, group_id_t&, device_axis_t&, plane_id_t& );
+	vector<device_props_t>	device;
+	map< pair<group_id_t, plane_id_t>, plane_props_t >	plane;
+	bool	parse_plane_property_comment( string& );
+	bool	parse_plane_relation_comment( string&, group_id_t&, device_axis_t&, plane_id_t& );
 	bool	parse_chamber_info_text( string&, chamber_id_t&, wire_id_t&, wire_id_t& );
 
 public:
