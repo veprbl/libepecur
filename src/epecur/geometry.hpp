@@ -33,6 +33,7 @@ private:
 	bool	parse_plane_property_comment( string& );
 	bool	parse_plane_relation_comment( string&, group_id_t&, device_axis_t&, plane_id_t& );
 	bool	parse_chamber_info_text( string&, chamber_id_t&, wire_id_t&, wire_id_t& );
+	bool	check();
 
 public:
 
@@ -40,5 +41,7 @@ public:
 	wire_pos_t	get_wire_pos( device_id_t, wire_id_t );
 	chamber_id_t	get_device_chamber( device_id_t );
 };
+
+const chamber_id_t	INVALID_CHAMBER_ID = 255;
 
 #endif

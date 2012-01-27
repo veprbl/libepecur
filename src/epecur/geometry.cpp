@@ -154,6 +154,35 @@ Geometry::Geometry( istream &in )
 			device.push_back(dev_props);
 		}
 	}
+
+	check();
+}
+
+bool	Geometry::check()
+{
+	bool	no_warnings = true;
+	device_id_t	device_id = 0;
+
+	for(auto dev : device)
+	{
+		if (dev.chamber == INVALID_CHAMBER_ID)
+		{
+			continue;
+		}
+
+		if (plane.count(
+			    pair<device_id_t, plane_id_t>( dev.group, dev.plane )
+			    ) == 0)
+		{
+			cerr << "Warning: no plane information for F" << int(dev.group) << "*" << int(dev.plane) <<
+				" (device_id = " << device_id << ")" << endl;
+			no_warnings = false;
+		}
+
+		device_id++;
+	}
+
+	return no_warnings;
 }
 
 chamber_id_t	Geometry::get_device_chamber( device_id_t device_id )
