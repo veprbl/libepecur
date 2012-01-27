@@ -11,12 +11,12 @@ using namespace std;
 
 struct device_props_t
 {
-	chamber_id_t	chamber;
+	chamber_id_t	chamber_id;
 	wire_pos_t	step;
 	wire_pos_t	shift;
-	group_id_t	group;
+	group_id_t	group_id;
 	device_axis_t	axis;
-	plane_id_t	plane;
+	plane_id_t	plane_id;
 };
 
 struct plane_props_t

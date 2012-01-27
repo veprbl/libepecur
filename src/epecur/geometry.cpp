@@ -144,12 +144,12 @@ Geometry::Geometry( istream &in )
 		{
 			device_props_t	dev_props;
 
-			dev_props.chamber	= chamber;
+			dev_props.chamber_id	= chamber;
 			dev_props.step		= step;
 			dev_props.shift	= shift;
-			dev_props.group	= current_group;
+			dev_props.group_id	= current_group;
 			dev_props.axis		= current_axis;
-			dev_props.plane	= current_plane;
+			dev_props.plane_id	= current_plane;
 
 			device.push_back(dev_props);
 		}
@@ -165,16 +165,16 @@ bool	Geometry::check()
 
 	for(auto dev : device)
 	{
-		if (dev.chamber == INVALID_CHAMBER_ID)
+		if (dev.chamber_id == INVALID_CHAMBER_ID)
 		{
 			continue;
 		}
 
 		if (plane.count(
-			    pair<device_id_t, plane_id_t>( dev.group, dev.plane )
+			    pair<device_id_t, plane_id_t>( dev.group_id, dev.plane_id )
 			    ) == 0)
 		{
-			cerr << "Warning: no plane information for F" << int(dev.group) << "*" << int(dev.plane) <<
+			cerr << "Warning: no plane information for F" << int(dev.group_id) << "*" << int(dev.plane_id) <<
 				" (device_id = " << device_id << ")" << endl;
 			no_warnings = false;
 		}
@@ -187,7 +187,7 @@ bool	Geometry::check()
 
 chamber_id_t	Geometry::get_device_chamber( device_id_t device_id )
 {
-	return device[device_id].chamber;
+	return device[device_id].chamber_id;
 }
 
 wire_pos_t	Geometry::get_wire_pos( device_id_t device_id, wire_id_t wire_id )
