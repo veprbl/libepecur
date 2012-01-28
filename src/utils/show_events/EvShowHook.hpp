@@ -19,7 +19,7 @@ private:
 public:
 
 	uint	event_id;
-	unordered_map< int, vector<wire_pos_t> >	events[LOAD_EVENTS_COUNT];
+	unordered_map< chamber_id_t, vector<wire_pos_t> >	events[LOAD_EVENTS_COUNT];
 	vector<track_info_t>				tracks[LOAD_EVENTS_COUNT];
 
 	EvShowHook( Geometry &g );
