@@ -1,3 +1,11 @@
+// F1plane1.normal_pos = 0
+// F1plane2.normal_pos = 181.0
+// F1plane3.normal_pos = 362.0
+// F1plane4.normal_pos = 540.0
+// F2plane1.normal_pos = 0
+// F2plane2.normal_pos = 392.0
+// F2plane3.normal_pos = 693.0
+// F2plane4.normal_pos = 990.0
 struct Geom {
     int plane;	// 0-1X, 1-1Y, 2-2X, 3-2Y etc
     int pitch;  // signed, mm
@@ -5,10 +13,6 @@ struct Geom {
 } geom[] = {	// array index -- logical board number
     {-1, 0, 0}, // No Lboard 0
 // Proportional chambers 1F
-// F1plane1.normal_pos = 0
-// F1plane2.normal_pos = 181.0
-// F1plane3.normal_pos = 362.0
-// F1plane4.normal_pos = 540.0
 // F1X1
     {0, 1, -100},	//1
     {0, 1, 0},		//2
@@ -34,10 +38,6 @@ struct Geom {
     {7, -1, 100},	//15
     {7, -1, 0},		//16
 // Proportional chambers 2F
-// F2plane1.normal_pos = 0
-// F2plane2.normal_pos = 392.0
-// F2plane3.normal_pos = 693.0
-// F2plane4.normal_pos = 990.0
 // F2X1
     {8, -1, 100},	//17
     {8, -1, 0},		//18
