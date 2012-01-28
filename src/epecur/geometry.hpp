@@ -38,6 +38,7 @@ private:
 public:
 
 	map< group_id_t, map< device_axis_t, vector<plane_props_t*> > >	group_planes;
+	map< group_id_t, map< device_axis_t, vector<double> > >		group_normal_pos;
 	map< group_id_t, map< device_axis_t, vector<chamber_id_t> > >	group_chambers;
 
 	Geometry( istream& );

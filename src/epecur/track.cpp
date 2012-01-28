@@ -37,7 +37,7 @@ bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int cham
 	return true;
 }
 
-recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data )
+recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos )
 {
 	const chamber_id_t	chambers_count = data.size();
 	unique_ptr<wire_pos_ptr_t[]>	best_wire_pos_ptr(new wire_pos_ptr_t[chambers_count]);
@@ -64,7 +64,6 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 	do
 	{
 		vector<double>	wires;
-		vector<double>	xs;
 		double	c0, c1, cov00, cov01, cov11, sumsq;
 		int i = 0;
 
@@ -74,13 +73,12 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 			wire_pos_t	wire_id = (*chamber_data)[wire_pos_ptr[i]];
 
 			wires.push_back(wire_id);
-			xs.push_back(i); /* temporary. we should use x from geomerty */
 
 			i++;
 		}
 
 		// perform linear fit
-		gsl_fit_linear(xs.data(), 1, wires.data(), 1, wires.size(),
+		gsl_fit_linear(normal_pos.data(), 1, wires.data(), 1, wires.size(),
 			       &c0, &c1, &cov00, &cov01, &cov11, &sumsq);
 
 		if (first || (best_sumsq > sumsq))
@@ -105,7 +103,7 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 		};
 }
 
-vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data )
+vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, const vector<double> &normal_pos )
 /*
  * Warning: This function will delete recognized wires from your original vectors.
  */
@@ -132,7 +130,7 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 
 	do
 	{
-		recognized_track_t	info = prop_recognize_track(data);
+		recognized_track_t	info = prop_recognize_track(data, normal_pos);
 		track_info_t	&track = info.track;
 
 		result.push_back(track);

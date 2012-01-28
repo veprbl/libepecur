@@ -1,4 +1,5 @@
 #include <cstring>
+#include <algorithm>
 #include <iostream>
 
 #include <epecur/types.hpp>
@@ -43,7 +44,17 @@ void	EvShowHook::handle_event_end()
 		block.push_back(&chamber_wires);
 	}
 
-	tracks[event_id] = prop_recognize_all_tracks(block);
+	vector<double>	&normal_pos = geom.group_normal_pos[1][DEV_AXIS_X];
+
+	tracks[event_id] = prop_recognize_all_tracks(block, normal_pos);
+
+	vector<double>::iterator	max_pos = max_element(normal_pos.begin(), normal_pos.end());
+	vector<double>::iterator	min_pos = min_element(normal_pos.begin(), normal_pos.end());
+
+	for(track_info_t &track : tracks[event_id])
+	{
+		track.c1 *= *max_pos - *min_pos;
+	}
 
 	event_id++;
 

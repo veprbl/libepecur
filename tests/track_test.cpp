@@ -55,5 +55,7 @@ BOOST_AUTO_TEST_CASE( check_prop_recognize_track )
 		new vector<wire_pos_t>({ 4 })
 	};
 
-	prop_recognize_track(data);
+	vector<double>	normal_pos({1, 2, 3, 4});
+
+	prop_recognize_track(data, normal_pos);
 }
