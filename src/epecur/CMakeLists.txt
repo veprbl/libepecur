@@ -3,6 +3,7 @@ set( EPECUR_SRCS
 	geometry.cpp
 	loadfile.cpp
 	track.cpp
+	TrackRecognitionHook.cpp
 
 )
 
