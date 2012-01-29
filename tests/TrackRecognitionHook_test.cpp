@@ -58,20 +58,28 @@ BOOST_AUTO_TEST_CASE( check_big_chisq_tracks_filter )
 {
 	stringstream	test_geometry_stream(test_geometry, ios_base::in);
 	Geometry	geometry(test_geometry_stream);
-	TrackRecognitionHook	hook(geometry, 1e-10);
 
-	const vector<wire_id_t>	wires_f1x1 {90};
-	const vector<wire_id_t>	wires_f1x2 {10};
-	const vector<wire_id_t>	wires_f1x3 {90};
+	vector< pair<double, int> >	params { make_pair(-1.0, 1), make_pair(1e-10, 0) };
 
-	hook.handle_prop_data(&(*wires_f1x1.begin()), &(*wires_f1x1.end()), 0);
-	hook.handle_prop_data(&(*wires_f1x2.begin()), &(*wires_f1x2.end()), 1);
-	hook.handle_prop_data(&(*wires_f1x3.begin()), &(*wires_f1x3.end()), 2);
+	for(auto param_tuple : params)
+	{
+		double	max_chisq = param_tuple.first;
+		int	tracks_count = param_tuple.second;
+		TrackRecognitionHook	hook(geometry, max_chisq);
 
-	hook.handle_event_end();
+		const vector<wire_id_t>	wires_f1x1 {90};
+		const vector<wire_id_t>	wires_f1x2 {10};
+		const vector<wire_id_t>	wires_f1x3 {90};
 
-	BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_X].size(), 0);
-	BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_Y].size(), 0);
+		hook.handle_prop_data(&(*wires_f1x1.begin()), &(*wires_f1x1.end()), 0);
+		hook.handle_prop_data(&(*wires_f1x2.begin()), &(*wires_f1x2.end()), 1);
+		hook.handle_prop_data(&(*wires_f1x3.begin()), &(*wires_f1x3.end()), 2);
+
+		hook.handle_event_end();
+
+		BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_X].size(), tracks_count);
+		BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_Y].size(), 0);
+	}
 }
 
 BOOST_AUTO_TEST_SUITE_END()
