@@ -1,11 +1,12 @@
 #include <vector>
 
-#define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 
 #include <epecur/track.hpp>
 
 using namespace std;
+
+BOOST_AUTO_TEST_SUITE( track_test )
 
 BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 {
@@ -59,3 +60,5 @@ BOOST_AUTO_TEST_CASE( check_prop_recognize_track )
 
 	prop_recognize_track(data, normal_pos);
 }
+
+BOOST_AUTO_TEST_SUITE_END()

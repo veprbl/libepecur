@@ -1,10 +1,11 @@
 #include <iostream>
 #include <fstream>
 
-#define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 
 #include <epecur/loadfile.hpp>
+
+BOOST_AUTO_TEST_SUITE( loadfile_test )
 
 const unsigned char	prop_data[] =
 {
@@ -135,3 +136,5 @@ BOOST_AUTO_TEST_CASE( check_prop_reading )
 		BOOST_CHECK_EQUAL(hook.event_end_calls, RECORD_ENDS_COUNT);
 	}
 }
+
+BOOST_AUTO_TEST_SUITE_END()

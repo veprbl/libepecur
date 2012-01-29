@@ -1,7 +1,6 @@
 #include <iostream>
 #include <sstream>
 
-#define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 
 #include <epecur/types.hpp>
@@ -9,6 +8,8 @@
 #include <epecur/TrackRecognitionHook.hpp>
 
 using namespace std;
+
+BOOST_AUTO_TEST_SUITE( TrackRecognitionHook_test )
 
 const string	test_geometry = 
 	"// F1plane1.normal_pos = 0\n"
@@ -72,3 +73,5 @@ BOOST_AUTO_TEST_CASE( check_big_chisq_tracks_filter )
 	BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_X].size(), 0);
 	BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_Y].size(), 0);
 }
+
+BOOST_AUTO_TEST_SUITE_END()
