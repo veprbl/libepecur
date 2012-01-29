@@ -31,3 +31,19 @@ add_test(
 	NAME track
 	COMMAND $<TARGET_FILE:track_test>
 )
+
+add_executable (
+	TrackRecognitionHook_test
+	TrackRecognitionHook_test.cpp
+        )
+
+target_link_libraries (
+        TrackRecognitionHook_test
+	${Boost_LIBRARIES}
+        epecur
+        )
+
+add_test(
+	NAME TrackRecognitionHook
+	COMMAND $<TARGET_FILE:TrackRecognitionHook_test>
+)
