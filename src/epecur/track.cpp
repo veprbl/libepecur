@@ -98,12 +98,12 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 	while(next( wire_pos_ptr.get(), &wire_count[0], chambers_count ));
 
 	return recognized_track_t{
-		track_info_t{best_c0, best_c1},
+		track_info_t{best_c0, best_c1, best_sumsq, best_wires_pos},
 		move(best_wire_pos_ptr)
 		};
 }
 
-vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, const vector<double> &normal_pos )
+vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, const vector<double> &normal_pos, double max_chisq = -1 )
 /*
  * Warning: This function will delete recognized wires from your original vectors.
  */
@@ -132,6 +132,11 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 	{
 		recognized_track_t	info = prop_recognize_track(data, normal_pos);
 		track_info_t	&track = info.track;
+
+		if ((max_chisq > 0) && (info.track.chisq > max_chisq))
+		{
+			break;
+		}
 
 		result.push_back(track);
 

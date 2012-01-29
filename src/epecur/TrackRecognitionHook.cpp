@@ -1,6 +1,6 @@
 #include "TrackRecognitionHook.hpp"
 
-TrackRecognitionHook::TrackRecognitionHook( Geometry &g ) : last_event_finished(false), geom(g)
+TrackRecognitionHook::TrackRecognitionHook( Geometry &g, double max_chisq ) : last_event_finished(false), max_chisq(max_chisq), geom(g)
 {
 	// nothing
 }
@@ -57,7 +57,7 @@ void	TrackRecognitionHook::handle_event_end()
 
 			vector<double>	&normal_pos = geom.group_normal_pos[1][DEV_AXIS_X];
 
-			last_tracks[group_id][axis] = prop_recognize_all_tracks(block, normal_pos);
+			last_tracks[group_id][axis] = prop_recognize_all_tracks(block, normal_pos, max_chisq);
 		}
 	}
 
