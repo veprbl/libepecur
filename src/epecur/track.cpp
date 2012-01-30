@@ -37,6 +37,41 @@ bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int cham
 	return true;
 }
 
+bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> &normal_pos )
+/*
+ * deletes every i-th record if data[i]->empty()
+ * returns false if there is no enough non-empty chambers left
+ */
+{
+	uint	empty_chambers_count = 0;
+	auto	data_it = data.begin();
+	auto	normal_pos_it = normal_pos.begin();
+
+	// check if there is enough non-empty chambers
+	while(data_it != data.end())
+	{
+		if ((*data_it)->empty())
+		{
+			empty_chambers_count++;
+
+			if (data.size() <= MIN_TRACK_CHAMBERS)
+			{
+				return false;
+			}
+
+			data_it = data.erase(data_it);
+			normal_pos_it = normal_pos.erase(normal_pos_it);
+		}
+		else
+		{
+			data_it++;
+			normal_pos_it++;
+		}
+	}
+
+	return true;
+}
+
 recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos )
 {
 	const chamber_id_t	chambers_count = data.size();
@@ -105,32 +140,20 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 		};
 }
 
-vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, const vector<double> &normal_pos, double max_chisq )
+vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq )
 /*
  * Warning: This function will delete recognized wires from your original vectors.
  */
 {
 	vector<track_info_t>	result;
-	bool	next_track_clearance = true;
 
-	// check if there is any data
-	if (data.size() == 0)
+	// check if there is enough chambers
+	if (data.size() < MIN_TRACK_CHAMBERS)
 	{
-			// return no tracks
-			return vector<track_info_t>();
+		throw "Not enough chambers in original data!";
 	}
 
-	// check if there is empty chamber
-	for(auto &chamber_data : data)
-	{
-		if (chamber_data->empty())
-		{
-			// return no tracks
-			return vector<track_info_t>();
-		}
-	}
-
-	do
+	while(delete_empty_chambers(data, normal_pos))
 	{
 		recognized_track_t	info = prop_recognize_track(data, normal_pos);
 		track_info_t	&track = info.track;
@@ -148,16 +171,9 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 		{
 			chamber_data->erase(chamber_data->begin() + info.wire_pos_ptr[chamber_id]);
 
-			if (chamber_data->empty())
-			{
-				next_track_clearance = false;
-				break;
-			}
-
 			chamber_id++;
 		}
 	}
-	while(next_track_clearance);
 
 	return result;
 }

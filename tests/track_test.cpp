@@ -61,4 +61,25 @@ BOOST_AUTO_TEST_CASE( check_prop_recognize_track )
 	prop_recognize_track(data, normal_pos);
 }
 
+BOOST_AUTO_TEST_CASE( check_prop_recognize_all_tracks )
+{
+	vector< vector<wire_pos_t>* >	data
+	{
+		new vector<wire_pos_t>({ 1, 50 }),
+		new vector<wire_pos_t>({ 1, 2, 50 }),
+		new vector<wire_pos_t>({ 50 }),
+		new vector<wire_pos_t>({ 4, 50 })
+	};
+
+	vector<double>	normal_pos({1, 2, 3, 4});
+
+	vector<track_info_t>	tracks = prop_recognize_all_tracks(data, normal_pos);
+
+	BOOST_REQUIRE_EQUAL(tracks.size(), 2);
+	BOOST_CHECK_EQUAL(tracks[0].c0, 50);
+	BOOST_CHECK_EQUAL(tracks[0].c1, 0);
+	BOOST_CHECK_EQUAL(tracks[1].c0, 0);
+	BOOST_CHECK_EQUAL(tracks[1].c1, 1);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
