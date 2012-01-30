@@ -209,7 +209,7 @@ void	ShowEventsApp::PlotResults()
 	{
 		const int	WIRES_COUNT = 200;
 		double	y1 = (track.c0 + WIRES_COUNT/2) / float(WIRES_COUNT);
-		double	y2 = (track.c0 + track.c1 * 4 + WIRES_COUNT/2) / float(WIRES_COUNT);
+		double	y2 = (track.c0 + track.c1 * 2 + WIRES_COUNT/2) / float(WIRES_COUNT);
 
 		auto line = new TLine(0, y1, 1, y2);
 
