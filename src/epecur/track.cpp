@@ -59,6 +59,7 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 
 	double	best_c0, best_c1;
 	double	best_sumsq;
+	vector<double>	best_wires_pos;
 	bool	first = true;
 
 	do
@@ -86,6 +87,7 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 			best_sumsq = sumsq;
 			best_c0 = c0;
 			best_c1 = c1;
+			best_wires_pos = wires;
 			first = false;
 
 			// save best wires array positions

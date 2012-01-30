@@ -13,6 +13,7 @@ struct track_info_t
 	double	c0;
 	double	c1;
 	double	chisq;
+	vector<double>	chamber_wires_pos;
 };
 
 struct recognized_track_t

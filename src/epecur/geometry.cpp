@@ -148,6 +148,7 @@ void	Geometry::fill_arrays()
 				planes.push_back(plane);
 				normal_pos.push_back(plane->normal_pos);
 				chambers.push_back(dev.chamber_id);
+				chamber_plane[dev.chamber_id] = dev.plane_id;
 			}
 		}
 
