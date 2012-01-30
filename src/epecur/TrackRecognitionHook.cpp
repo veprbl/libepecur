@@ -55,7 +55,7 @@ void	TrackRecognitionHook::handle_event_end()
 				block.push_back(&last_event[chamber_id]);
 			}
 
-			vector<double>	&normal_pos = geom.group_normal_pos[1][DEV_AXIS_X];
+			vector<double>	&normal_pos = geom.group_normal_pos[group_id][axis];
 
 			last_tracks[group_id][axis] = prop_recognize_all_tracks(block, normal_pos, max_chisq);
 		}
