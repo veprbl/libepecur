@@ -105,7 +105,7 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 		};
 }
 
-vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, const vector<double> &normal_pos, double max_chisq = -1 )
+vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, const vector<double> &normal_pos, double max_chisq )
 /*
  * Warning: This function will delete recognized wires from your original vectors.
  */
