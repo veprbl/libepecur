@@ -30,8 +30,18 @@ void	AxialShiftHook::handle_event_end()
 
 			vector<double>	&normal_pos = geom.group_normal_pos[group_id][axis];
 
+			track_count += last_tracks[group_id][axis].size();
+
 			for(track_info_t &track : last_tracks[group_id][axis])
 			{
+				for(uint chamber_id_pos = 0; chamber_id_pos < axis_tup.second.size(); chamber_id_pos++)
+				{
+					if (find(track.used_chambers.begin(), track.used_chambers.end(), chamber_id_pos) == track.used_chambers.end())
+					{
+						track_miss_count[axis_tup.second[chamber_id_pos]] += 1;
+					}
+				}
+
 				int	i = 0;
 
 				for(chamber_id_t chamber_id : axis_tup.second)

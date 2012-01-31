@@ -37,7 +37,7 @@ bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int cham
 	return true;
 }
 
-bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> &normal_pos )
+bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> &normal_pos, vector<uint> &used_chambers )
 /*
  * deletes every i-th record if data[i]->empty()
  * returns false if there is no enough non-empty chambers left
@@ -46,6 +46,7 @@ bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> 
 	uint	empty_chambers_count = 0;
 	auto	data_it = data.begin();
 	auto	normal_pos_it = normal_pos.begin();
+	auto	used_chambers_it = used_chambers.begin();
 
 	// check if there is enough non-empty chambers
 	while(data_it != data.end())
@@ -61,11 +62,13 @@ bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> 
 
 			data_it = data.erase(data_it);
 			normal_pos_it = normal_pos.erase(normal_pos_it);
+			used_chambers_it = used_chambers.erase(used_chambers_it);
 		}
 		else
 		{
 			data_it++;
 			normal_pos_it++;
+			used_chambers_it++;
 		}
 	}
 
@@ -145,7 +148,13 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
  * Warning: This function will delete recognized wires from your original vectors.
  */
 {
+	vector<uint>	used_chambers;
 	vector<track_info_t>	result;
+
+	for(uint i = 0; i < data.size(); i++)
+	{
+		used_chambers.push_back(i);
+	}
 
 	// check if there is enough chambers
 	if (data.size() < MIN_TRACK_CHAMBERS)
@@ -153,10 +162,12 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 		throw "Not enough chambers in original data!";
 	}
 
-	while(delete_empty_chambers(data, normal_pos))
+	while(delete_empty_chambers(data, normal_pos, used_chambers))
 	{
 		recognized_track_t	info = prop_recognize_track(data, normal_pos);
 		track_info_t	&track = info.track;
+
+		track.used_chambers = used_chambers;
 
 		if ((max_chisq > 0) && (info.track.chisq > max_chisq))
 		{

@@ -106,6 +106,13 @@ void	AxialShiftApp::Init()
 
 	loadfile(data_filepath, *hook);
 
+	cout << "Track miss count (chamber -> count -> part)" << endl;
+
+	for(auto tup : hook->track_miss_count)
+	{
+		cout << int(tup.first) << " ->\t" << tup.second << "->\t" << tup.second/float(hook->track_count) << endl;
+	}
+
 	main_canvas = new TCanvas("main_canvas", ApplicationName(), 200, 10, 1000, 500);
 	main_canvas->Connect("Closed()", "TApplication", this, "Terminate()");
 
