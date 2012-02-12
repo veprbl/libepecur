@@ -12,9 +12,9 @@ using namespace std;
 BOOST_AUTO_TEST_SUITE( TrackRecognitionHook_test )
 
 const string	test_geometry = 
-	"// F1plane1.normal_pos = 0\n"
-	"// F1plane2.normal_pos = 100\n"
-	"// F1plane3.normal_pos = 200\n"
+	"// F1*1.normal_pos = 0\n"
+	"// F1*2.normal_pos = 100\n"
+	"// F1*3.normal_pos = 200\n"
 	"// F1X1\n"
 	"{0, 1, 0}\n" // device_id = 0
 	"// F1X2\n"

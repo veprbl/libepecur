@@ -135,8 +135,21 @@ void	AxialShiftApp::Init()
 	for(auto chamb_tup : shift_hist)
 	{
 		TH1I*	hist = chamb_tup.second;
+		double	shift_delta = -hist->GetMean();
+
+		cerr << hist->GetTitle() << ".delta = " << shift_delta << endl;
+	}
+
+	for(auto chamb_tup : shift_hist)
+	{
+		chamber_id_t	chamber_id = chamb_tup.first;
+		TH1I*	hist = chamb_tup.second;
+		double	new_shift_value = geom.chamber_axial_shift[chamber_id] - hist->GetMean();
 
 		hist_pad->cd(pad_id);
+
+		cout << "// " << hist->GetTitle() << ".axial_shift = " << new_shift_value << endl;
+
 		hist->Draw();
 
 		pad_id++;

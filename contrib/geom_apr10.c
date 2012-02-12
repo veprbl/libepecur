@@ -1,11 +1,11 @@
-// F1plane1.normal_pos = 0
-// F1plane2.normal_pos = 181.0
-// F1plane3.normal_pos = 362.0
-// F1plane4.normal_pos = 540.0
-// F2plane1.normal_pos = 0
-// F2plane2.normal_pos = 392.0
-// F2plane3.normal_pos = 693.0
-// F2plane4.normal_pos = 990.0
+// F1*1.normal_pos = 0
+// F1*2.normal_pos = 181.0
+// F1*3.normal_pos = 362.0
+// F1*4.normal_pos = 540.0
+// F2*1.normal_pos = 0
+// F2*2.normal_pos = 392.0
+// F2*3.normal_pos = 693.0
+// F2*4.normal_pos = 990.0
 struct Geom {
     int plane;	// 0-1X, 1-1Y, 2-2X, 3-2Y etc
     int pitch;  // signed, mm

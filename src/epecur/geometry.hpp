@@ -20,6 +20,7 @@ struct device_props_t
 	wire_pos_t	step;
 	wire_pos_t	shift;
 	group_id_t	group_id;
+	double		axial_shift;
 	device_axis_t	axis;
 	plane_id_t	plane_id;
 };
@@ -30,6 +31,7 @@ private:
 
 	vector<device_props_t>	device;
 	map< group_id_t, map<plane_id_t, plane_props_t> >	group;
+	map< group_id_t, map< device_axis_t, map< plane_id_t, double > > >	plane_shifts;
 	bool	parse_plane_property_comment( string& );
 	bool	parse_plane_relation_comment( string&, group_id_t&, device_axis_t&, plane_id_t& );
 	bool	parse_chamber_info_text( string&, group_id_t, device_axis_t, plane_id_t );
@@ -41,6 +43,7 @@ public:
 	map< group_id_t, map< device_axis_t, vector<double> > >		group_normal_pos;
 	map< group_id_t, map< device_axis_t, vector<chamber_id_t> > >	group_chambers;
 	map< chamber_id_t, plane_id_t >	chamber_plane;
+	map< chamber_id_t, double >	chamber_axial_shift;
 
 	Geometry( istream& );
 	wire_pos_t	get_wire_pos( device_id_t, wire_id_t );
