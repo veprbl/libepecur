@@ -17,6 +17,6 @@ void	EvSumHook::handle_prop_data( const wire_id_t* begin, const wire_id_t* end, 
 	{
 		wire_pos_t	wire_pos = geom.get_wire_pos(dev_id, *pos);
 
-		chambers[chamber_id][wire_pos + 100] += 1;
+		chambers[chamber_id][int(wire_pos) + 100] += 1;
 	}
 }
