@@ -9,7 +9,7 @@
 
 using namespace std;
 
-boost::regex	plane_property_regexp("//[[:space:]]?F([0-9])plane([0-9])\\.([[:word:]]+)[[:space:]]?=[[:space:]]?([^[:space:]]+)");
+boost::regex	plane_property_regexp("//[[:space:]]?F([0-9])\\*([0-9])\\.([[:word:]]+)[[:space:]]?=[[:space:]]?([^[:space:]]+)");
 
 bool	Geometry::parse_plane_property_comment( string &line )
 {
