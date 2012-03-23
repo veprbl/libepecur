@@ -48,8 +48,9 @@ endif()
 
 add_definitions(-DGIT_COMMIT_ID="${GIT_COMMIT_ID}")
 
-set(CMAKE_CXX_FLAGS_RELEASE "-std=c++0x -Wall -pedantic -O2")
-set(CMAKE_CXX_FLAGS_DEBUG "-std=c++0x -Wall -pedantic -g")
+add_definitions("-std=c++0x")
+add_definitions("-Wall -pedantic")
+
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_RELEASE})
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}) 
