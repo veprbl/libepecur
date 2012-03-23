@@ -6,6 +6,22 @@
 // F2*2.normal_pos = 392.0
 // F2*3.normal_pos = 693.0
 // F2*4.normal_pos = 990.0
+// F1X1.axial_shift = -0.00188482
+// F1Y1.axial_shift = -0.369185
+// F1X2.axial_shift = 0.602957
+// F1Y2.axial_shift = 0.706791
+// F1X3.axial_shift = -1.1753
+// F1Y3.axial_shift = -0.421003
+// F1X4.axial_shift = -0.0729813
+// F1Y4.axial_shift = 0.174204
+// F2X1.axial_shift = -2.15873
+// F2Y1.axial_shift = 0.273533
+// F2X2.axial_shift = 1.34369
+// F2Y2.axial_shift = 0.482342
+// F2X3.axial_shift = 0.791465
+// F2Y3.axial_shift = -1.47704
+// F2X4.axial_shift = 2.07286
+// F2Y4.axial_shift = 0.990694
 struct Geom {
     int plane;	// 0-1X, 1-1Y, 2-2X, 3-2Y etc
     int pitch;  // signed, mm
