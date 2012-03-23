@@ -48,6 +48,13 @@ endif()
 
 add_definitions(-DGIT_COMMIT_ID="${GIT_COMMIT_ID}")
 
+option(USE_CLANG "build application with clang" OFF)
+if (USE_CLANG)
+	set(CMAKE_C_COMPILER "/usr/bin/clang")
+	set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+	add_definitions("-stdlib=libstdc++")
+endif()
+
 add_definitions("-std=c++0x")
 add_definitions("-Wall -pedantic")
 
