@@ -137,10 +137,10 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 	}
 	while(next( wire_pos_ptr.get(), &wire_count[0], chambers_count ));
 
-	return recognized_track_t{
-		track_info_t{best_c0, best_c1, best_sumsq, best_wires_pos},
+	return recognized_track_t({
+		track_info_t({best_c0, best_c1, best_sumsq, best_wires_pos}),
 		move(best_wire_pos_ptr)
-		};
+		});
 }
 
 vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq )

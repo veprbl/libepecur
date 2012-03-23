@@ -35,9 +35,12 @@ BOOST_AUTO_TEST_CASE( check_basic_track_recognition )
 	Geometry	geometry(test_geometry_stream);
 	TrackRecognitionHook	hook(geometry);
 
-	const vector<wire_id_t>	wires_f1x1 {1, 50};
-	const vector<wire_id_t>	wires_f1x2 {2, 50};
-	const vector<wire_id_t>	wires_f1x3 {3, 50};
+	vector<wire_id_t>	wires_f1x1;
+	wires_f1x1.push_back(1); wires_f1x1.push_back(50);
+	vector<wire_id_t>	wires_f1x2;
+	wires_f1x2.push_back(2); wires_f1x2.push_back(50);
+	vector<wire_id_t>	wires_f1x3;
+	wires_f1x3.push_back(3); wires_f1x3.push_back(50);
 
 	hook.handle_prop_data(&(*wires_f1x1.begin()), &(*wires_f1x1.end()), 0);
 	hook.handle_prop_data(&(*wires_f1x2.begin()), &(*wires_f1x2.end()), 1);
@@ -59,7 +62,9 @@ BOOST_AUTO_TEST_CASE( check_big_chisq_tracks_filter )
 	stringstream	test_geometry_stream(test_geometry, ios_base::in);
 	Geometry	geometry(test_geometry_stream);
 
-	vector< pair<double, int> >	params { make_pair(-1.0, 1), make_pair(1e-10, 0) };
+	vector< pair<double, int> >	params;
+	params.push_back(make_pair(-1.0, 1));
+	params.push_back(make_pair(1e-10, 0));
 
 	for(auto param_tuple : params)
 	{
@@ -67,9 +72,12 @@ BOOST_AUTO_TEST_CASE( check_big_chisq_tracks_filter )
 		int	tracks_count = param_tuple.second;
 		TrackRecognitionHook	hook(geometry, max_chisq);
 
-		const vector<wire_id_t>	wires_f1x1 {90};
-		const vector<wire_id_t>	wires_f1x2 {10};
-		const vector<wire_id_t>	wires_f1x3 {90};
+		vector<wire_id_t>	wires_f1x1;
+		wires_f1x1.push_back(90);
+		vector<wire_id_t>	wires_f1x2;
+		wires_f1x2.push_back(10);
+		vector<wire_id_t>	wires_f1x3;
+		wires_f1x3.push_back(90);
 
 		hook.handle_prop_data(&(*wires_f1x1.begin()), &(*wires_f1x1.end()), 0);
 		hook.handle_prop_data(&(*wires_f1x2.begin()), &(*wires_f1x2.end()), 1);

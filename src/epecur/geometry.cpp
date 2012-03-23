@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 #include <algorithm>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>

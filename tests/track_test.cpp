@@ -48,30 +48,50 @@ BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 
 BOOST_AUTO_TEST_CASE( check_prop_recognize_track )
 {
-	vector< vector<wire_pos_t>* >	data
-	{
-		new vector<wire_pos_t>({ 1,2,3 }),
-		new vector<wire_pos_t>({ 1,2,3 }),
-		new vector<wire_pos_t>({ 3,4,5 }),
-		new vector<wire_pos_t>({ 4 })
-	};
+	vector<wire_pos_t>	v1;
+	v1.push_back(1); v1.push_back(2); v1.push_back(3);
+	vector<wire_pos_t>	v2;
+	v2.push_back(3); v2.push_back(4); v2.push_back(5);
+	vector<wire_pos_t>	v3;
+	v3.push_back(4);
 
-	vector<double>	normal_pos({1, 2, 3, 4});
+	vector< vector<wire_pos_t>* >	data;
+	data.push_back(&v1);
+	data.push_back(&v1);
+	data.push_back(&v2);
+	data.push_back(&v3);
+
+	vector<double>	normal_pos;
+	normal_pos.push_back(1);
+	normal_pos.push_back(2);
+	normal_pos.push_back(3);
+	normal_pos.push_back(4);
 
 	prop_recognize_track(data, normal_pos);
 }
 
 BOOST_AUTO_TEST_CASE( check_prop_recognize_all_tracks )
 {
-	vector< vector<wire_pos_t>* >	data
-	{
-		new vector<wire_pos_t>({ 1, 50 }),
-		new vector<wire_pos_t>({ 1, 2, 50 }),
-		new vector<wire_pos_t>({ 50 }),
-		new vector<wire_pos_t>({ 4, 50 })
-	};
+	vector<wire_pos_t>	v1;
+	v1.push_back(1); v1.push_back(50);
+	vector<wire_pos_t>	v2;
+	v2.push_back(1); v2.push_back(2); v2.push_back(50);
+	vector<wire_pos_t>	v3;
+	v3.push_back(50);
+	vector<wire_pos_t>	v4;
+	v4.push_back(4); v4.push_back(50);
 
-	vector<double>	normal_pos({1, 2, 3, 4});
+	vector< vector<wire_pos_t>* >	data;
+	data.push_back(&v1);
+	data.push_back(&v2);
+	data.push_back(&v3);
+	data.push_back(&v4);
+
+	vector<double>	normal_pos;
+	normal_pos.push_back(1);
+	normal_pos.push_back(2);
+	normal_pos.push_back(3);
+	normal_pos.push_back(4);
 
 	vector<track_info_t>	tracks = prop_recognize_all_tracks(data, normal_pos);
 
