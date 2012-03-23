@@ -13,6 +13,7 @@ find_package( GSL )
 set( EPECUR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/ )
 
 execute_process(COMMAND git rev-parse HEAD
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	OUTPUT_VARIABLE GIT_COMMIT_ID
 	RESULT_VARIABLE err_code
 	ERROR_QUIET
@@ -29,10 +30,12 @@ endif()
 message(STATUS "Last Git commit is ${GIT_COMMIT_ID}")
 
 execute_process(COMMAND git diff --quiet
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	RESULT_VARIABLE a
 	OUTPUT_QUIET)
 
 execute_process(COMMAND git diff --cached --quiet
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	RESULT_VARIABLE b
 	OUTPUT_QUIET)
 
