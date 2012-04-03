@@ -29,6 +29,11 @@ show_events
 
 Visualizes whole events, displays recognized tracks.
 
+export_tree
+-----------
+
+Recognizes tracks and writes them to ROOT tree.
+
 Credits
 =======
 
