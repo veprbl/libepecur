@@ -1,22 +1,34 @@
 #ifndef __TREEEXPORTHOOK_HPP
 #define __TREEEXPORTHOOK_HPP
 
+#include <map>
+#include <unordered_map>
+#include <memory>
+
 #include <TTree.h>
 
 #include <epecur/types.hpp>
 #include <epecur/TrackRecognitionHook.hpp>
+
+struct stored_group_t
+{
+	uint32_t	track_count;
+	vector<double>	c0, c1, chisq;
+	TBranch		*c0_br, *c1_br, *chisq_br;
+};
 
 class TreeExportHook : public TrackRecognitionHook
 {
 private:
 
 	TTree	tree;
-	double	c0, c1;
-	group_id_t	group_id;
+	unordered_map< group_id_t, map<device_axis_t, stored_group_t> >	stored_group;
+	vector< unique_ptr< char[] > >	names;
 
 public:
 
 	TreeExportHook( Geometry &g, double max_chisq = -1 );
+	const char*	store_name( string name );
 	virtual void	handle_event_end();
 };
 
