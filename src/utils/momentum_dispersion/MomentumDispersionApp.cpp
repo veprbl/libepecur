@@ -86,7 +86,7 @@ void	MomentumDistributionApp::PlotResults( uint chambers[][WIRES_COUNT] )
 	main_canvas->Connect("Closed()", "TApplication", this, "Terminate()");
 
 	int	rows_count = floor(sqrt(MAX_CHAMBER_ID));
-	int	cols_count = ceil(MAX_CHAMBER_ID / rows_count);
+	int	cols_count = ceil(MAX_CHAMBER_ID / (float)rows_count);
 
 	main_canvas->Divide(rows_count, cols_count, 0, 0);
 

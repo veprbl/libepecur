@@ -126,7 +126,7 @@ void	AxialShiftApp::Init()
 	hist_pad->Draw();
 
 	int	rows_count = floor(sqrt(shift_hist.size()));
-	int	cols_count = ceil(shift_hist.size() / rows_count);
+	int	cols_count = ceil(shift_hist.size() / (float)rows_count);
 
 	hist_pad->Divide(rows_count, cols_count, 0, 0);
 
