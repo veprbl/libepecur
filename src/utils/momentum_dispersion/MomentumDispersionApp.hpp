@@ -1,6 +1,8 @@
 #ifndef __MOMENTUMDISPERSIONAPP_HPP
 #define __MOMENTUMDISPERSIONAPP_HPP
 
+#include "EvSumHook.hpp"
+
 class	MomentumDistributionApp: public TApplication
 {
 private:
@@ -17,7 +19,7 @@ public:
 	string	geometry_filepath;
 
 	void	Init();
-	void	PlotResults( uint chambers[][200] );
+	void	PlotResults( uint chambers[][WIRES_COUNT] );
 };
 
 #endif
