@@ -7,6 +7,7 @@
 #include <boost/program_options.hpp>
 
 #include <TApplication.h>
+#include <TStyle.h>
 #include <TCanvas.h>
 #include <TPad.h>
 #include <TPaveText.h>
@@ -158,6 +159,8 @@ void	AxialShiftApp::Init()
 
 void	AxialShiftApp::init_hists( Geometry &geom )
 {
+	gStyle->SetOptLogy(1);
+
 	for(auto gr_tup : geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
