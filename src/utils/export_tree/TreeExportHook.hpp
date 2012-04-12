@@ -14,7 +14,8 @@ struct stored_group_t
 {
 	uint32_t	track_count;
 	vector<double>	c0, c1, chisq;
-	TBranch		*c0_br, *c1_br, *chisq_br;
+	vector<uint32_t>	hits_count;
+	TBranch		*c0_br, *c1_br, *chisq_br, *hits_count_br;
 };
 
 class TreeExportHook : public TrackRecognitionHook
