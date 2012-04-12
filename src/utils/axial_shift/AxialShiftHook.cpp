@@ -44,11 +44,12 @@ void	AxialShiftHook::handle_event_end()
 
 				int	i = 0;
 
-				for(chamber_id_t chamber_id : axis_tup.second)
+				for(uint chamber_id_pos : track.used_chambers)
 				{
+					chamber_id_t	chamber_id = axis_tup.second[chamber_id_pos];
 					double shift;
 
-					shift = track.chamber_wires_pos[i] - (track.c0 + track.c1 * normal_pos[i]);
+					shift = track.chamber_wires_pos[i] - (track.c0 + track.c1 * normal_pos[chamber_id_pos]);
 
 					shift_hist[chamber_id]->Fill(shift);
 
