@@ -6,6 +6,7 @@
 #include <cstddef>
 
 #include <boost/assert.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
 
 #include <boost/endian/integers.hpp>
@@ -277,7 +278,7 @@ bool	is_valid_record( record_header_t &rec )
 	return true;
 }
 
-void	resync( const char* &pos, const char* file_end )
+void	resync( const char* &pos, const char* window_end )
 {
 	bool	is_done = false;
 	record_header_t	next_rec;
@@ -289,9 +290,9 @@ void	resync( const char* &pos, const char* file_end )
 		{
 			pos++;
 
-			if (pos >= file_end)
+			if (pos >= window_end - sizeof(ulittle32_t))
 			{
-				throw "Reached end of file while resyncing.";
+				throw "Reached end of window while resyncing.";
 			}
 		}
 
@@ -307,7 +308,7 @@ void	resync( const char* &pos, const char* file_end )
 
 		next_rec_pos = event_pos + event.length;
 
-		if (next_rec_pos >= file_end)
+		if (next_rec_pos >= window_end)
 		{
 			continue;
 		}
@@ -326,87 +327,195 @@ void	resync( const char* &pos, const char* file_end )
 	pos = next_rec_pos - sizeof(next_rec);
 }
 
-void	loadfile( string filename, LoadHook &hook )
+bool	read_record( const char* &pos, const char* window_end, bool is_last_window, LoadHook &hook )
 {
+	record_header_t	rec;
 
-	boost::iostreams::mapped_file_source m_file_(filename.c_str());
+	mem_read(pos, rec);
 
-	auto	size = m_file_.size();
+	const char *record_end = pos + rec.length - sizeof(rec);
 
-	if (!m_file_.is_open())
+	if (record_end > window_end)
+	{
+		if (is_last_window)
+		{
+			throw "Unfinished record!";
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	if (record_end + sizeof(record_header_t) < window_end)
+	{
+		auto		next_rec_pos = record_end;
+		record_header_t	next_rec;
+
+		mem_read(next_rec_pos, next_rec);
+
+		if (!is_valid_record(next_rec))
+		{
+			cerr << "Record seems to be bad. Trying to resync...";
+
+			try
+			{
+				resync(pos, window_end);
+			}
+			catch(const char* msg)
+			{
+				cerr << endl << msg << endl;
+				return false;
+			}
+
+			cerr << " success" << endl;;
+			return true;
+		}
+	}
+	else
+	{
+		if (!is_last_window)
+		{
+			// this should never happen really
+			return false;
+		}
+	}
+
+	switch(rec.type)
+	{
+	case REC_TYPE_CYCLE:
+
+		try
+		{
+			read_cycle(pos, record_end, hook);
+		}
+		catch (char const* e)
+		{
+			cerr << e << endl;
+			pos = record_end;
+		}
+
+		break;
+	case REC_TYPE_SLOW:
+	case REC_TYPE_RAW:
+
+		pos = record_end;
+
+		break;
+	default:
+
+		cerr << rec.type << endl;
+		cerr << "unkonwn block addr " << int(pos) << endl;
+		pos = record_end;
+		throw "Unknown record type!";
+	}
+
+	if (pos != record_end)
+	{
+		throw "Block read function didn't stopped at the end of a block";
+	}
+
+	return true;
+}
+
+const int64_t	MAX_WINDOW_SIZE = 1024*1024*1024; // 1 gigabyte
+
+using boost::uintmax_t;
+using boost::iostreams::mapped_file_source;
+
+mapped_file_source*	new_window( string filename, uintmax_t file_size, uintmax_t window_pos, uintmax_t &window_size, bool &is_last_window )
+{
+	mapped_file_source	*m_file_;
+
+	// Determine new window size
+	window_size = MAX_WINDOW_SIZE;
+
+	// Check if this window is last
+	is_last_window = window_pos + window_size >= file_size;
+
+	// and if it is, truncate its size to fit into file
+	if (is_last_window)
+	{
+		window_size = file_size - window_pos;
+	}
+
+	m_file_ = new mapped_file_source(
+		filename,
+		window_size,
+		window_pos
+		);
+
+	if (!m_file_->is_open())
 	{
 		throw "Couldn't open data file!";
 	}
 
-	const char*	pos = m_file_.data();
-	const char*	file_end = pos + size;
+	if (m_file_->size() != window_size)
+	{
+		throw "Wrong mapped region size";
+	}
 
-	cout << "beginning = " << int(pos) << endl;
+	return m_file_;
+}
+
+void	loadfile( string filename, LoadHook &hook )
+{
+	mapped_file_source	*m_file_;
+
+	uintmax_t	size = boost::filesystem::file_size(filename);
+	uintmax_t	window_pos = 0;
+	uintmax_t	window_size;
+	uintmax_t	last_fail_pos = -1;
+
+	bool	is_last_window;
+
+	m_file_ = new_window(filename, size, window_pos, window_size, is_last_window);
+
+	// Reading cursor current position in memory
+	const char*	pos = m_file_->data();
+	// Position of window end in memory
+	const char*	window_end = pos + window_size;
+
 	cout << "size = " << size / 1024 / 1024 << " mb" << endl;
 
-	while(pos < file_end)
+	do
 	{
-		record_header_t	rec;
+		auto	backup = pos;
+		bool	result = read_record(pos, window_end, is_last_window, hook);
 
-		mem_read(pos, rec);
-
-		const char *record_end = pos + rec.length - sizeof(rec);
-
-		if (record_end > file_end)
+		if (!result)
 		{
-			throw "Unfinished record!";
-		}
+			// If reading operation failed, restore reading cursor
+			pos = backup;
 
-		if (record_end + sizeof(record_header_t) < file_end)
-		{
-			auto		next_rec_pos = record_end;
-			record_header_t	next_rec;
+			// Determine position in window
+			uintmax_t	relative_pos = pos - (window_end - window_size);
+			// Determine absolute pos in file
+			uintmax_t	absolute_pos = window_pos + relative_pos;
 
-			mem_read(next_rec_pos, next_rec);
-
-			if (!is_valid_record(next_rec))
+			if (last_fail_pos == absolute_pos)
 			{
-				cerr << "Record seems to be bad. Trying to resync...";
-
-				try
-				{
-					resync(pos, file_end);
-				}
-				catch(const char* msg)
-				{
-					cerr << endl << msg << endl;
-					return;
-				}
-
-				cerr << " success" << endl;;
-				continue;
+				// If we see read_record to fail two times in a
+				// row in one place of file we just throw an
+				// exception
+				throw "Record data doesn't fit in window";
 			}
-		}
 
-		switch(rec.type)
-		{
-		case REC_TYPE_CYCLE:
+			last_fail_pos = absolute_pos;
 
-			read_cycle(pos, record_end, hook);
+			// Position of mmaped region must be aligned
+			auto	shift = absolute_pos % mapped_file_source::alignment();
+			window_pos = absolute_pos - shift;
 
-			break;
-		case REC_TYPE_SLOW:
-		case REC_TYPE_RAW:
+			delete m_file_;
 
-			pos = record_end;
+			m_file_ = new_window(filename, size, window_pos, window_size, is_last_window);
 
-			break;
-		default:
-
-			cerr << rec.type << endl;
-			cerr << "unkonwn block addr " << int(pos) << endl;
-			pos = record_end;
-			throw "Unknown record type!";
-		}
-
-		if (pos != record_end)
-		{
-			throw "Block read function didn't stopped at the end of a block";
+			window_end	= m_file_->data() + window_size;
+			pos		= m_file_->data() + shift;
 		}
 	}
+	while(!(is_last_window && (pos >= window_end)));
+
+	delete m_file_;
 }
