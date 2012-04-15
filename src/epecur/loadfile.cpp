@@ -39,8 +39,6 @@ typedef struct
 
 const uint	END_OF_CYCLE_FLAG(0x80000000);
 
-const char*	file_start;
-
 template< class T >
 T	read_magic_integer( const char* &pos, uint bytes )
 {
@@ -342,8 +340,6 @@ void	loadfile( string filename, LoadHook &hook )
 
 	const char*	pos = m_file_.data();
 	const char*	file_end = pos + size;
-
-	file_start = pos;
 
 	cout << "beginning = " << int(pos) << endl;
 	cout << "size = " << size / 1024 / 1024 << " mb" << endl;
