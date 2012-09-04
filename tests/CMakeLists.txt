@@ -1,4 +1,4 @@
-include_directories ( ${EPECUR_INCLUDE_DIRS} )
+include_directories ( ${EPECUR_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} )
 
 add_executable (
 	unit_tests
