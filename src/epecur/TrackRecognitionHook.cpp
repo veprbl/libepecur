@@ -1,6 +1,9 @@
 #include "TrackRecognitionHook.hpp"
 
-TrackRecognitionHook::TrackRecognitionHook( Geometry &g, double max_chisq ) : last_event_finished(false), max_chisq(max_chisq), geom(g)
+TrackRecognitionHook::TrackRecognitionHook( Geometry &g, double max_chisq )
+	: last_event_finished(false),
+	  max_chisq(max_chisq),
+	  geom(g)
 {
 	// nothing
 }
