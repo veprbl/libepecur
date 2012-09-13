@@ -10,7 +10,8 @@
 #include "TreeExportHook.hpp"
 
 TreeExportHook::TreeExportHook( Geometry &g, double max_chisq )
-	: TrackRecognitionHook(g, max_chisq), tree("tracks", "recognized tracks")
+	: TrackRecognitionHook(g, max_chisq),
+	  tree("tracks", "recognized tracks")
 {
 	for(auto gr_tup : geom.group_chambers)
 	{
