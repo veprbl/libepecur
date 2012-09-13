@@ -32,7 +32,7 @@ TreeExportHook::TreeExportHook( Geometry &g, double max_chisq )
 			tree.Branch(
 				store_name(group_name + "_track_count"),
 				&st_gr.track_count,
-				store_name(group_name + "_track_count/I")
+				store_name(group_name + "_track_count/i")
 				);
 			st_gr.c0_br = tree.Branch(
 				store_name(group_name + "_c0"),
