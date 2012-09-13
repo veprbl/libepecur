@@ -121,6 +121,8 @@ void	read_drift_data(
 	LoadHook &hook
 	)
 {
+	std::vector< std::pair<wire_id_t, uint16_t> >	result;
+
 	while(pos < max_pos)
 	{
 		char	wire_id;
@@ -146,7 +148,11 @@ void	read_drift_data(
 		}
 
 		time	= read_magic_integer<decltype(time)>(pos, 2);
+
+		result.emplace_back(wire_id, time);
 	}
+
+	hook.handle_drift_data(result, dev_id);
 }
 
 void	handle_trig_end_cycle( const char* &pos, const char* max_pos )

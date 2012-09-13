@@ -11,7 +11,8 @@
 
 TreeExportHook::TreeExportHook( Geometry &g, double max_chisq )
 	: TrackRecognitionHook(g, max_chisq),
-	  tree("tracks", "recognized tracks")
+	  tree("tracks", "recognized tracks"),
+	  drift_tree("drift", "drift chamber raw data")
 {
 	for(auto gr_tup : geom.group_chambers)
 	{
@@ -56,6 +57,27 @@ TreeExportHook::TreeExportHook( Geometry &g, double max_chisq )
 				);
 		}
 	}
+
+	drift_tree.Branch(
+		"chamber_id",
+		&stored_drift.chamber_id,
+		"chamber_id/" CHAMBER_ID_ROOT_TYPE
+		);
+	drift_tree.Branch(
+		"num_wires",
+		&stored_drift.num_wires,
+		"num_wires/i"
+		);
+	stored_drift.wire_pos_br = drift_tree.Branch(
+		"wire_pos",
+		nullptr,
+		"wire_pos/" WIRE_POS_ROOT_TYPE
+		);
+	stored_drift.time_br = drift_tree.Branch(
+		"time",
+		nullptr,
+		"time/" DRIFT_TIME_ROOT_TYPE
+		);
 }
 
 const char*	TreeExportHook::store_name( string name )
@@ -106,4 +128,28 @@ void	TreeExportHook::handle_event_end()
 	}
 
 	tree.Fill();
+
+	wire_pos_t	wire_pos;
+	uint16_t	time;
+
+	for(auto &pair0 : last_event_drift)
+	{
+		stored_drift.chamber_id = pair0.first;
+		stored_drift.num_wires = pair0.second.size();
+		stored_drift.wire_pos.clear();
+		stored_drift.time.clear();
+
+		for(auto &pair1 : pair0.second)
+		{
+			tie(wire_pos, time) = pair1;
+
+			stored_drift.wire_pos.push_back(wire_pos);
+			stored_drift.time.push_back(time);
+		}
+
+		stored_drift.wire_pos_br->SetAddress(stored_drift.wire_pos.data());
+		stored_drift.time_br->SetAddress(stored_drift.time.data());
+
+		drift_tree.Fill();
+	}
 }
