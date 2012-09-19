@@ -210,7 +210,7 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook 
 			static_cast<device_type_t>(
 				(stream_header & 0x7000) >> 12
 				);
-		dev_id = stream_header & 0x0FFF;
+		dev_id = ((stream_header & 0x0F00) >> 1) | (stream_header & 0x007F);
 
 		switch(dev_type)
 		{
