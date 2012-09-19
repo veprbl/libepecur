@@ -19,7 +19,7 @@ const unsigned char	prop_data[] =
       	0x12, 0x34, 0x56, 0x78, // event id
       	0x00, 0x00, 0x00, 0x00, // event flag
 
-	0x81, 0x14, // prop, id = 276
+	0x81, 0x14, // prop, id = 148
 	0x2A, // wire 0x2A (42)
 
       	0x2B, 0x00, 0x00, 0x00, // event length
@@ -101,7 +101,7 @@ void TestPropLoadHook::handle_prop_data(
 	BOOST_REQUIRE(prop_data_calls < PROP_EVENTS_COUNT);
 
 	BOOST_CHECK_EQUAL(int(end - begin), 1);
-	BOOST_CHECK_EQUAL(dev_id, 276);
+	BOOST_CHECK_EQUAL(dev_id, 148);
 	BOOST_CHECK_EQUAL(*begin, 42);
 
 	prop_data_calls++;
