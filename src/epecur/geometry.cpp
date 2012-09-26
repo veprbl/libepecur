@@ -102,8 +102,15 @@ bool	Geometry::parse_chamber_info_text( string &line, group_id_t current_group, 
 {
 	auto	begin = line.find('{');
 	auto	end = line.rfind('}');
+	auto	comment = line.find('/');
 
 	if (begin == string::npos || end == string::npos || end < begin)
+	{
+		return false;
+	}
+
+	// Ignore commented lines
+	if (comment != string::npos && comment < end)
 	{
 		return false;
 	}
@@ -226,7 +233,24 @@ Geometry::Geometry( istream &in )
 
 chamber_id_t	Geometry::get_device_chamber( device_id_t device_id )
 {
-	return device[device_id].chamber_id;
+	chamber_id_t	chamber_id;
+
+	try
+	{
+		chamber_id = device.at(device_id).chamber_id;
+	}
+	catch( out_of_range &e )
+	{
+		cerr << "out of range " << int(device_id) << endl;
+		throw;
+	}
+
+	if (chamber_id == static_cast<chamber_id_t>(-1))
+	{
+		cerr << "Unknown chamber_id for device " << device_id << endl;
+	}
+
+	return chamber_id;
 }
 
 wire_pos_t	Geometry::get_wire_pos( device_id_t device_id, wire_id_t wire_id )
