@@ -102,8 +102,15 @@ bool	Geometry::parse_chamber_info_text( string &line, group_id_t current_group, 
 {
 	auto	begin = line.find('{');
 	auto	end = line.rfind('}');
+	auto	comment = line.find('/');
 
 	if (begin == string::npos || end == string::npos || end < begin)
+	{
+		return false;
+	}
+
+	// Ignore commented lines
+	if (comment != string::npos && comment < end)
 	{
 		return false;
 	}
