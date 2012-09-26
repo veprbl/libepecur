@@ -43,7 +43,6 @@ void	TrackRecognitionHook::handle_drift_data(
 	vector< pair<wire_id_t, uint16_t> > &wires, device_id_t dev_id
 	)
 {
-	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
 	wire_id_t	wire_id;
 	uint16_t	time;
 
@@ -54,6 +53,7 @@ void	TrackRecognitionHook::handle_drift_data(
 		drift_cleanup = false;
 	}
 
+	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
 	auto	&chamber = last_event_drift[chamber_id];
 
 	for(auto wire : wires)
