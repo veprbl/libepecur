@@ -47,14 +47,14 @@ void	TrackRecognitionHook::handle_drift_data(
 	wire_id_t	wire_id;
 	uint16_t	time;
 
-	auto	&chamber = last_event_drift[chamber_id];
-
 	if (drift_cleanup)
 	{
 		last_event_drift.clear();
 
 		drift_cleanup = false;
 	}
+
+	auto	&chamber = last_event_drift[chamber_id];
 
 	for(auto wire : wires)
 	{
