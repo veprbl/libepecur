@@ -145,6 +145,7 @@ void	read_drift_data(
 			throw "Expected non-zero 7-th bit.";
 		}
 
+		wire_id	= wire_id & 0x3F;
 		time	= read_magic_integer<decltype(time)>(pos, 2);
 	}
 }
