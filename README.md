@@ -32,7 +32,32 @@ Visualizes whole events, displays recognized tracks.
 export_tree
 -----------
 
-Recognizes tracks and writes them to ROOT tree.
+Exports various data from EPECUR data file to a ROOT tree.
+
+### Exported branches
+
+#### Branch "tracks"
+
+Contains recognized tracks. Branch name starts with chamber *prefix* which has form *g{group_id}{axis_id}*. For example: *g1X*, *g1Y*, *g2X*, *g2Y*.
+
+Fields:
+
+* *{prefix}\_track\_count* - size of the following arrays
+* *{prefix}\_c0[]* - constant of track line, mm
+* *{prefix}\_c1[]* - slope of track line, mm/cm
+* *{prefix}\_hits\_count[]* - count of planes where hit was detected
+* *{prefix}\_chisq[]* - chi squared of track line fit
+
+#### Branch "drift"
+
+Contains all drift chamber events.
+
+Fields:
+
+* *chamber_id* - chamber id
+* *num_wires* - size of the following array
+* *wire_pos[]* - wire position
+* *time[]* - drift time
 
 ### Troubleshooting
 
