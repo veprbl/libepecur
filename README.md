@@ -34,7 +34,7 @@ export_tree
 
 Recognizes tracks and writes them to ROOT tree.
 
-### Notes
+### Troubleshooting
 
 If you see export_tree showing errors like this
 
