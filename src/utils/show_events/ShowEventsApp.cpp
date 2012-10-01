@@ -223,7 +223,7 @@ void	ShowEventsApp::PlotResults()
 
 void	ShowEventsApp::Init()
 {
-	ifstream	file(geometry_filepath, ios::in);
+	ifstream	file(geometry_filepath.c_str(), ios::in);
 
 	if (!file.is_open())
 	{
