@@ -1,5 +1,4 @@
 #include <vector>
-#include <memory>
 
 #include <gsl/gsl_fit.h>
 
@@ -8,7 +7,7 @@
 
 using namespace std;
 
-bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int chambers_count )
+bool	next( vector<wire_pos_ptr_t> &wire_pos_ptr, const int wire_count[], const int chambers_count )
 /*
  * iterates over all possible wire_pos_ptr combinations
  * if next combination is not avaliable returns false
@@ -78,9 +77,9 @@ bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> 
 recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos )
 {
 	const chamber_id_t	chambers_count = data.size();
-	unique_ptr<wire_pos_ptr_t[]>	best_wire_pos_ptr(new wire_pos_ptr_t[chambers_count]);
-	unique_ptr<wire_pos_ptr_t[]>	wire_pos_ptr(new wire_pos_ptr_t[chambers_count]);
-	unique_ptr<int[]>		wire_count(new int[chambers_count]);
+	vector<wire_pos_ptr_t>	best_wire_pos_ptr(chambers_count);
+	vector<wire_pos_ptr_t>	wire_pos_ptr(chambers_count);
+	vector<int>		wire_count(chambers_count);
 
 	// initialize variables
 	{
@@ -135,11 +134,11 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 			}
 		}
 	}
-	while(next( wire_pos_ptr.get(), &wire_count[0], chambers_count ));
+	while(next( wire_pos_ptr, &wire_count[0], chambers_count ));
 
 	return recognized_track_t({
 		track_info_t({best_c0, best_c1, best_sumsq, best_wires_pos}),
-		move(best_wire_pos_ptr)
+		best_wire_pos_ptr
 		});
 }
 

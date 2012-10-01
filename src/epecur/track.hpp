@@ -3,7 +3,6 @@
 
 #include "types.hpp"
 
-#include <memory>
 #include <vector>
 
 using namespace std;
@@ -20,12 +19,12 @@ struct track_info_t
 struct recognized_track_t
 {
 	track_info_t	track;
-	unique_ptr<wire_pos_ptr_t[]>	wire_pos_ptr;
+	vector<wire_pos_ptr_t>	wire_pos_ptr;
 };
 
 const uint	MIN_TRACK_CHAMBERS = 3;
 
-bool	next( wire_pos_ptr_t wire_pos_ptr[], const int wire_count[], const int chambers_count );
+bool	next( vector<wire_pos_ptr_t> &wire_pos_ptr, const int wire_count[], const int chambers_count );
 recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos );
 vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq = -1 );
 

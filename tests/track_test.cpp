@@ -12,7 +12,7 @@ BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 {
 	const int	CHAMBERS_COUNT = 4;
 	const int	count[CHAMBERS_COUNT] = { 3, 3, 3, 1 };
-	unsigned char	x[CHAMBERS_COUNT];
+	vector<wire_pos_ptr_t>	x(CHAMBERS_COUNT);
 	int		num_combinations = 1, combination_id = 0;
 
 	for(int i = 0; i < CHAMBERS_COUNT; i++)
@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 	{
 		BOOST_REQUIRE(1 + combination_id <= num_combinations);
 
-		uint hash = 0;
+		wire_pos_ptr_t	hash = 0;
 
 		for(int i = CHAMBERS_COUNT - 1; i >= 0; i--)
 		{
