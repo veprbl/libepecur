@@ -2,12 +2,15 @@
 #define __EVSHOWHOOK_HPP
 
 #include <vector>
-#include <unordered_map>
 
 #include <TH1I.h>
 
 #include <epecur/types.hpp>
 #include <epecur/TrackRecognitionHook.hpp>
+
+#include <boost/unordered/unordered_map.hpp>
+
+using boost::unordered_map;
 
 class AxialShiftHook : public TrackRecognitionHook
 {

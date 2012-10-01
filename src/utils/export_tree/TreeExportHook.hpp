@@ -2,13 +2,16 @@
 #define __TREEEXPORTHOOK_HPP
 
 #include <map>
-#include <unordered_map>
 #include <memory>
 
 #include <TTree.h>
 
 #include <epecur/types.hpp>
 #include <epecur/TrackRecognitionHook.hpp>
+
+#include <boost/unordered/unordered_map.hpp>
+
+using boost::unordered_map;
 
 struct stored_group_t
 {

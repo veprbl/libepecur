@@ -8,7 +8,10 @@
 
 #include <vector>
 #include <map>
-#include <unordered_map>
+
+#include <boost/unordered/unordered_map.hpp>
+
+using boost::unordered_map;
 
 class	TrackRecognitionHook: public LoadHook
 {

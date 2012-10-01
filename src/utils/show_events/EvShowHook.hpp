@@ -4,7 +4,9 @@
 #include <epecur/TrackRecognitionHook.hpp>
 
 #include <vector>
-#include <unordered_map>
+#include <boost/unordered/unordered_map.hpp>
+
+using boost::unordered_map;
 
 const uint	LOAD_EVENTS_COUNT = 10;
 
