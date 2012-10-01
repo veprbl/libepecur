@@ -2,7 +2,6 @@
 #define __TREEEXPORTHOOK_HPP
 
 #include <map>
-#include <memory>
 
 #include <TTree.h>
 
@@ -27,11 +26,12 @@ private:
 
 	TTree	tree;
 	unordered_map< group_id_t, map<device_axis_t, stored_group_t> >	stored_group;
-	vector< unique_ptr< char[] > >	names;
+	vector<char*>	names;
 
 public:
 
 	TreeExportHook( Geometry &g, double max_chisq = -1 );
+	~TreeExportHook();
 	const char*	store_name( string name );
 	virtual void	handle_event_end();
 };

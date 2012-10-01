@@ -58,13 +58,21 @@ TreeExportHook::TreeExportHook( Geometry &g, double max_chisq )
 	}
 }
 
+TreeExportHook::~TreeExportHook()
+{
+	for(auto ptr : names)
+	{
+		delete[] ptr;
+	}
+}
+
 const char*	TreeExportHook::store_name( string name )
 {
-	names.push_back(unique_ptr< char[] >(new char[name.size()+1]));
+	names.push_back(new char[name.size()+1]);
 
-	strcpy(names.back().get(), name.c_str());
+	strcpy(names.back(), name.c_str());
 
-	return names.back().get();
+	return names.back();
 }
 
 void	TreeExportHook::handle_event_end()
