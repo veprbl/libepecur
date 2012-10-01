@@ -6,6 +6,7 @@
 #include <cstddef>
 
 #include <boost/assert.hpp>
+#include <boost/static_assert.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
 
@@ -37,6 +38,9 @@ typedef struct
 } record_header_t;
 
 #pragma pack(pop)
+
+BOOST_STATIC_ASSERT(sizeof(event_header_t) == 12);
+BOOST_STATIC_ASSERT(sizeof(record_header_t) == 20);
 
 const uint	END_OF_CYCLE_FLAG(0x80000000);
 
