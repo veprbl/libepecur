@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <boost/static_assert.hpp>
 
+typedef	unsigned int	uint;
+
 typedef	uint8_t	wire_id_t;
 typedef	uint8_t	wire_id_ptr_t;
 
