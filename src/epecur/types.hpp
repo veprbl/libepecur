@@ -1,7 +1,7 @@
 #ifndef __TYPES_HPP
 #define __TYPES_HPP
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <boost/static_assert.hpp>
 
 typedef	unsigned int	uint;
