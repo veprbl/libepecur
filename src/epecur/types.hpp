@@ -19,6 +19,10 @@ typedef	uint8_t	chamber_id_t;
 typedef uint8_t	group_id_t;
 typedef uint16_t	device_id_t;
 
+#define WIRE_POS_ROOT_TYPE	"D"
+#define CHAMBER_ID_ROOT_TYPE	"b"
+#define DRIFT_TIME_ROOT_TYPE	"s"
+
 enum device_axis_t
 {
 	DEV_AXIS_X,

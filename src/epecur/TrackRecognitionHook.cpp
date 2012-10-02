@@ -2,6 +2,7 @@
 
 TrackRecognitionHook::TrackRecognitionHook( Geometry &g, double max_chisq )
 	: last_event_finished(false),
+	  drift_cleanup(false),
 	  max_chisq(max_chisq),
 	  geom(g)
 {
@@ -38,6 +39,32 @@ void	TrackRecognitionHook::handle_prop_data( const wire_id_t* begin, const wire_
 	}
 }
 
+void	TrackRecognitionHook::handle_drift_data(
+	vector< pair<wire_id_t, uint16_t> > &wires, device_id_t dev_id
+	)
+{
+	wire_id_t	wire_id;
+	uint16_t	time;
+
+	if (drift_cleanup)
+	{
+		last_event_drift.clear();
+
+		drift_cleanup = false;
+	}
+
+	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
+	auto	&chamber = last_event_drift[chamber_id];
+
+	for(auto wire : wires)
+	{
+		std::tie(wire_id, time) = wire;
+		wire_pos_t	wire_pos = geom.get_wire_pos(dev_id, wire_id);
+
+		chamber.emplace_back(wire_pos, time);
+	}
+}
+
 void	TrackRecognitionHook::handle_event_end()
 {
 	vector< vector<wire_pos_t>* >	block;
@@ -65,4 +92,5 @@ void	TrackRecognitionHook::handle_event_end()
 	}
 
 	last_event_finished = true;
+	drift_cleanup = true;
 }
