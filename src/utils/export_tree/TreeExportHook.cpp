@@ -1,5 +1,7 @@
 #include <cstring>
 #include <sstream>
+
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <TTree.h>
@@ -14,11 +16,11 @@ TreeExportHook::TreeExportHook( Geometry &g, double max_chisq )
 	  tree("tracks", "recognized tracks"),
 	  drift_tree("drift", "drift chamber raw data")
 {
-	for(auto gr_tup : geom.group_chambers)
+	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
 
-		for(auto axis_tup : gr_tup.second)
+		BOOST_FOREACH(auto axis_tup, gr_tup.second)
 		{
 			device_axis_t	axis = axis_tup.first;
 			stored_group_t	&st_gr = stored_group[group_id][axis];
@@ -82,7 +84,7 @@ TreeExportHook::TreeExportHook( Geometry &g, double max_chisq )
 
 TreeExportHook::~TreeExportHook()
 {
-	for(auto ptr : names)
+	BOOST_FOREACH(auto ptr, names)
 	{
 		delete[] ptr;
 	}
@@ -101,11 +103,11 @@ void	TreeExportHook::handle_event_end()
 {
 	TrackRecognitionHook::handle_event_end();
 
-	for(auto gr_tup : geom.group_chambers)
+	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
 
-		for(auto axis_tup : gr_tup.second)
+		BOOST_FOREACH(auto axis_tup, gr_tup.second)
 		{
 			device_axis_t	axis = axis_tup.first;
 //			vector<double>	&normal_pos = geom.group_normal_pos[group_id][axis];
@@ -120,7 +122,7 @@ void	TreeExportHook::handle_event_end()
 			st_gr.hits_count.clear();
 			st_gr.chisq.clear();
 
-			for(track_info_t &track : tracks)
+			BOOST_FOREACH(track_info_t &track, tracks)
 			{
 				st_gr.c0.push_back(track.c0);
 				st_gr.c1.push_back(track.c1);
@@ -140,14 +142,14 @@ void	TreeExportHook::handle_event_end()
 	wire_pos_t	wire_pos;
 	uint16_t	time;
 
-	for(auto &pair0 : last_event_drift)
+	BOOST_FOREACH(auto &pair0, last_event_drift)
 	{
 		stored_drift.chamber_id = pair0.first;
 		stored_drift.num_wires = pair0.second.size();
 		stored_drift.wire_pos.clear();
 		stored_drift.time.clear();
 
-		for(auto &pair1 : pair0.second)
+		BOOST_FOREACH(auto &pair1, pair0.second)
 		{
 			tie(wire_pos, time) = pair1;
 

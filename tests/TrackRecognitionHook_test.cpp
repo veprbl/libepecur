@@ -2,6 +2,7 @@
 #include <sstream>
 
 #include <boost/test/unit_test.hpp>
+#include <boost/foreach.hpp>
 
 #include <epecur/types.hpp>
 #include <epecur/geometry.hpp>
@@ -66,7 +67,7 @@ BOOST_AUTO_TEST_CASE( check_big_chisq_tracks_filter )
 	params.push_back(make_pair(-1.0, 1));
 	params.push_back(make_pair(1e-10, 0));
 
-	for(auto param_tuple : params)
+	BOOST_FOREACH(auto param_tuple, params)
 	{
 		double	max_chisq = param_tuple.first;
 		int	tracks_count = param_tuple.second;

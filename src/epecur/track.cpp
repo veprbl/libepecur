@@ -2,6 +2,8 @@
 
 #include <gsl/gsl_fit.h>
 
+#include <boost/foreach.hpp>
+
 #include "types.hpp"
 #include "track.hpp"
 
@@ -85,7 +87,7 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 	{
 		int chamber_id = 0;
 
-		for(auto chamber_data : data)
+		BOOST_FOREACH(auto chamber_data, data)
 		{
 			wire_pos_ptr[chamber_id] = 0;
 			wire_count[chamber_id] = chamber_data->size();
@@ -106,7 +108,7 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 		int i = 0;
 
 		// fill array with values to fit
-		for(auto chamber_data : data)
+		BOOST_FOREACH(auto chamber_data, data)
 		{
 			wire_pos_t	wire_id = (*chamber_data)[wire_pos_ptr[i]];
 
@@ -177,7 +179,7 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 
 		chamber_id_t	chamber_id = 0;
 
-		for(auto chamber_data : data)
+		BOOST_FOREACH(auto chamber_data, data)
 		{
 			chamber_data->erase(chamber_data->begin() + info.wire_pos_ptr[chamber_id]);
 

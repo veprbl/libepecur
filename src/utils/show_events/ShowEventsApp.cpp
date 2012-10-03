@@ -5,6 +5,7 @@
 #include <iterator>
 #include <cstring>
 
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 
@@ -44,7 +45,7 @@ ShowEventsApp::ShowEventsApp( const char* app_name, int &argc, char* argv[] )
 ShowEventsApp::~ShowEventsApp()
 {
 	delete hook;
-	for(auto line : wires_lines)
+	BOOST_FOREACH(auto line, wires_lines)
 	{
 		delete line;
 	}
@@ -162,7 +163,7 @@ Long_t	ShowEventsApp::ProcessLine( const char* line, Bool_t sync, Int_t* error )
 		return 0;
 	}
 
-	for(auto line : wires_lines)
+	BOOST_FOREACH(auto line, wires_lines)
 	{
 		delete line;
 	}
@@ -182,12 +183,12 @@ void	ShowEventsApp::PlotResults()
 
 	event_pad->cd();
 
-	for(auto chamber : event)
+	BOOST_FOREACH(auto chamber, event)
 	{
 		chamber_id_t	chamber_id = chamber.first;
 		vector<wire_pos_t>	&chamber_wires = chamber.second;
 
-		for(auto wire : chamber_wires)
+		BOOST_FOREACH(auto wire, chamber_wires)
 		{
 			const int	CHAMBERS_COUNT = 16;
 			const int	WIRES_COUNT = 200;
@@ -205,7 +206,7 @@ void	ShowEventsApp::PlotResults()
 
 	auto	&tracks = hook->tracks[displayed_event_id];
 
-	for(track_info_t &track : tracks)
+	BOOST_FOREACH(track_info_t &track, tracks)
 	{
 		const int	WIRES_COUNT = 200;
 		double	y1 = (track.c0 + WIRES_COUNT/2) / float(WIRES_COUNT);

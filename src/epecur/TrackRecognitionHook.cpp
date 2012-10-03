@@ -1,3 +1,5 @@
+#include <boost/foreach.hpp>
+
 #include "TrackRecognitionHook.hpp"
 
 TrackRecognitionHook::TrackRecognitionHook( Geometry &g, double max_chisq )
@@ -17,9 +19,9 @@ void	TrackRecognitionHook::handle_prop_data( const wire_id_t* begin, const wire_
 	{
 		last_event.clear();
 
-		for(auto gr_tup : last_tracks)
+		BOOST_FOREACH(auto gr_tup, last_tracks)
 		{
-			for(auto axis_tup : gr_tup.second)
+			BOOST_FOREACH(auto axis_tup, gr_tup.second)
 			{
 				axis_tup.second.clear();
 			}
@@ -56,7 +58,7 @@ void	TrackRecognitionHook::handle_drift_data(
 	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
 	auto	&chamber = last_event_drift[chamber_id];
 
-	for(auto wire : wires)
+	BOOST_FOREACH(auto wire, wires)
 	{
 		std::tie(wire_id, time) = wire;
 		wire_pos_t	wire_pos = geom.get_wire_pos(dev_id, wire_id);
@@ -69,18 +71,18 @@ void	TrackRecognitionHook::handle_event_end()
 {
 	vector< vector<wire_pos_t>* >	block;
 
-	for(auto gr_tup : geom.group_chambers)
+	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
 
-		for(auto axis_tup : gr_tup.second)
+		BOOST_FOREACH(auto axis_tup, gr_tup.second)
 		{
 			device_axis_t	axis = axis_tup.first;
 			vector<chamber_id_t>	chambers = axis_tup.second;
 
 			block.clear();
 
-			for(chamber_id_t chamber_id : chambers)
+			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 			{
 				block.push_back(&last_event[chamber_id]);
 			}

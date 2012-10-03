@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <boost/foreach.hpp>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
@@ -145,7 +146,7 @@ void	Geometry::fill_arrays()
 {
 	device_id_t	device_id = 0;
 
-	for(device_props_t &dev : device)
+	BOOST_FOREACH(device_props_t &dev, device)
 	{
 		if (dev.chamber_id != INVALID_CHAMBER_ID)
 		{

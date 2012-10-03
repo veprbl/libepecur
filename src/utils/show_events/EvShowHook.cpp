@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include <boost/foreach.hpp>
+
 #include <epecur/types.hpp>
 
 #include "EvShowHook.hpp"
@@ -24,7 +26,7 @@ void	EvShowHook::handle_event_end()
 	vector<double>::iterator	max_pos = max_element(normal_pos.begin(), normal_pos.end());
 	vector<double>::iterator	min_pos = min_element(normal_pos.begin(), normal_pos.end());
 
-	for(track_info_t &track : tracks[event_id])
+	BOOST_FOREACH(track_info_t &track, tracks[event_id])
 	{
 		track.c1 *= *max_pos - *min_pos;
 	}

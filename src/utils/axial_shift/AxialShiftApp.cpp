@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 
@@ -36,7 +37,7 @@ AxialShiftApp::~AxialShiftApp()
 {
 	delete hook;
 
-	for(auto hist_tuple : shift_hist)
+	BOOST_FOREACH(auto hist_tuple, shift_hist)
 	{
 		TH1I	*hist_ptr = hist_tuple.second;
 
@@ -109,7 +110,7 @@ void	AxialShiftApp::Init()
 
 	cout << "Track miss count (chamber -> count -> part)" << endl;
 
-	for(auto tup : hook->track_miss_count)
+	BOOST_FOREACH(auto tup, hook->track_miss_count)
 	{
 		cout << int(tup.first) << " ->\t" << tup.second << "->\t" << tup.second/float(hook->track_count) << endl;
 	}
@@ -133,7 +134,7 @@ void	AxialShiftApp::Init()
 
 	int	pad_id = 1;
 
-	for(auto chamb_tup : shift_hist)
+	BOOST_FOREACH(auto chamb_tup, shift_hist)
 	{
 		TH1I*	hist = chamb_tup.second;
 		double	shift_delta = -hist->GetMean();
@@ -141,7 +142,7 @@ void	AxialShiftApp::Init()
 		cerr << hist->GetTitle() << ".delta = " << shift_delta << endl;
 	}
 
-	for(auto chamb_tup : shift_hist)
+	BOOST_FOREACH(auto chamb_tup, shift_hist)
 	{
 		chamber_id_t	chamber_id = chamb_tup.first;
 		TH1I*	hist = chamb_tup.second;
@@ -161,15 +162,15 @@ void	AxialShiftApp::init_hists( Geometry &geom )
 {
 	gStyle->SetOptLogy(1);
 
-	for(auto gr_tup : geom.group_chambers)
+	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
 
-		for(auto axis_tup : gr_tup.second)
+		BOOST_FOREACH(auto axis_tup, gr_tup.second)
 		{
 			device_axis_t	axis = axis_tup.first;
 
-			for(chamber_id_t chamber_id : axis_tup.second)
+			BOOST_FOREACH(chamber_id_t chamber_id, axis_tup.second)
 			{
 				plane_id_t	plane_id = geom.chamber_plane[chamber_id];
 				string	hist_name = "F" + boost::lexical_cast<string>(int(group_id)) + (axis == DEV_AXIS_X ? "X" : "Y") + boost::lexical_cast<string>(int(plane_id));

@@ -3,6 +3,7 @@
 #include <string>
 #include <iterator>
 
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 
@@ -32,7 +33,7 @@ MomentumDistributionApp::MomentumDistributionApp( const char* app_name, int &arg
 
 MomentumDistributionApp::~MomentumDistributionApp()
 {
-	for(auto hist: th)
+	BOOST_FOREACH(auto hist, th)
 	{
 		delete(hist);
 	}

@@ -1,6 +1,8 @@
 #include <cstring>
 #include <algorithm>
 #include <iostream>
+
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <TH1I.h>
@@ -20,11 +22,11 @@ void	AxialShiftHook::handle_event_end()
 {
 	TrackRecognitionHook::handle_event_end();
 
-	for(auto gr_tup : geom.group_chambers)
+	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
 
-		for(auto axis_tup : gr_tup.second)
+		BOOST_FOREACH(auto axis_tup, gr_tup.second)
 		{
 			device_axis_t	axis = axis_tup.first;
 
@@ -32,7 +34,7 @@ void	AxialShiftHook::handle_event_end()
 
 			track_count += last_tracks[group_id][axis].size();
 
-			for(track_info_t &track : last_tracks[group_id][axis])
+			BOOST_FOREACH(track_info_t &track, last_tracks[group_id][axis])
 			{
 				for(uint chamber_id_pos = 0; chamber_id_pos < axis_tup.second.size(); chamber_id_pos++)
 				{
@@ -44,7 +46,7 @@ void	AxialShiftHook::handle_event_end()
 
 				int	i = 0;
 
-				for(uint chamber_id_pos : track.used_chambers)
+				BOOST_FOREACH(uint chamber_id_pos, track.used_chambers)
 				{
 					chamber_id_t	chamber_id = axis_tup.second[chamber_id_pos];
 					double shift;
