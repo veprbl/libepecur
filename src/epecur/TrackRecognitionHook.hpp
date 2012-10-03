@@ -1,6 +1,7 @@
 #ifndef __TRACKRECOGNITION_HPP
 #define __TRACKRECOGNITION_HPP
 
+#include "cxx11_compat.hpp"
 #include "geometry.hpp"
 #include "loadfile.hpp"
 #include "track.hpp"
