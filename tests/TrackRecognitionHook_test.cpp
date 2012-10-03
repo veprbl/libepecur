@@ -49,8 +49,8 @@ BOOST_AUTO_TEST_CASE( check_basic_track_recognition )
 
 	hook.handle_event_end();
 
-	BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_X].size(), 2);
-	BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_Y].size(), 0);
+	BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_X].size(), 2u);
+	BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_Y].size(), 0u);
 
 	vector<track_info_t>	&track = hook.last_tracks[1][DEV_AXIS_X];
 
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE( check_big_chisq_tracks_filter )
 	BOOST_FOREACH(auto param_tuple, params)
 	{
 		double	max_chisq = param_tuple.first;
-		int	tracks_count = param_tuple.second;
+		unsigned	tracks_count = param_tuple.second;
 		TrackRecognitionHook	hook(geometry, max_chisq);
 
 		vector<wire_id_t>	wires_f1x1;
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE( check_big_chisq_tracks_filter )
 		hook.handle_event_end();
 
 		BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_X].size(), tracks_count);
-		BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_Y].size(), 0);
+		BOOST_REQUIRE_EQUAL(hook.last_tracks[1][DEV_AXIS_Y].size(), 0u);
 	}
 }
 

@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE( check_prop_recognize_all_tracks )
 
 	vector<track_info_t>	tracks = prop_recognize_all_tracks(data, normal_pos);
 
-	BOOST_REQUIRE_EQUAL(tracks.size(), 2);
+	BOOST_REQUIRE_EQUAL(tracks.size(), 2u);
 	BOOST_CHECK_EQUAL(tracks[0].c0, 50);
 	BOOST_CHECK_EQUAL(tracks[0].c1, 0);
 	BOOST_CHECK_EQUAL(tracks[1].c0, 0);
