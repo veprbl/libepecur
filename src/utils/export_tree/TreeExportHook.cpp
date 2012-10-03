@@ -71,12 +71,12 @@ TreeExportHook::TreeExportHook( Geometry &g, double max_chisq )
 	stored_drift.wire_pos_br = drift_tree.Branch(
 		"wire_pos",
 		nullptr,
-		"wire_pos/" WIRE_POS_ROOT_TYPE
+		"wire_pos[num_wires]/" WIRE_POS_ROOT_TYPE
 		);
 	stored_drift.time_br = drift_tree.Branch(
 		"time",
 		nullptr,
-		"time/" DRIFT_TIME_ROOT_TYPE
+		"time[num_wires]/" DRIFT_TIME_ROOT_TYPE
 		);
 }
 
