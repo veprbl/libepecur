@@ -167,7 +167,7 @@ void	Geometry::fill_arrays()
 
 			// otherwise, we will have use of a pointer to it
 
-			plane_props_t*	plane = &(group[dev.group_id][dev.plane_id]);
+			plane_props_t*	plane_props = &(group[dev.group_id][dev.plane_id]);
 
 			// so if there is no dev.chamber_id in our array
 
@@ -181,8 +181,8 @@ void	Geometry::fill_arrays()
 			{
 				// insert our pointer and chamber_id pair into arrays
 
-				planes.push_back(plane);
-				normal_pos.push_back(plane->normal_pos);
+				planes.push_back(plane_props);
+				normal_pos.push_back(plane_props->normal_pos);
 				chambers.push_back(dev.chamber_id);
 				chamber_plane[dev.chamber_id] = dev.plane_id;
 				chamber_axial_shift[dev.chamber_id] = dev.axial_shift;
