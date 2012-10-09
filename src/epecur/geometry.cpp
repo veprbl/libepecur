@@ -171,7 +171,6 @@ void	Geometry::fill_arrays()
 
 			// so if there is no dev.chamber_id in our array
 
-			vector<plane_props_t*>	&planes = group_planes[dev.group_id][dev.axis];
 			vector<double>	&normal_pos = group_normal_pos[dev.group_id][dev.axis];
 			vector<chamber_id_t>	&chambers = group_chambers[dev.group_id][dev.axis];
 
@@ -181,7 +180,6 @@ void	Geometry::fill_arrays()
 			{
 				// insert our pointer and chamber_id pair into arrays
 
-				planes.push_back(plane_props);
 				normal_pos.push_back(plane_props->normal_pos);
 				chambers.push_back(dev.chamber_id);
 				chamber_plane[dev.chamber_id] = dev.plane_id;
