@@ -150,8 +150,10 @@ struct Geom {
 //
 // Drift Chambers LEFT
 // Drift 1 LeftY (small Y plane 1)
+// F3Y1
     {20, -2, 24},       // 101
 // Drift 1 LeftY (small Y plane 2)
+// F3Y2
     {21, -2, 25},       // 102
 //
     {-1, 0, 0}, // No Lboard 103
@@ -164,10 +166,12 @@ struct Geom {
     {-1, 0, 0}, // No Lboard 110
 //
 // Drift 2 LeftX (large X plane 1)
+// F3X1
     {22, 2, -72},       // 111
     {22, 2, -24},       // 112
     {22, 2, 24},        // 113
 // Drift 2 LeftX (large X plane 2)
+// F3X2
     {23, 2, -71},       // 114
     {23, 2, -23},       // 115
     {23, 2, 25},        // 116
@@ -178,10 +182,12 @@ struct Geom {
     {-1, 0, 0}, // No Lboard 120
 //
 // Drift 3 LeftY (large Y plane 1)
+// F3Y3
     {24, 2, -48},       // 121
 //    {25, 2, -47},       // 121, swapped with 123
     {24, 2, 0},         // 122
 // Drift 3 LeftY (large Y plane 2)
+// F3Y4
     {25, 2, -47},       // 123
 //    {24, 2, -48},       // 123, swapped with 121
     {25, 2, 1},         // 124
@@ -194,10 +200,12 @@ struct Geom {
     {-1, 0, 0}, // No Lboard 130
 //
 // Drift 4 LeftX (large X plane 1)
+// F3X3
     {26, -2, 72},       // 131
     {26, -2, 24},       // 132
     {26, -2, -24},      // 133
 // Drift 4 LeftX (large X plane 2)
+// F3X4
     {27, -2, 73},       // 134
     {27, -2, 25},       // 135
     {27, -2, -23},      // 136
@@ -210,8 +218,10 @@ struct Geom {
 
 // Drifrt Chambers RIGHT
 // Drift 5 RightY (small Y plane 1)
+// F4Y1
     {30, 2, -24},       // 141
 // Drift 5 RightY (small Y plane 2)
+// F4Y2
     {31, 2, -23},       // 142
 //
     {-1, 0, 0}, // No Lboard 143
@@ -224,10 +234,12 @@ struct Geom {
     {-1, 0, 0}, // No Lboard 150
 //
 // Drift 6 RightX (large X plane 1)
+// F4X1
     {32, 2, -72},       // 151
     {32, 2, -24},       // 152
     {32, 2, 24},        // 153
 // Drift 6 RightX (large X plane 2)
+// F4X2
     {33, 2, -71},       // 154
     {33, 2, -23},       // 155
     {33, 2, 25},        // 156
@@ -238,9 +250,11 @@ struct Geom {
     {-1, 0, 0}, // No Lboard 160
 //
 // Drift 7 RightY (large Y plane 1)
+// F4Y3
     {34, 2, -48},       // 161
     {34, 2, 0},         // 162
 // Drift 7 RightY (large Y plane 2)
+// F4Y4
     {35, 2, -47},       // 163
     {35, 2, 1},         // 164
 //
@@ -252,10 +266,12 @@ struct Geom {
     {-1, 0, 0}, // No Lboard 170
 //
 // Drift 8 RightX (large X plane 1)
+// F4X3
     {36, -2, 72},       // 171
     {36, -2, 24},       // 172
     {36, -2, -24},      // 173
 // Drift 8 RightX (large X plane 2)
+// F4X4
     {37, -2, 73},       // 174
     {37, -2, 25},       // 175
     {37, -2, -23},      // 176
@@ -266,8 +282,10 @@ struct Geom {
     {-1, 0, 0}, // No Lboard 180
 //
 // Test Drift  (small X plane 1)
+// F5X1
     {40, 2, -24},       // 181 (?? direction)
 // Test Drift  (small X plane 2)
+// F5X2
     {41, 2, -23},       // 182 (?? direction)
 //
     {-1, 0, 0} // No Lboard 183
