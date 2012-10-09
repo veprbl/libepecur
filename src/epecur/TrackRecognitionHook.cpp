@@ -75,6 +75,11 @@ void	TrackRecognitionHook::handle_event_end()
 	{
 		group_id_t	group_id = gr_tup.first;
 
+		if (geom.group_device_type[group_id] != DEV_TYPE_PROP)
+		{
+			continue;
+		}
+
 		BOOST_FOREACH(auto axis_tup, gr_tup.second)
 		{
 			device_axis_t	axis = axis_tup.first;

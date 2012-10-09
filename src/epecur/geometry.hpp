@@ -6,6 +6,7 @@
 #include <istream>
 
 #include "types.hpp"
+#include "loadfile.hpp"
 
 using namespace std;
 
@@ -43,6 +44,7 @@ public:
 	map< group_id_t, map< device_axis_t, vector<chamber_id_t> > >	group_chambers;
 	map< chamber_id_t, plane_id_t >	chamber_plane;
 	map< chamber_id_t, double >	chamber_axial_shift;
+	map< group_id_t, device_type_t >	group_device_type;
 
 	Geometry( istream& );
 	wire_pos_t	get_wire_pos( device_id_t, wire_id_t );

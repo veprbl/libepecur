@@ -200,6 +200,20 @@ void	Geometry::fill_arrays()
 
 			dev.axial_shift = plane_shifts[dev.group_id][dev.axis][dev.plane_id];
 
+			if (group_device_type.count(dev.group_id))
+			{
+				if (group_device_type[dev.group_id]
+				    != device_type)
+				{
+					cerr << "Warning: inhomogenious group "
+						"devices" << endl;
+				}
+			}
+			else
+			{
+				group_device_type[dev.group_id] = device_type;
+			}
+
 			if (find(chambers.begin(), chambers.end(), dev.chamber_id) == chambers.end())
 			{
 				// insert our pointer and chamber_id pair into arrays
