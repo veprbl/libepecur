@@ -8,8 +8,25 @@
 
 #include "types.hpp"
 #include "geometry.hpp"
+#include "loadfile.hpp"
 
 using namespace std;
+
+inline device_type_t	get_device_type( device_id_t dev_id )
+{
+	if ((dev_id >= 0) && (dev_id < 100))
+	{
+		return DEV_TYPE_PROP;
+	}
+	else if ((dev_id >= 100) && (dev_id < 200))
+	{
+		return DEV_TYPE_DRIFT;
+	}
+	else
+	{
+		throw "Can't determine device type";
+	}
+}
 
 boost::regex	plane_property_regexp("//[[:space:]]?F([0-9])(\\*|X|Y)([0-9])\\.([[:word:]]+)[[:space:]]?=[[:space:]]?([^[:space:]]+)");
 
@@ -150,11 +167,18 @@ void	Geometry::fill_arrays()
 	{
 		if (dev.chamber_id != INVALID_CHAMBER_ID)
 		{
-			// check if there is no plane information associated with
-			// this (group_id, plane_id) pair
+			// for proportional chamber check if there is no plane
+			// information associated with this
+			// (group_id, plane_id) pair
 
-			if ((group.count(dev.group_id) == 0)
-			    || (group[dev.group_id].count(dev.plane_id) == 0))
+			device_type_t	device_type =
+				get_device_type(device_id);
+
+			if ((device_type == DEV_TYPE_PROP)
+			    && (
+				    (!group.count(dev.group_id)) ||
+				    (!group[dev.group_id].count(dev.plane_id)))
+				)
 			{
 				// if we dont have it, give warning and move to next device
 
