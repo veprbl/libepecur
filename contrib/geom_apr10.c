@@ -148,7 +148,7 @@ struct Geom {
     {-1, 0, 0}, // No Lboard 99
     {-1, 0, 0}, // No Lboard 100
 //
-// Drifrt Chambers LEFT
+// Drift Chambers LEFT
 // Drift 1 LeftY (small Y plane 1)
     {20, -2, 24},       // 101
 // Drift 1 LeftY (small Y plane 2)
