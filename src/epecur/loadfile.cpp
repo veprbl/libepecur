@@ -125,7 +125,8 @@ void	read_drift_data(
 	LoadHook &hook
 	)
 {
-	std::vector< std::pair<wire_id_t, uint16_t> >	result;
+	std::vector<wire_id_t>	result_wire_id;
+	std::vector<uint16_t>	result_time;
 
 	while(pos < max_pos)
 	{
@@ -154,10 +155,13 @@ void	read_drift_data(
 		wire_id	= wire_id & 0x3F;
 		time	= read_magic_integer<decltype(time)>(pos, 2);
 
-		result.emplace_back(wire_id, time);
+		result_wire_id.push_back(wire_id);
+		result_time.push_back(time);
 	}
 
-	hook.handle_drift_data(result, dev_id);
+	BOOST_ASSERT(result_wire_id.size() == result_time.size());
+
+	hook.handle_drift_data(result_wire_id, result_time, dev_id);
 }
 
 void	handle_trig_end_cycle( const char* &pos, const char* max_pos )

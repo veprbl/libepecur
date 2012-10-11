@@ -1,3 +1,4 @@
+#include <boost/assert.hpp>
 #include <boost/foreach.hpp>
 
 #include "TrackRecognitionHook.hpp"
@@ -42,29 +43,35 @@ void	TrackRecognitionHook::handle_prop_data( const wire_id_t* begin, const wire_
 }
 
 void	TrackRecognitionHook::handle_drift_data(
-	vector< pair<wire_id_t, uint16_t> > &wires, device_id_t dev_id
+	std::vector<wire_id_t> &wire_id_s,
+	std::vector<uint16_t> &time_s,
+	device_id_t dev_id
 	)
 {
-	wire_id_t	wire_id;
-	uint16_t	time;
-
 	if (drift_cleanup)
 	{
-		last_event_drift.clear();
+		last_event_drift_wire_pos.clear();
+		last_event_drift_time.clear();
 
 		drift_cleanup = false;
 	}
 
 	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
-	auto	&chamber = last_event_drift[chamber_id];
+	auto	&event_wire_pos = last_event_drift_wire_pos[chamber_id];
+	auto	&event_time = last_event_drift_time[chamber_id];
 
-	BOOST_FOREACH(auto wire, wires)
+	BOOST_ASSERT(wire_id_s.size() == time_s.size());
+
+	BOOST_FOREACH(wire_id_t wire_id, wire_id_s)
 	{
-		std::tie(wire_id, time) = wire;
 		wire_pos_t	wire_pos = geom.get_wire_pos(dev_id, wire_id);
 
-		chamber.emplace_back(wire_pos, time);
+		event_wire_pos.push_back(wire_pos);
 	}
+
+	event_time.insert(event_time.end(), time_s.begin(), time_s.end());
+
+	BOOST_ASSERT(event_wire_pos.size() == event_time.size());
 }
 
 void	TrackRecognitionHook::handle_event_end()

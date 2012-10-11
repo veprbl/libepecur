@@ -34,11 +34,13 @@ export_tree
 
 Exports various data from EPECUR data file to a ROOT tree.
 
-### Exported branches
+### Exported branch
 
-#### Branch "tracks"
+The only exported branch is called *events*. It contains:
 
-Contains recognized tracks. Branch name starts with chamber *prefix* which has form *g{group_id}{axis_id}*. For example: *g1X*, *g1Y*, *g2X*, *g2Y*.
+#### Recognized tracks.
+
+Branch name starts with chamber *prefix* which has form *g{group_id}{axis_id}*. For example: *g1X*, *g1Y*, *g2X*, *g2Y*.
 
 Fields:
 
@@ -48,16 +50,15 @@ Fields:
 * *{prefix}\_hits\_count[]* - count of planes where hit was detected
 * *{prefix}\_chisq[]* - chi squared of track line fit
 
-#### Branch "drift"
+#### Drift data
 
-Contains all drift chamber events.
+Branch name starts with *prefix* which has form *g{group_id}{axis_id}{plane}*. For example: *g3Y1*, *g5X1*.
 
 Fields:
 
-* *chamber_id* - chamber id
-* *num_wires* - size of the following array
-* *wire_pos[]* - wire position
-* *time[]* - drift time
+* *{prefix}\_num_wires* - size of the following array
+* *{prefix}\_wire_pos[]* - wire position
+* *{prefix}\_time[]* - drift time
 
 ### Troubleshooting
 
