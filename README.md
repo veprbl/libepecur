@@ -5,7 +5,7 @@ In order to build toolset you will need cmake, boost-devel, gsl, root, git.
 
     mkdir build
     cd build
-    cmake ..
+    cmake .. -DCMAKE_BUILD_TYPE=Release
     make
 
 
