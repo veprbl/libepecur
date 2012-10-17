@@ -52,7 +52,7 @@ Fields:
 
 #### Drift data
 
-Branch name starts with *prefix* which has form *g{group_id}{axis_id}{plane}*. For example: *g3Y1*, *g5X1*.
+Branch name starts with *prefix* which has form *d{group_id}{axis_id}{plane}*. For example: *d3Y1*, *d5X1*.
 
 Fields:
 
