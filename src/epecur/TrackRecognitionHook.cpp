@@ -89,6 +89,8 @@ void	TrackRecognitionHook::handle_drift_data(
 			{
 				event_wire_pos.back() = wire_pos;
 				event_time.back() = time;
+				prev_wire_pos = wire_pos;
+				prev_time = time;
 
 				append = false;
 			}
@@ -103,10 +105,10 @@ void	TrackRecognitionHook::handle_drift_data(
 		{
 			event_wire_pos.push_back(wire_pos);
 			event_time.push_back(time);
+			prev_wire_pos = wire_pos;
+			prev_time = time;
 		}
 
-		prev_wire_pos = wire_pos;
-		prev_time = time;
 		time_it++;
 	}
 
