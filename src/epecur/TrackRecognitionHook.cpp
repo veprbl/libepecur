@@ -1,3 +1,5 @@
+#include <cstdlib>
+
 #include <boost/assert.hpp>
 #include <boost/foreach.hpp>
 
@@ -62,14 +64,51 @@ void	TrackRecognitionHook::handle_drift_data(
 
 	BOOST_ASSERT(wire_id_s.size() == time_s.size());
 
+	auto	time_it = time_s.begin();
+	wire_pos_t	prev_wire_pos = 0;
+	uint16_t	prev_time = 0;
+
+	if (event_wire_pos.size() > 0)
+	{
+		prev_wire_pos = event_wire_pos.back();
+		prev_time = event_time.back();
+	}
+
 	BOOST_FOREACH(wire_id_t wire_id, wire_id_s)
 	{
 		wire_pos_t	wire_pos = geom.get_wire_pos(dev_id, wire_id);
+		uint16_t	time = (*time_it);
+		bool		append = true;
 
-		event_wire_pos.push_back(wire_pos);
+		if ((event_wire_pos.size() > 0)
+		    && (abs(prev_wire_pos - wire_pos) == 2))
+		{
+			uint16_t	timedelta = prev_time - time;
+
+			if ((timedelta >= -4) && (timedelta <= -2))
+			{
+				event_wire_pos.back() = wire_pos;
+				event_time.back() = time;
+
+				append = false;
+			}
+
+			if ((timedelta >= 0) && (timedelta <= 2))
+			{
+				append = false;
+			}
+		}
+
+		if (append)
+		{
+			event_wire_pos.push_back(wire_pos);
+			event_time.push_back(time);
+		}
+
+		prev_wire_pos = wire_pos;
+		prev_time = time;
+		time_it++;
 	}
-
-	event_time.insert(event_time.end(), time_s.begin(), time_s.end());
 
 	BOOST_ASSERT(event_wire_pos.size() == event_time.size());
 }
