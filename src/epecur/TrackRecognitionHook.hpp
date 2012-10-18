@@ -14,6 +14,8 @@
 
 using boost::unordered_map;
 
+static const int	MAX_TIME_COUNTS = 384;
+
 class	TrackRecognitionHook: public LoadHook
 {
 private:
@@ -31,6 +33,7 @@ public:
 	// drift
 	map< chamber_id_t, vector<wire_pos_t> >	last_event_drift_wire_pos;
 	map< chamber_id_t, vector<uint16_t> >	last_event_drift_time;
+	map< chamber_id_t, map< wire_pos_t, vector<unsigned int> > >	time_distributions;
 
 	TrackRecognitionHook( Geometry &g, double max_chisq = -1 );
 

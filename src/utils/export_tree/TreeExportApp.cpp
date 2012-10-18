@@ -3,11 +3,14 @@
 #include <string>
 #include <vector>
 
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 
 #include <TFile.h>
 #include <TTree.h>
+#include <TH1F.h>
+#include <TH2F.h>
 
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
@@ -89,6 +92,70 @@ void	fill_info( TTree &info )
 	info.Fill();
 }
 
+void	plot_calib_curve(
+	TreeExportHook &hook,
+	chamber_id_t chamber_id,
+	TH2F &calib_curve,
+	TH1F &calib_chisq
+	)
+{
+	BOOST_FOREACH(auto &pair, hook.time_distributions[chamber_id])
+	{
+		wire_pos_t	wire_pos = pair.first;
+		auto		&distribution = pair.second;
+		uint16_t	time = 0;
+		unsigned int	overal_integral = 0, integral = 0;
+
+		BOOST_FOREACH(auto counts, distribution)
+		{
+			overal_integral += counts;
+		}
+
+		BOOST_FOREACH(auto counts, distribution)
+		{
+			integral += counts;
+			calib_curve.Fill(wire_pos, time,
+				  integral / (float)overal_integral);
+
+			time++;
+		}
+	}
+
+	for(int time = 0; time < MAX_TIME_COUNTS; time++)
+	{
+		double	sum = 0;
+		int	count = 0;
+
+		BOOST_FOREACH(auto &pair, hook.time_distributions[chamber_id])
+		{
+			wire_pos_t	wire_pos = pair.first;
+			auto	bin_id = calib_curve.FindBin(wire_pos, time);
+			auto	N = calib_curve.GetBinContent(bin_id);
+
+			sum += N;
+			++count;
+		}
+
+		double	mean = sum / (double)count;
+		double	sum_sqr = 0;
+
+		BOOST_FOREACH(auto &pair, hook.time_distributions[chamber_id])
+		{
+			wire_pos_t	wire_pos = pair.first;
+			auto	bin_id = calib_curve.FindBin(wire_pos, time);
+			auto	N = calib_curve.GetBinContent(bin_id);
+
+			sum_sqr += (mean - N) * (mean - N);
+		}
+
+		cerr << time << "\t" << sum_sqr << "\t" << mean << endl;
+
+		double	chisq = sqrt(sum_sqr / (double)count);
+
+		calib_chisq.Fill(time, chisq);
+	}
+}
+
 int	main( int argc, char* argv[] )
 {
 	ParseCommandLine(argc, argv);
@@ -105,9 +172,74 @@ int	main( int argc, char* argv[] )
 	TTree		info("info", "information about this file");
 	TreeExportHook	hook(geom);
 
-	loadfile(data_filepath, hook);
+	try
+	{
+		loadfile(data_filepath, hook);
+	}
+	catch( const char *err )
+	{
+		cerr << err << endl;
+	}
 
 	fill_info(info);
+
+	string	title;
+	TTree	drift_calib("drift_calib", "drift chambers calibration curves");
+	TH2F	calib_curve(
+		"calib_curve", "",
+		180, -90, 90,
+		MAX_TIME_COUNTS + 5, 0, MAX_TIME_COUNTS + 5
+		);
+	TH1F	calib_chisq(
+		"calib_chisq", "",
+		MAX_TIME_COUNTS, 0, MAX_TIME_COUNTS
+		);
+
+	drift_calib.Branch("calib_curve", "TH2F", &calib_curve);
+	drift_calib.Branch("calib_chisq", "TH1F", &calib_chisq);
+
+	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
+	{
+		group_id_t	group_id = gr_tup.first;
+		device_type_t	device_type = geom.group_device_type[group_id];
+
+		if (device_type != DEV_TYPE_DRIFT)
+		{
+			continue;
+		}
+
+		BOOST_FOREACH(auto axis_tup, gr_tup.second)
+		{
+			device_axis_t	axis = axis_tup.first;
+			vector<chamber_id_t>	&chambers =
+				geom.group_chambers[group_id][axis];
+			int	chamber_num = 1;
+
+			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
+			{
+				title = "d" +
+					boost::lexical_cast<string>(int(group_id)) +
+					((axis == DEV_AXIS_X) ? "X" : "Y") +
+					boost::lexical_cast<string>(int(chamber_num));
+
+				calib_curve.SetTitle(title.c_str());
+				calib_chisq.SetTitle(title.c_str());
+
+				plot_calib_curve(
+					hook,
+					chamber_id,
+					calib_curve,
+					calib_chisq
+					);
+
+				drift_calib.Fill();
+				calib_curve.Reset();
+				calib_chisq.Reset();
+
+				chamber_num++;
+			}
+		}
+	}
 
 	tree_file.Write();
 

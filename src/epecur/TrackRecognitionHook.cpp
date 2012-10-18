@@ -146,6 +146,49 @@ void	TrackRecognitionHook::handle_event_end()
 		}
 	}
 
+	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
+	{
+		group_id_t	group_id = gr_tup.first;
+		device_type_t	device_type = geom.group_device_type[group_id];
+
+		if (device_type != DEV_TYPE_DRIFT)
+		{
+			continue;
+		}
+
+		BOOST_FOREACH(auto axis_tup, gr_tup.second)
+		{
+			device_axis_t	axis = axis_tup.first;
+			vector<chamber_id_t>	&chambers =
+				geom.group_chambers[group_id][axis];
+
+			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
+			{
+				auto	&calib = time_distributions[chamber_id];
+				vector<wire_pos_t>	&wire_pos =
+					last_event_drift_wire_pos[chamber_id];
+				vector<uint16_t>	&time =
+					last_event_drift_time[chamber_id];
+
+				auto	wit = wire_pos.begin();
+				auto	tit = time.begin();
+
+				for(; wit != wire_pos.end(); ++wit, ++tit)
+				{
+					BOOST_ASSERT((*tit) < MAX_TIME_COUNTS);
+
+					if (calib.find(*wit) == calib.end())
+					{
+						calib[*wit] =
+							vector<unsigned int>(MAX_TIME_COUNTS);
+					}
+
+					calib[*wit][*tit]++;
+				}
+			}
+		}
+	}
+
 	last_event_finished = true;
 	drift_cleanup = true;
 }
