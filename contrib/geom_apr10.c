@@ -22,6 +22,25 @@
 // F2Y3.axial_shift = -1.54206
 // F2X4.axial_shift = 1.18261
 // F2Y4.axial_shift = 1.03493
+
+// F3X1.normal_pos = 0.0
+// F3X2.normal_pos = 15.0
+// F3X3.normal_pos = 201.2
+// F3X4.normal_pos = 216.2
+// F3Y1.normal_pos = -222.5
+// F3Y2.normal_pos = -207.5
+// F3Y3.normal_pos = 100.0
+// F3Y4.normal_pos = 115.0
+
+// F4X1.normal_pos = 0.0
+// F4X2.normal_pos = 15.0
+// F4X3.normal_pos = 204.0
+// F4X4.normal_pos = 219.0
+// F4Y1.normal_pos = -216.5
+// F4Y2.normal_pos = -201.5
+// F4Y3.normal_pos = 100.0
+// F4Y4.normal_pos = 115.0
+
 struct Geom {
     int plane;	// 0-1X, 1-1Y, 2-2X, 3-2Y etc
     int pitch;  // signed, mm
