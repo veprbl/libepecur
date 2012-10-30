@@ -76,7 +76,7 @@ bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> 
 	return true;
 }
 
-recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos )
+track_info_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos )
 {
 	const chamber_id_t	chambers_count = data.size();
 	vector<wire_pos_ptr_t>	best_wire_pos_ptr(chambers_count);
@@ -138,10 +138,9 @@ recognized_track_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &da
 	}
 	while(next( wire_pos_ptr, &wire_count[0], chambers_count ));
 
-	return recognized_track_t({
-		track_info_t({best_c0, best_c1, best_sumsq, best_wires_pos}),
-		best_wire_pos_ptr
-		});
+	return track_info_t({
+			best_c0, best_c1, best_sumsq, best_wires_pos, best_wire_pos_ptr
+				});
 }
 
 vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq )
@@ -165,12 +164,11 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 
 	while(delete_empty_chambers(data, normal_pos, used_chambers))
 	{
-		recognized_track_t	info = prop_recognize_track(data, normal_pos);
-		track_info_t	&track = info.track;
+		track_info_t	track = prop_recognize_track(data, normal_pos);
 
 		track.used_chambers = used_chambers;
 
-		if ((max_chisq > 0) && (info.track.chisq > max_chisq))
+		if ((max_chisq > 0) && (track.chisq > max_chisq))
 		{
 			break;
 		}
@@ -181,7 +179,7 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 
 		BOOST_FOREACH(auto chamber_data, data)
 		{
-			chamber_data->erase(chamber_data->begin() + info.wire_pos_ptr[chamber_id]);
+			chamber_data->erase(chamber_data->begin() + track.wire_pos_ptr[chamber_id]);
 
 			chamber_id++;
 		}
