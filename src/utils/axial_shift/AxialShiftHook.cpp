@@ -30,7 +30,7 @@ void	AxialShiftHook::handle_event_end()
 		{
 			device_axis_t	axis = axis_tup.first;
 
-			vector<double>	&normal_pos = geom.group_normal_pos[group_id][axis];
+			vector<double>	&normal_pos = geom.normal_pos[group_id][axis];
 
 			track_count += last_tracks[group_id][axis].size();
 

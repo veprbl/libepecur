@@ -33,8 +33,7 @@ boost::regex	plane_property_regexp("//[[:space:]]?F([0-9])(\\*|X|Y)([0-9])\\.([[
 bool	Geometry::parse_plane_property_comment( string &line )
 {
 	group_id_t	group_id;
-	bool		is_group_property;
-	device_axis_t	axis;
+	vector<device_axis_t>	axis;
 	plane_id_t	plane_id;
 	string		param_name;
 	string		param_value;
@@ -48,31 +47,47 @@ bool	Geometry::parse_plane_property_comment( string &line )
 		param_name	= mt[4];
 		param_value	= mt[5];
 
-		is_group_property = (axis_text == "*");
-
-		if (!is_group_property)
+		if (axis_text == "X")
 		{
-			if (axis_text == "X")
-			{
-				axis = DEV_AXIS_X;
-			}
-			else if (axis_text == "Y")
-			{
-				axis = DEV_AXIS_Y;
-			}
-			else
-			{
-				throw "Unknown axis type!";
-			}
+			axis.push_back(DEV_AXIS_X);
+		}
+		else if (axis_text == "Y")
+		{
+			axis.push_back(DEV_AXIS_Y);
+		}
+		else if (axis_text == "*")
+		{
+			axis.push_back(DEV_AXIS_X);
+			axis.push_back(DEV_AXIS_Y);
+		}
+		else
+		{
+			throw "Unknown axis!";
 		}
 
-		if (is_group_property && (param_name == "normal_pos"))
+		if (param_name == "normal_pos")
 		{
-			group[group_id][plane_id].normal_pos = boost::lexical_cast<double>(param_value);
+			BOOST_FOREACH(device_axis_t dev_axis, axis)
+			{
+				auto	&np = normal_pos[group_id][dev_axis];
+
+				if (np.size() < plane_id)
+				{
+					np.resize(plane_id);
+				}
+
+				np[plane_id - 1] =
+					boost::lexical_cast<double>(param_value);
+			}
 		}
-		else if ((!is_group_property) && (param_name == "axial_shift"))
+		else if (param_name == "axial_shift")
 		{
-			plane_shifts[group_id][axis][plane_id] = boost::lexical_cast<double>(param_value);
+			if (axis.size() != 1)
+			{
+				throw "Unknown axis!";
+			}
+
+			plane_shifts[group_id][axis.front()][plane_id] = boost::lexical_cast<double>(param_value);
 		}
 		else
 		{
@@ -167,35 +182,20 @@ void	Geometry::fill_arrays()
 	{
 		if (dev.chamber_id != INVALID_CHAMBER_ID)
 		{
-			// for proportional chamber check if there is no plane
-			// information associated with this
-			// (group_id, plane_id) pair
-
 			device_type_t	device_type =
 				get_device_type(device_id);
 
-			if ((device_type == DEV_TYPE_PROP)
-			    && (
-				    (!group.count(dev.group_id)) ||
-				    (!group[dev.group_id].count(dev.plane_id)))
-				)
+			if (normal_pos[dev.group_id][dev.axis].empty())
 			{
-				// if we dont have it, give warning and move to next device
-
-				cerr << "Warning: no plane information for F" 
+				cerr << "Warning: no normal_pos information for F" 
 				     << int(dev.group_id) << "*" << int(dev.plane_id)
 				     << " (device_id = " << device_id << ")" << endl;
 
 				continue;
 			}
 
-			// otherwise, we will have use of a pointer to it
-
-			plane_props_t*	plane_props = &(group[dev.group_id][dev.plane_id]);
-
 			// so if there is no dev.chamber_id in our array
 
-			vector<double>	&normal_pos = group_normal_pos[dev.group_id][dev.axis];
 			vector<chamber_id_t>	&chambers = group_chambers[dev.group_id][dev.axis];
 
 			dev.axial_shift = plane_shifts[dev.group_id][dev.axis][dev.plane_id];
@@ -218,7 +218,6 @@ void	Geometry::fill_arrays()
 			{
 				// insert our pointer and chamber_id pair into arrays
 
-				normal_pos.push_back(plane_props->normal_pos);
 				chambers.push_back(dev.chamber_id);
 				chamber_plane[dev.chamber_id] = dev.plane_id;
 				chamber_axial_shift[dev.chamber_id] = dev.axial_shift;

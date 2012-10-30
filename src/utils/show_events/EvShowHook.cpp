@@ -21,7 +21,7 @@ void	EvShowHook::handle_event_end()
 
 	tracks[event_id] = last_tracks[1][DEV_AXIS_X];
 
-	vector<double>	&normal_pos = geom.group_normal_pos[1][DEV_AXIS_X];
+	vector<double>	&normal_pos = geom.normal_pos[1][DEV_AXIS_X];
 
 	vector<double>::iterator	max_pos = max_element(normal_pos.begin(), normal_pos.end());
 	vector<double>::iterator	min_pos = min_element(normal_pos.begin(), normal_pos.end());

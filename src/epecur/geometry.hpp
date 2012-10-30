@@ -10,11 +10,6 @@
 
 using namespace std;
 
-struct plane_props_t
-{
-	double	normal_pos;
-};
-
 struct device_props_t
 {
 	chamber_id_t	chamber_id;
@@ -31,7 +26,6 @@ class Geometry
 private:
 
 	vector<device_props_t>	device;
-	map< group_id_t, map<plane_id_t, plane_props_t> >	group;
 	map< group_id_t, map< device_axis_t, map< plane_id_t, double > > >	plane_shifts;
 	bool	parse_plane_property_comment( string& );
 	bool	parse_plane_relation_comment( string&, group_id_t&, device_axis_t&, plane_id_t& );
@@ -40,7 +34,7 @@ private:
 
 public:
 
-	map< group_id_t, map< device_axis_t, vector<double> > >		group_normal_pos;
+	map< group_id_t, map< device_axis_t, vector<double> > >		normal_pos;
 	map< group_id_t, map< device_axis_t, vector<chamber_id_t> > >	group_chambers;
 	map< chamber_id_t, plane_id_t >	chamber_plane;
 	map< chamber_id_t, double >	chamber_axial_shift;
