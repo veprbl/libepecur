@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cmath>
 
 #include <boost/assert.hpp>
 #include <boost/foreach.hpp>
@@ -162,28 +163,77 @@ void	TrackRecognitionHook::handle_event_end()
 			vector<chamber_id_t>	&chambers =
 				geom.group_chambers[group_id][axis];
 
+			if (chambers.size() < MIN_TRACK_CHAMBERS)
+			{
+				continue;
+			}
+
+			block.clear();
+			vector< vector<wire_pos_t> >	block_copy;
+
+			block_copy.reserve(chambers.size());
+
 			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 			{
-				auto	&calib = time_distributions[chamber_id];
-				vector<wire_pos_t>	&wire_pos =
-					last_event_drift_wire_pos[chamber_id];
-				vector<uint16_t>	&time =
-					last_event_drift_time[chamber_id];
+				block_copy.push_back(last_event_drift_wire_pos[chamber_id]);
+				block.push_back(&block_copy.back());
+			}
 
-				auto	wit = wire_pos.begin();
-				auto	tit = time.begin();
+			vector<double>	&normal_pos = geom.normal_pos[group_id][axis];
 
-				for(; wit != wire_pos.end(); ++wit, ++tit)
+			last_tracks[group_id][axis] = prop_recognize_all_tracks(block, normal_pos, max_chisq);
+
+			BOOST_FOREACH(track_info_t &track, last_tracks[group_id][axis])
+			{
+				auto	chamber_index_it = track.used_chambers.begin();
+				auto	wire_index_it = track.wire_pos_ptr.begin();
+
+				double	DRIFT_STEP = 17.0; // mm
+				double	psi = atan(track.c1 * DRIFT_STEP);
+
+				psi = abs(psi);
+
+				BOOST_ASSERT(psi < M_PI/2);
+
+				if (psi > M_PI/3)
 				{
-					BOOST_ASSERT((*tit) < MAX_TIME_COUNTS);
+					psi -= M_PI/3;
+				}
 
-					if (calib.find(*wit) == calib.end())
+				/*
+				  sin(60*)   sin(120*-psi)        l      sin(60*)
+				  -------- = -------------  <=>  --- = -------------
+				      l           l0              l0   sin(120*-psi)
+				 */
+
+				double	multiplier = (sqrt(3)/2) / (sin(2*M_PI/3 - psi));
+
+				BOOST_ASSERT(multiplier >= 0);
+				BOOST_ASSERT(multiplier <= 1);
+
+				BOOST_FOREACH(wire_pos_t pos, track.chamber_wires_pos)
+				{
+					chamber_id_t	chamber_id = chambers[*(chamber_index_it++)];
+
+					vector<uint16_t>	&time =
+						last_event_drift_time[chamber_id];
+
+					uint16_t	t = time[*(wire_index_it++)];
+
+					auto	&calib = time_distributions[chamber_id];
+
+					if (calib.find(pos) == calib.end())
 					{
-						calib[*wit] =
+						calib[pos] =
 							vector<unsigned int>(MAX_TIME_COUNTS);
 					}
 
-					calib[*wit][*tit]++;
+					uint16_t	calib_t = round(t / multiplier);
+
+					if (calib_t < MAX_TIME_COUNTS)
+					{
+						calib[pos][calib_t]++;
+					}
 				}
 			}
 		}
