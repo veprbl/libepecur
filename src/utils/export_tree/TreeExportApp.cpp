@@ -92,13 +92,15 @@ void	fill_info( TTree &info )
 	info.Fill();
 }
 
-void	plot_calib_curve(
+unsigned int	plot_calib_curve(
 	TreeExportHook &hook,
 	chamber_id_t chamber_id,
 	TH2F &calib_curve,
 	TH1F &calib_chisq
 	)
 {
+	unsigned int	num_events = 0;
+
 	BOOST_FOREACH(auto &pair, hook.time_distributions[chamber_id])
 	{
 		small_angle_t	angle = pair.first;
@@ -110,6 +112,8 @@ void	plot_calib_curve(
 		{
 			overal_integral += counts;
 		}
+
+		num_events += overal_integral;
 
 		BOOST_FOREACH(auto counts, distribution)
 		{
@@ -152,6 +156,8 @@ void	plot_calib_curve(
 
 		calib_chisq.Fill(time, chisq);
 	}
+
+	return num_events;
 }
 
 int	main( int argc, char* argv[] )
@@ -215,20 +221,22 @@ int	main( int argc, char* argv[] )
 
 			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 			{
-				title = "d" +
-					boost::lexical_cast<string>(int(group_id)) +
-					((axis == DEV_AXIS_X) ? "X" : "Y") +
-					boost::lexical_cast<string>(int(chamber_num));
-
-				calib_curve.SetTitle(title.c_str());
-				calib_chisq.SetTitle(title.c_str());
-
-				plot_calib_curve(
+				auto	num_events = plot_calib_curve(
 					hook,
 					chamber_id,
 					calib_curve,
 					calib_chisq
 					);
+
+				title = "d" +
+					boost::lexical_cast<string>(int(group_id)) +
+					((axis == DEV_AXIS_X) ? "X" : "Y") +
+					boost::lexical_cast<string>(int(chamber_num)) +
+					" num_events = " +
+					boost::lexical_cast<string>(num_events);
+
+				calib_curve.SetTitle(title.c_str());
+				calib_chisq.SetTitle(title.c_str());
 
 				drift_calib.Fill();
 				calib_curve.Reset();
