@@ -41,6 +41,24 @@
 // F4Y3.normal_pos = 100.0
 // F4Y4.normal_pos = 115.0
 
+// F3X1.axial_shift = 0.0	/ -8.5
+// F3X2.axial_shift = 17.0	/ -8.5
+// F3X3.axial_shift = -154.6	/ -8.5
+// F3X4.axial_shift = -137.6	/ -8.5
+// F3Y1.axial_shift = 1.8	/ 8.5
+// F3Y2.axial_shift = -15.2	/ 8.5
+// F3Y3.axial_shift = 11.3	/ 8.5
+// F3Y4.axial_shift = 11.3	/ 8.5
+
+// F4X1.axial_shift = -17.0	/ -8.5
+// F4X2.axial_shift = 0.0	/ -8.5
+// F4X3.axial_shift = 167.4	/ -8.5
+// F4X4.axial_shift = 184.4	/ -8.5
+// F4Y1.axial_shift = 9.5	/ 8.5
+// F4Y2.axial_shift = 9.5	/ 8.5
+// F4Y3.axial_shift = 16.2	/ 8.5
+// F4Y4.axial_shift = -0.8	/ 8.5
+
 // F3.max_chisq = 16
 // F4.max_chisq = 16
 
