@@ -55,7 +55,7 @@ bool	Geometry::parse_group_property_comment( string &line )
 	return false;
 }
 
-boost::regex	plane_property_regexp("//[[:space:]]?F([0-9])(\\*|X|Y)([0-9])\\.([[:word:]]+)[[:space:]]?=[[:space:]]?([^[:space:]]+)");
+boost::regex	plane_property_regexp("//[[:space:]]?F([0-9])(\\*|X|Y)([0-9])\\.([[:word:]]+)[[:space:]]?=[[:space:]]?([^[:space:]].+)");
 
 bool	Geometry::parse_plane_property_comment( string &line )
 {
@@ -114,7 +114,29 @@ bool	Geometry::parse_plane_property_comment( string &line )
 				throw "Unknown axis!";
 			}
 
-			plane_shifts[group_id][axis.front()][plane_id] = boost::lexical_cast<double>(param_value);
+			double	axial_shift;
+
+			if (param_value.find('/') == string::npos)
+			{
+				axial_shift = boost::lexical_cast<double>(param_value);
+			}
+			else
+			{
+				vector<string>	frac;
+				boost::replace_all(param_value, " ", "");
+				boost::replace_all(param_value, "\t", "");
+				boost::split(frac, param_value, boost::is_any_of("/"));
+
+				if (frac.size() != 2)
+				{
+					throw "Invalid fraction";
+				}
+
+				axial_shift = boost::lexical_cast<double>(frac[0]) /
+					boost::lexical_cast<double>(frac[1]);
+			}
+
+			plane_shifts[group_id][axis.front()][plane_id] = axial_shift;
 		}
 		else
 		{
