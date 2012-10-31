@@ -41,6 +41,9 @@
 // F4Y3.normal_pos = 100.0
 // F4Y4.normal_pos = 115.0
 
+// F3.max_chisq = 16
+// F4.max_chisq = 16
+
 struct Geom {
     int plane;	// 0-1X, 1-1Y, 2-2X, 3-2Y etc
     int pitch;  // signed, mm
