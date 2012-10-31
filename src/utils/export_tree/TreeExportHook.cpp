@@ -56,7 +56,7 @@ void	TreeExportHook::init_prop_group(
 	)
 {
 	prop_group_t	&st_gr = stored_prop[group_id][axis];
-	group_name = "p" + group_name + "_";
+	group_name = "t" + group_name + "_";
 
 	event_tree.Branch(
 		store_name(group_name + "track_count"),

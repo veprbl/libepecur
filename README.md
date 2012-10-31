@@ -40,7 +40,7 @@ The only exported branch is called *events*. It contains:
 
 #### Recognized tracks.
 
-Branch name starts with chamber *prefix* which has form *g{group_id}{axis_id}*. For example: *g1X*, *g1Y*, *g2X*, *g2Y*.
+Branch name starts with chamber *prefix* which has form *t{group_id}{axis_id}*. For example: *t1X*, *t1Y*, *t2X*, *t2Y*.
 
 Fields:
 
