@@ -189,7 +189,7 @@ void	TrackRecognitionHook::handle_event_end()
 				auto	wire_index_it = track.wire_pos_ptr.begin();
 
 				double	DRIFT_STEP = 17.0; // mm
-				small_angle_t	psi = round(atan(track.c1 * DRIFT_STEP) / M_PI * 180);
+				small_angle_t	psi = round(atan(track.c1 * DRIFT_STEP / 2) / M_PI * 180);
 
 				BOOST_ASSERT(psi <= 90);
 				BOOST_ASSERT(psi >= -90);
