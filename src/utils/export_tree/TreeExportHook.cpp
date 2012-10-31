@@ -10,8 +10,8 @@
 
 #include "TreeExportHook.hpp"
 
-TreeExportHook::TreeExportHook( Geometry &g, double max_chisq )
-	: TrackRecognitionHook(g, max_chisq),
+TreeExportHook::TreeExportHook( Geometry &g )
+	: TrackRecognitionHook(g),
 	  event_tree(
 		  "events",
 		  "recognized tracks for prop chambers"

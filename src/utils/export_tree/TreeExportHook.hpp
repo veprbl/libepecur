@@ -51,7 +51,7 @@ private:
 
 public:
 
-	TreeExportHook( Geometry &g, double max_chisq = -1 );
+	TreeExportHook( Geometry &g );
 	~TreeExportHook();
 	const char*	store_name( string name );
 	virtual void	handle_event_end();

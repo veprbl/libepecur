@@ -27,6 +27,7 @@ private:
 
 	vector<device_props_t>	device;
 	map< group_id_t, map< device_axis_t, map< plane_id_t, double > > >	plane_shifts;
+	bool	parse_group_property_comment( string& );
 	bool	parse_plane_property_comment( string& );
 	bool	parse_plane_relation_comment( string&, group_id_t&, device_axis_t&, plane_id_t& );
 	bool	parse_chamber_info_text( string&, group_id_t, device_axis_t, plane_id_t );
@@ -39,6 +40,7 @@ public:
 	map< chamber_id_t, plane_id_t >	chamber_plane;
 	map< chamber_id_t, double >	chamber_axial_shift;
 	map< group_id_t, device_type_t >	group_device_type;
+	map< group_id_t, double >		group_max_chisq;
 
 	Geometry( istream& );
 	wire_pos_t	get_wire_pos( device_id_t, wire_id_t );

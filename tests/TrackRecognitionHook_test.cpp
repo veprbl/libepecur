@@ -69,9 +69,12 @@ BOOST_AUTO_TEST_CASE( check_big_chisq_tracks_filter )
 
 	BOOST_FOREACH(auto param_tuple, params)
 	{
-		double	max_chisq = param_tuple.first;
 		unsigned	tracks_count = param_tuple.second;
-		TrackRecognitionHook	hook(geometry, max_chisq);
+
+		// Set max_chisq for group
+		geometry.group_max_chisq[1] = param_tuple.first;
+
+		TrackRecognitionHook	hook(geometry);
 
 		vector<wire_id_t>	wires_f1x1;
 		wires_f1x1.push_back(90);

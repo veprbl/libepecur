@@ -6,10 +6,9 @@
 
 #include "TrackRecognitionHook.hpp"
 
-TrackRecognitionHook::TrackRecognitionHook( Geometry &g, double max_chisq )
+TrackRecognitionHook::TrackRecognitionHook( Geometry &g )
 	: last_event_finished(false),
 	  drift_cleanup(false),
-	  max_chisq(max_chisq),
 	  geom(g)
 {
 	// nothing
@@ -123,6 +122,7 @@ void	TrackRecognitionHook::handle_event_end()
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
+		double	max_chisq = geom.group_max_chisq[group_id];
 
 		if (geom.group_device_type[group_id] != DEV_TYPE_PROP)
 		{
@@ -151,6 +151,7 @@ void	TrackRecognitionHook::handle_event_end()
 	{
 		group_id_t	group_id = gr_tup.first;
 		device_type_t	device_type = geom.group_device_type[group_id];
+		double	max_chisq = geom.group_max_chisq[group_id];
 
 		if (device_type != DEV_TYPE_DRIFT)
 		{

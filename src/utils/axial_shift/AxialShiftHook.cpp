@@ -12,8 +12,8 @@
 
 #include "AxialShiftHook.hpp"
 
-AxialShiftHook::AxialShiftHook( Geometry &g, unordered_map< chamber_id_t, TH1I* > &shift_hist, double max_chisq )
-  : TrackRecognitionHook(g, max_chisq), shift_hist(shift_hist)
+AxialShiftHook::AxialShiftHook( Geometry &g, unordered_map< chamber_id_t, TH1I* > &shift_hist )
+  : TrackRecognitionHook(g), shift_hist(shift_hist)
 {
 	// nothing
 }

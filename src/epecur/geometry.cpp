@@ -28,6 +28,33 @@ inline device_type_t	get_device_type( device_id_t dev_id )
 	}
 }
 
+boost::regex	group_property_regexp("//[[:space:]]?F([0-9])\\.([[:word:]]+)[[:space:]]?=[[:space:]]?([^[:space:]]+)");
+
+bool	Geometry::parse_group_property_comment( string &line )
+{
+	boost::smatch	mt;
+
+	if (boost::regex_match(line, mt, group_property_regexp))
+	{
+		group_id_t	group_id	= boost::lexical_cast<int>(mt[1]);
+		string		param_name	= mt[2];
+		string		param_value	= mt[3];
+
+		if (param_name == "max_chisq")
+		{
+			group_max_chisq[group_id] = boost::lexical_cast<double>(param_value);
+		}
+		else
+		{
+			throw "Unknown group param name!";
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
 boost::regex	plane_property_regexp("//[[:space:]]?F([0-9])(\\*|X|Y)([0-9])\\.([[:word:]]+)[[:space:]]?=[[:space:]]?([^[:space:]]+)");
 
 bool	Geometry::parse_plane_property_comment( string &line )
@@ -244,6 +271,11 @@ Geometry::Geometry( istream &in )
 			    current_axis,
 			    current_plane
 			    ))
+		{
+			continue;
+		}
+
+		if (parse_group_property_comment(line))
 		{
 			continue;
 		}

@@ -36,7 +36,7 @@ public:
 	map< chamber_id_t, map< small_angle_t, vector<unsigned int> > >	time_distributions;
 	map< chamber_id_t, map< wire_pos_t, vector<unsigned int> > >	angle_distrib;
 
-	TrackRecognitionHook( Geometry &g, double max_chisq = -1 );
+	TrackRecognitionHook( Geometry &g );
 
 	virtual void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, device_id_t dev_id );
 	virtual void	handle_drift_data(
