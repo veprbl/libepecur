@@ -189,27 +189,10 @@ void	TrackRecognitionHook::handle_event_end()
 				auto	wire_index_it = track.wire_pos_ptr.begin();
 
 				double	DRIFT_STEP = 17.0; // mm
-				double	psi = atan(track.c1 * DRIFT_STEP);
+				small_angle_t	psi = round(atan(track.c1 * DRIFT_STEP) / M_PI * 180);
 
-				psi = abs(psi);
-
-				BOOST_ASSERT(psi < M_PI/2);
-
-				if (psi > M_PI/3)
-				{
-					psi -= M_PI/3;
-				}
-
-				/*
-				  sin(60*)   sin(120*-psi)        l      sin(60*)
-				  -------- = -------------  <=>  --- = -------------
-				      l           l0              l0   sin(120*-psi)
-				 */
-
-				double	multiplier = (sqrt(3)/2) / (sin(2*M_PI/3 - psi));
-
-				BOOST_ASSERT(multiplier >= 0);
-				BOOST_ASSERT(multiplier <= 1);
+				BOOST_ASSERT(psi <= 90);
+				BOOST_ASSERT(psi >= -90);
 
 				BOOST_FOREACH(wire_pos_t pos, track.chamber_wires_pos)
 				{
@@ -220,20 +203,14 @@ void	TrackRecognitionHook::handle_event_end()
 
 					uint16_t	t = time[*(wire_index_it++)];
 
-					auto	&calib = time_distributions[chamber_id];
+					auto	&calib = time_distributions[chamber_id][psi];
 
-					if (calib.find(pos) == calib.end())
+					if (calib.empty())
 					{
-						calib[pos] =
-							vector<unsigned int>(MAX_TIME_COUNTS);
+						calib.resize(MAX_TIME_COUNTS);
 					}
 
-					uint16_t	calib_t = round(t / multiplier);
-
-					if (calib_t < MAX_TIME_COUNTS)
-					{
-						calib[pos][calib_t]++;
-					}
+					calib[t]++;
 				}
 			}
 		}

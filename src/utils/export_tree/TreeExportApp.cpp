@@ -101,7 +101,7 @@ void	plot_calib_curve(
 {
 	BOOST_FOREACH(auto &pair, hook.time_distributions[chamber_id])
 	{
-		wire_pos_t	wire_pos = pair.first;
+		small_angle_t	angle = pair.first;
 		auto		&distribution = pair.second;
 		uint16_t	time = 0;
 		unsigned int	overal_integral = 0, integral = 0;
@@ -114,8 +114,8 @@ void	plot_calib_curve(
 		BOOST_FOREACH(auto counts, distribution)
 		{
 			integral += counts;
-			calib_curve.Fill(wire_pos, time,
-				  integral / (float)overal_integral);
+			calib_curve.Fill(angle, time,
+					 integral / (float)overal_integral);
 
 			time++;
 		}
@@ -128,8 +128,8 @@ void	plot_calib_curve(
 
 		BOOST_FOREACH(auto &pair, hook.time_distributions[chamber_id])
 		{
-			wire_pos_t	wire_pos = pair.first;
-			auto	bin_id = calib_curve.FindBin(wire_pos, time);
+			small_angle_t	angle = pair.first;
+			auto	bin_id = calib_curve.FindBin(angle, time);
 			auto	N = calib_curve.GetBinContent(bin_id);
 
 			sum += N;
