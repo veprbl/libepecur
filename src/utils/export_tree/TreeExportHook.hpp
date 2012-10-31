@@ -36,13 +36,13 @@ private:
 
 	vector<char*>	names;
 
-	void	init_prop_group(
+	void	init_track_group(
 		string group_name, group_id_t group_id, device_axis_t axis
 		);
 	void	init_drift_group(
 		string group_name, group_id_t group_id, device_axis_t axis
 		);
-	void	write_prop_event(
+	void	write_track_event(
 		group_id_t group_id, device_axis_t axis
 		);
 	void	write_drift_event(

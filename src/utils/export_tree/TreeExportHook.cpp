@@ -31,9 +31,9 @@ TreeExportHook::TreeExportHook( Geometry &g, double max_chisq )
 				boost::lexical_cast<string>(int(group_id)) +
 				((axis == DEV_AXIS_X) ? "X" : "Y");
 
-			if (device_type == DEV_TYPE_PROP)
+			if ((device_type == DEV_TYPE_PROP) || (device_type == DEV_TYPE_DRIFT))
 			{
-				init_prop_group(group_name, group_id, axis);
+				init_track_group(group_name, group_id, axis);
 			}
 			else if (device_type == DEV_TYPE_DRIFT)
 			{
@@ -51,7 +51,7 @@ TreeExportHook::~TreeExportHook()
 	}
 }
 
-void	TreeExportHook::init_prop_group(
+void	TreeExportHook::init_track_group(
 	string group_name, group_id_t group_id, device_axis_t axis
 	)
 {
@@ -129,7 +129,7 @@ const char*	TreeExportHook::store_name( string name )
 	return names.back();
 }
 
-void	TreeExportHook::write_prop_event(
+void	TreeExportHook::write_track_event(
 	group_id_t group_id, device_axis_t axis
 	)
 {
@@ -192,9 +192,9 @@ void	TreeExportHook::handle_event_end()
 //			vector<double>	&normal_pos = geom.group_normal_pos[group_id][axis];
 //			int	track_count = last_tracks[group_id][axis].size();
 
-			if (device_type == DEV_TYPE_PROP)
+			if ((device_type == DEV_TYPE_PROP) || (device_type == DEV_TYPE_DRIFT))
 			{
-				write_prop_event(group_id, axis);
+				write_track_event(group_id, axis);
 			}
 			else if (device_type == DEV_TYPE_DRIFT)
 			{
