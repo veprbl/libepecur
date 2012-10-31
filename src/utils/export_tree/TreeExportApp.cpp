@@ -185,7 +185,7 @@ int	main( int argc, char* argv[] )
 	TTree	drift_calib("drift_calib", "drift chambers calibration curves");
 	TH2F	calib_curve(
 		"calib_curve", "",
-		180, -90, 90,
+		36, -90, 90,
 		MAX_TIME_COUNTS + 5, 0, MAX_TIME_COUNTS + 5
 		);
 	TH1F	calib_chisq(
