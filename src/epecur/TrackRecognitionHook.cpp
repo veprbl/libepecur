@@ -198,6 +198,15 @@ void	TrackRecognitionHook::handle_event_end()
 				{
 					chamber_id_t	chamber_id = chambers[*(chamber_index_it++)];
 
+					auto	&angle_d = angle_distrib[chamber_id][pos];
+
+					if (angle_d.empty())
+					{
+						angle_d.resize(180);
+					}
+
+					angle_d[psi + 90]++;
+
 					vector<uint16_t>	&time =
 						last_event_drift_time[chamber_id];
 

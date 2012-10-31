@@ -189,6 +189,11 @@ int	main( int argc, char* argv[] )
 
 	string	title;
 	TTree	drift_calib("drift_calib", "drift chambers calibration curves");
+	TH2F	angle_dist_hist(
+		"angle_dist", "",
+		180, -90, 90,
+		180, -90, 90
+		);
 	TH2F	calib_curve(
 		"calib_curve", "",
 		36, -90, 90,
@@ -201,6 +206,7 @@ int	main( int argc, char* argv[] )
 
 	drift_calib.Branch("calib_curve", "TH2F", &calib_curve);
 	drift_calib.Branch("calib_chisq", "TH1F", &calib_chisq);
+	drift_calib.Branch("angle_dist", "TH2F", &angle_dist_hist);
 
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
@@ -221,6 +227,18 @@ int	main( int argc, char* argv[] )
 
 			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 			{
+				BOOST_FOREACH(auto pair, hook.angle_distrib[chamber_id])
+				{
+					wire_pos_t	pos = pair.first;
+					vector<unsigned int>	&dist = pair.second;
+
+					for(unsigned int i = 0; i < dist.size(); ++i)
+					{
+						int	angle = i - 90;
+						angle_dist_hist.Fill(pos, angle, dist[i]);
+					}
+				}
+
 				auto	num_events = plot_calib_curve(
 					hook,
 					chamber_id,
@@ -241,6 +259,7 @@ int	main( int argc, char* argv[] )
 				drift_calib.Fill();
 				calib_curve.Reset();
 				calib_chisq.Reset();
+				angle_dist_hist.Reset();
 
 				chamber_num++;
 			}
