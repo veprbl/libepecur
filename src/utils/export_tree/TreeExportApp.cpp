@@ -148,8 +148,6 @@ void	plot_calib_curve(
 			sum_sqr += (mean - N) * (mean - N);
 		}
 
-		cerr << time << "\t" << sum_sqr << "\t" << mean << endl;
-
 		double	chisq = sqrt(sum_sqr / (double)count);
 
 		calib_chisq.Fill(time, chisq);
