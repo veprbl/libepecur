@@ -145,8 +145,8 @@ unsigned int	plot_calib_curve(
 
 		BOOST_FOREACH(auto &pair, hook.time_distributions[chamber_id])
 		{
-			wire_pos_t	wire_pos = pair.first;
-			auto	bin_id = calib_curve.FindBin(wire_pos, time);
+			small_angle_t	angle = pair.first;
+			auto	bin_id = calib_curve.FindBin(angle, time);
 			auto	N = calib_curve.GetBinContent(bin_id);
 
 			sum_sqr += (mean - N) * (mean - N);
