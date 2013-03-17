@@ -22,7 +22,6 @@ private:
 
 	bool		last_event_finished;
 	bool		drift_cleanup;
-	double		max_chisq;
 
 public:
 
