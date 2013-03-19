@@ -9,7 +9,6 @@
 
 #include <TFile.h>
 #include <TTree.h>
-#include <TH1F.h>
 #include <TH2F.h>
 
 #include <epecur/geometry.hpp>
@@ -95,8 +94,7 @@ void	fill_info( TTree &info )
 unsigned int	plot_calib_curve(
 	TreeExportHook &hook,
 	chamber_id_t chamber_id,
-	TH2F &calib_curve,
-	TH1F &calib_chisq
+	TH2F &calib_curve
 	)
 {
 	unsigned int	num_events = 0;
@@ -123,38 +121,6 @@ unsigned int	plot_calib_curve(
 
 			time++;
 		}
-	}
-
-	for(int time = 0; time < MAX_TIME_COUNTS; time++)
-	{
-		double	sum = 0;
-		int	count = 0;
-
-		BOOST_FOREACH(auto &pair, hook.time_distributions[chamber_id])
-		{
-			small_angle_t	angle = pair.first;
-			auto	bin_id = calib_curve.FindBin(angle, time);
-			auto	N = calib_curve.GetBinContent(bin_id);
-
-			sum += N;
-			++count;
-		}
-
-		double	mean = sum / (double)count;
-		double	sum_sqr = 0;
-
-		BOOST_FOREACH(auto &pair, hook.time_distributions[chamber_id])
-		{
-			small_angle_t	angle = pair.first;
-			auto	bin_id = calib_curve.FindBin(angle, time);
-			auto	N = calib_curve.GetBinContent(bin_id);
-
-			sum_sqr += (mean - N) * (mean - N);
-		}
-
-		double	chisq = sqrt(sum_sqr / (double)count);
-
-		calib_chisq.Fill(time, chisq);
 	}
 
 	return num_events;
@@ -199,13 +165,8 @@ int	main( int argc, char* argv[] )
 		36, -90, 90,
 		MAX_TIME_COUNTS + 5, 0, MAX_TIME_COUNTS + 5
 		);
-	TH1F	calib_chisq(
-		"calib_chisq", "",
-		MAX_TIME_COUNTS, 0, MAX_TIME_COUNTS
-		);
 
-	drift_calib.Branch("calib_curve", "TH2F", &calib_curve);
-	drift_calib.Branch("calib_chisq", "TH1F", &calib_chisq);
+	drift_calib.Branch("calib_curve", "TH1F", &calib_curve);
 	drift_calib.Branch("angle_dist", "TH2F", &angle_dist_hist);
 
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
@@ -242,8 +203,7 @@ int	main( int argc, char* argv[] )
 				auto	num_events = plot_calib_curve(
 					hook,
 					chamber_id,
-					calib_curve,
-					calib_chisq
+					calib_curve
 					);
 
 				title = "d" +
@@ -254,11 +214,9 @@ int	main( int argc, char* argv[] )
 					boost::lexical_cast<string>(num_events);
 
 				calib_curve.SetTitle(title.c_str());
-				calib_chisq.SetTitle(title.c_str());
 
 				drift_calib.Fill();
 				calib_curve.Reset();
-				calib_chisq.Reset();
 				angle_dist_hist.Reset();
 
 				chamber_num++;
