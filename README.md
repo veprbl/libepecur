@@ -1,7 +1,7 @@
 Installation
 ============
 
-In order to build toolset you will need cmake, boost-devel, gsl, root, git.
+In order to build this software you will need cmake, boost-devel, gsl, root, git.
 
     mkdir build
     cd build
@@ -12,7 +12,7 @@ In order to build toolset you will need cmake, boost-devel, gsl, root, git.
 Utilities
 =========
 
-There are several utilities shipped with the library. For each and every invocation syntax is ./util_name data_file -g geometry_file
+There are several utilities shipped with the library.
 
 axial_shift
 -----------
