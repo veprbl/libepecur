@@ -213,7 +213,7 @@ void	TrackRecognitionHook::handle_event_end()
 
 					uint16_t	t = time[*(wire_index_it++)];
 
-					auto	&calib = time_distributions[chamber_id][psi];
+					auto	&calib = time_distributions[chamber_id];
 
 					if (calib.empty())
 					{

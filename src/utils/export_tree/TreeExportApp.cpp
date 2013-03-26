@@ -9,6 +9,7 @@
 
 #include <TFile.h>
 #include <TTree.h>
+#include <TH1F.h>
 #include <TH2F.h>
 
 #include <epecur/geometry.hpp>
@@ -94,36 +95,27 @@ void	fill_info( TTree &info )
 unsigned int	plot_calib_curve(
 	TreeExportHook &hook,
 	chamber_id_t chamber_id,
-	TH2F &calib_curve
+	TH1F &calib_curve
 	)
 {
-	unsigned int	num_events = 0;
+	uint16_t	time = 0;
+	unsigned int	overal_integral = 0, integral = 0;
 
-	BOOST_FOREACH(auto &pair, hook.time_distributions[chamber_id])
+	BOOST_FOREACH(auto counts, hook.time_distributions[chamber_id])
 	{
-		small_angle_t	angle = pair.first;
-		auto		&distribution = pair.second;
-		uint16_t	time = 0;
-		unsigned int	overal_integral = 0, integral = 0;
-
-		BOOST_FOREACH(auto counts, distribution)
-		{
-			overal_integral += counts;
-		}
-
-		num_events += overal_integral;
-
-		BOOST_FOREACH(auto counts, distribution)
-		{
-			integral += counts;
-			calib_curve.Fill(angle, time,
-					 integral / (float)overal_integral);
-
-			time++;
-		}
+		overal_integral += counts;
 	}
 
-	return num_events;
+	BOOST_FOREACH(auto counts, hook.time_distributions[chamber_id])
+	{
+		integral += counts;
+		calib_curve.Fill(time,
+		                 integral / (float)overal_integral);
+		cout << time << "\t" << integral / (float)overal_integral << endl;
+		time++;
+	}
+
+	return overal_integral;
 }
 
 int	main( int argc, char* argv[] )
@@ -160,9 +152,8 @@ int	main( int argc, char* argv[] )
 		180, -90, 90,
 		180, -90, 90
 		);
-	TH2F	calib_curve(
+	TH1F	calib_curve(
 		"calib_curve", "",
-		36, -90, 90,
 		MAX_TIME_COUNTS + 5, 0, MAX_TIME_COUNTS + 5
 		);
 

@@ -9,7 +9,7 @@ TFile	f("26061082.root", "READ");
 void	drift_calib_curve()
 {
 	TH2F	*angle_dist = 0;
-	TH2F	*calib_curve = 0;
+	TH1F	*calib_curve = 0;
 
 	drift_calib->SetBranchAddress("angle_dist", &angle_dist);
 	drift_calib->SetBranchAddress("calib_curve", &calib_curve);
@@ -24,12 +24,11 @@ void	drift_calib_curve()
 		angle_dist->SetLabelSize(0.08, "X");
 		angle_dist->SetLabelSize(0.08, "Y");
 		calib_curve->SetLabelSize(0.08, "X");
-		calib_curve->SetLabelSize(0.08, "Y");
 
 		angle_dist_canvas.cd(i + 1);
 		angle_dist->Draw("col");
 		calib_curve_canvas.cd(i + 1);
-		calib_curve->Draw("col");
+		calib_curve->Draw();
 
 		angle_dist = 0; calib_curve = 0; // TRICK :P
 	}
