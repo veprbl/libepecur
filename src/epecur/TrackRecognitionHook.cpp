@@ -164,11 +164,6 @@ void	TrackRecognitionHook::handle_event_end()
 			vector<chamber_id_t>	&chambers =
 				geom.group_chambers[group_id][axis];
 
-			if (chambers.size() < MIN_TRACK_CHAMBERS)
-			{
-				continue;
-			}
-
 			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 			{
                 BOOST_FOREACH(uint16_t time, last_event_drift_time[chamber_id])
