@@ -169,60 +169,20 @@ void	TrackRecognitionHook::handle_event_end()
 				continue;
 			}
 
-			block.clear();
-			vector< vector<wire_pos_t> >	block_copy;
-
-			block_copy.reserve(chambers.size());
-
 			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 			{
-				block_copy.push_back(last_event_drift_wire_pos[chamber_id]);
-				block.push_back(&block_copy.back());
-			}
+                BOOST_FOREACH(uint16_t time, last_event_drift_time[chamber_id])
+                {
+                    auto	&calib = time_distributions[chamber_id];
 
-			vector<double>	&normal_pos = geom.normal_pos[group_id][axis];
+                    if (calib.empty())
+                    {
+                        calib.resize(MAX_TIME_COUNTS);
+                    }
 
-			last_tracks[group_id][axis] = prop_recognize_all_tracks(block, normal_pos, max_chisq);
-
-			BOOST_FOREACH(track_info_t &track, last_tracks[group_id][axis])
-			{
-				auto	chamber_index_it = track.used_chambers.begin();
-				auto	wire_index_it = track.wire_pos_ptr.begin();
-
-				double	DRIFT_STEP = 17.0; // mm
-				small_angle_t	psi = round(atan(track.c1 * DRIFT_STEP / 2) / M_PI * 180);
-
-				BOOST_ASSERT(psi <= 90);
-				BOOST_ASSERT(psi >= -90);
-
-				BOOST_FOREACH(wire_pos_t pos, track.chamber_wires_pos)
-				{
-					chamber_id_t	chamber_id = chambers[*(chamber_index_it++)];
-
-					auto	&angle_d = angle_distrib[chamber_id][pos];
-
-					if (angle_d.empty())
-					{
-						angle_d.resize(180);
-					}
-
-					angle_d[psi + 90]++;
-
-					vector<uint16_t>	&time =
-						last_event_drift_time[chamber_id];
-
-					uint16_t	t = time[*(wire_index_it++)];
-
-					auto	&calib = time_distributions[chamber_id];
-
-					if (calib.empty())
-					{
-						calib.resize(MAX_TIME_COUNTS);
-					}
-
-					calib[t]++;
-				}
-			}
+                    calib[time]++;
+                }
+            }
 		}
 	}
 
