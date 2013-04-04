@@ -111,7 +111,6 @@ unsigned int	plot_calib_curve(
 		integral += counts;
 		calib_curve.Fill(time,
 		                 integral / (float)overal_integral);
-		cout << time << "\t" << integral / (float)overal_integral << endl;
 		time++;
 	}
 
