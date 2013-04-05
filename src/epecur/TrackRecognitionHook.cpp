@@ -112,6 +112,8 @@ void	TrackRecognitionHook::handle_drift_data(
 		time_it++;
 	}
 
+	last_event[chamber_id] = event_wire_pos;
+
 	BOOST_ASSERT(event_wire_pos.size() == event_time.size());
 }
 
@@ -123,11 +125,6 @@ void	TrackRecognitionHook::handle_event_end()
 	{
 		group_id_t	group_id = gr_tup.first;
 		double	max_chisq = geom.group_max_chisq[group_id];
-
-		if (geom.group_device_type[group_id] != DEV_TYPE_PROP)
-		{
-			continue;
-		}
 
 		BOOST_FOREACH(auto &axis_tup, gr_tup.second)
 		{
@@ -145,12 +142,6 @@ void	TrackRecognitionHook::handle_event_end()
 
 			last_tracks[group_id][axis] = prop_recognize_all_tracks(block, normal_pos, max_chisq);
 		}
-	}
-
-	BOOST_FOREACH(auto &gr_tup, geom.group_chambers)
-	{
-		group_id_t	group_id = gr_tup.first;
-		double	max_chisq = geom.group_max_chisq[group_id];
 
 		if (geom.group_device_type[group_id] != DEV_TYPE_DRIFT)
 		{
@@ -159,23 +150,7 @@ void	TrackRecognitionHook::handle_event_end()
 
 		BOOST_FOREACH(auto &axis_tup, gr_tup.second)
 		{
-			device_axis_t	axis = axis_tup.first;
-			vector<chamber_id_t>	&chambers = axis_tup.second;
-
-			block.clear();
-			vector< vector<wire_pos_t> >    rough;
-
-			rough.reserve(chambers.size());
-
-			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
-			{
-				rough.push_back(last_event_drift_wire_pos[chamber_id]);
-				block.push_back(&rough.back());
-			}
-
-			vector<double>  &normal_pos = geom.normal_pos[group_id][axis];
-
-			last_tracks[group_id][axis] = prop_recognize_all_tracks(block, normal_pos, max_chisq);
+			const vector<chamber_id_t>	&chambers = axis_tup.second;
 
 			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 			{
