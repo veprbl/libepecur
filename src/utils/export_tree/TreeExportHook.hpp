@@ -32,7 +32,7 @@ private:
 
 	TTree	event_tree;
 	unordered_map< group_id_t, map<device_axis_t, prop_group_t> >	stored_prop;
-	unordered_map< group_id_t, map<device_axis_t, map<int, drift_group_t> > >	stored_drift;
+	unordered_map< group_id_t, map<device_axis_t, map<chamber_id_t, drift_group_t> > >	stored_drift;
 
 	vector<char*>	names;
 
