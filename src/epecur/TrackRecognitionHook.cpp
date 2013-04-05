@@ -119,7 +119,7 @@ void	TrackRecognitionHook::handle_event_end()
 {
 	vector< vector<wire_pos_t>* >	block;
 
-	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
+	BOOST_FOREACH(auto &gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
 		double	max_chisq = geom.group_max_chisq[group_id];
@@ -129,10 +129,10 @@ void	TrackRecognitionHook::handle_event_end()
 			continue;
 		}
 
-		BOOST_FOREACH(auto axis_tup, gr_tup.second)
+		BOOST_FOREACH(auto &axis_tup, gr_tup.second)
 		{
 			device_axis_t	axis = axis_tup.first;
-			vector<chamber_id_t>	chambers = axis_tup.second;
+			const vector<chamber_id_t>	&chambers = axis_tup.second;
 
 			block.clear();
 
@@ -147,7 +147,7 @@ void	TrackRecognitionHook::handle_event_end()
 		}
 	}
 
-	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
+	BOOST_FOREACH(auto &gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
 		double	max_chisq = geom.group_max_chisq[group_id];
@@ -157,11 +157,10 @@ void	TrackRecognitionHook::handle_event_end()
 			continue;
 		}
 
-		BOOST_FOREACH(auto axis_tup, gr_tup.second)
+		BOOST_FOREACH(auto &axis_tup, gr_tup.second)
 		{
 			device_axis_t	axis = axis_tup.first;
-			vector<chamber_id_t>	&chambers =
-				geom.group_chambers[group_id][axis];
+			vector<chamber_id_t>	&chambers = axis_tup.second;
 
 			block.clear();
 			vector< vector<wire_pos_t> >    rough;
