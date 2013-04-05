@@ -17,6 +17,9 @@ TreeExportHook::TreeExportHook( Geometry &g )
 	fill_queue =
 	    dispatch_queue_create("org.epecur.fill_queue", DISPATCH_QUEUE_SERIAL);
 
+	stored_prop = new unordered_map< group_id_t, map<device_axis_t, prop_group_t> >();
+	stored_drift = new unordered_map< group_id_t, map<device_axis_t, map<int, drift_group_t> > >();
+
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
@@ -49,13 +52,15 @@ TreeExportHook::~TreeExportHook()
 		delete[] ptr;
 	}
 	delete event_tree;
+	delete stored_prop;
+	delete stored_drift;
 }
 
 void	TreeExportHook::init_track_group(
 	string group_name, group_id_t group_id, device_axis_t axis
 	)
 {
-	prop_group_t	&st_gr = stored_prop[group_id][axis];
+	prop_group_t	&st_gr = (*stored_prop)[group_id][axis];
 	group_name = "t" + group_name + "_";
 
 	event_tree->Branch(
@@ -95,7 +100,7 @@ void	TreeExportHook::init_drift_group(
 	BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 	{
 		drift_group_t	&st_gr =
-			stored_drift[group_id][axis][chamber_id];
+			(*stored_drift)[group_id][axis][chamber_id];
 		string	group_name =
 			"d" + _group_name +
 			boost::lexical_cast<string>(i) + "_";
@@ -134,7 +139,7 @@ void	TreeExportHook::write_track_event(
 	)
 {
 	vector<track_info_t>	&tracks = last_tracks[group_id][axis];
-	prop_group_t	&st_gr = stored_prop[group_id][axis];
+	prop_group_t	&st_gr = (*stored_prop)[group_id][axis];
 
 	st_gr.track_count = tracks.size();
 	st_gr.c0.clear();
@@ -165,7 +170,7 @@ void	TreeExportHook::write_drift_event(
 	BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 	{
 		drift_group_t	&st_gr =
-			stored_drift[group_id][axis][chamber_id];
+			(*stored_drift)[group_id][axis][chamber_id];
 		vector<wire_pos_t>      &wire_pos =
 			last_event_drift_wire_pos[chamber_id];
 		vector<uint16_t>        &time =
