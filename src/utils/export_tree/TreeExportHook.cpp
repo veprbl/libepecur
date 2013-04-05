@@ -189,8 +189,6 @@ void	TreeExportHook::handle_event_end()
 		BOOST_FOREACH(auto axis_tup, gr_tup.second)
 		{
 			device_axis_t	axis = axis_tup.first;
-//			vector<double>	&normal_pos = geom.group_normal_pos[group_id][axis];
-//			int	track_count = last_tracks[group_id][axis].size();
 
 			if ((device_type == DEV_TYPE_PROP) || (device_type == DEV_TYPE_DRIFT))
 			{
