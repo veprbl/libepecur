@@ -10,6 +10,8 @@
 
 #include <boost/unordered/unordered_map.hpp>
 
+#include <dispatch/dispatch.h>
+
 using boost::unordered_map;
 
 struct prop_group_t
@@ -30,7 +32,8 @@ class TreeExportHook : public TrackRecognitionHook
 {
 private:
 
-	TTree	event_tree;
+	TTree	*event_tree;
+	dispatch_queue_t	fill_queue;
 	unordered_map< group_id_t, map<device_axis_t, prop_group_t> >	stored_prop;
 	unordered_map< group_id_t, map<device_axis_t, map<int, drift_group_t> > >	stored_drift;
 
@@ -54,6 +57,7 @@ public:
 	TreeExportHook( Geometry &g );
 	~TreeExportHook();
 	const char*	store_name( string name );
+	virtual LoadHook*	get_copy() { return new TreeExportHook(*this); };
 	virtual void	handle_event_end();
 };
 

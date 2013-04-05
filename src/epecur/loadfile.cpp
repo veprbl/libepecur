@@ -12,6 +12,8 @@
 
 #include <boost/endian/integers.hpp>
 
+#include <dispatch/dispatch.h>
+
 #include "types.hpp"
 #include "loadfile.hpp"
 
@@ -258,7 +260,7 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook 
 	hook.handle_event_end();
 }
 
-void	read_cycle( const char* &pos, const char *max_pos, LoadHook &hook )
+void	read_cycle( const char* pos, const char *max_pos, LoadHook &hook )
 {
 	event_header_t	event;
 
@@ -344,7 +346,14 @@ void	resync( const char* &pos, const char* window_end )
 
 bool	read_record( const char* &pos, const char* window_end, bool is_last_window, LoadHook &hook )
 {
+	struct cycle_process_task_t
+	{
+		const char* record_begin;
+		const char* record_end;
+	};
+	static vector<cycle_process_task_t>	tasks;
 	record_header_t	rec;
+	bool	result;
 
 	mem_read(pos, rec);
 
@@ -358,7 +367,7 @@ bool	read_record( const char* &pos, const char* window_end, bool is_last_window,
 		}
 		else
 		{
-			return false;
+			result = false; goto l_return;
 		}
 	}
 
@@ -380,11 +389,11 @@ bool	read_record( const char* &pos, const char* window_end, bool is_last_window,
 			catch(const char* msg)
 			{
 				cerr << endl << msg << endl;
-				return false;
+				result = false; goto l_return;
 			}
 
 			cerr << " success" << endl;;
-			return true;
+			result = true; goto l_return;
 		}
 	}
 	else
@@ -392,7 +401,7 @@ bool	read_record( const char* &pos, const char* window_end, bool is_last_window,
 		if (!is_last_window)
 		{
 			// this should never happen really
-			return false;
+			result = false; goto l_return;
 		}
 	}
 
@@ -402,13 +411,16 @@ bool	read_record( const char* &pos, const char* window_end, bool is_last_window,
 
 		try
 		{
-			read_cycle(pos, record_end, hook);
+			cycle_process_task_t	task;
+			task.record_begin = pos;
+			task.record_end = record_end;
+			tasks.push_back(task);
 		}
 		catch (char const* e)
 		{
 			cerr << e << endl;
-			pos = record_end;
 		}
+		pos = record_end;
 
 		break;
 	case REC_TYPE_SLOW:
@@ -430,7 +442,38 @@ bool	read_record( const char* &pos, const char* window_end, bool is_last_window,
 		throw "Block read function didn't stopped at the end of a block";
 	}
 
-	return true;
+	result = true;
+
+l_return:
+	if (result == false)
+	{
+		// when this function returns false, window may change, so processing
+		// must be done now
+		static vector<LoadHook*>	hooks;
+		while(hooks.size() < tasks.size())
+		{
+			hooks.push_back(hook.get_copy());
+		}
+
+		dispatch_apply(tasks.size(), dispatch_get_global_queue(0, 0),
+		               ^(size_t i)
+		               {
+						   try{
+							   read_cycle(
+								   tasks[i].record_begin,
+								   tasks[i].record_end,
+								   *hooks[i]
+								   );
+						   }
+						   catch(const char* e)
+						   {
+							   cerr << e << endl;
+						   }
+					   });
+		tasks.clear();
+	}
+
+	return result;
 }
 
 const int64_t	MAX_WINDOW_SIZE = 1024*1024*1024; // 1 gigabyte

@@ -12,6 +12,8 @@
 #include <TH1F.h>
 #include <TH2F.h>
 
+#include <dispatch/dispatch.h>
+
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
 #include <epecur/types.hpp>

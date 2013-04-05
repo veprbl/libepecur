@@ -11,13 +11,12 @@
 #include "TreeExportHook.hpp"
 
 TreeExportHook::TreeExportHook( Geometry &g )
-	: TrackRecognitionHook(g),
-	  event_tree(
-		  "events",
-		  "recognized tracks for prop chambers"
-		  "and triggered drift wires"
-		  )
+	: TrackRecognitionHook(g)
 {
+	event_tree = new TTree("events", "recognized tracks for prop chambers and triggered drift wires");
+	fill_queue =
+	    dispatch_queue_create("org.epecur.fill_queue", DISPATCH_QUEUE_SERIAL);
+
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
@@ -49,6 +48,7 @@ TreeExportHook::~TreeExportHook()
 	{
 		delete[] ptr;
 	}
+	delete event_tree;
 }
 
 void	TreeExportHook::init_track_group(
@@ -58,27 +58,27 @@ void	TreeExportHook::init_track_group(
 	prop_group_t	&st_gr = stored_prop[group_id][axis];
 	group_name = "t" + group_name + "_";
 
-	event_tree.Branch(
+	event_tree->Branch(
 		store_name(group_name + "track_count"),
 		&st_gr.track_count,
 		store_name(group_name + "track_count/i")
 		);
-	st_gr.c0_br = event_tree.Branch(
+	st_gr.c0_br = event_tree->Branch(
 		store_name(group_name + "c0"),
 		nullptr,
 		store_name(group_name + "c0[" + group_name + "track_count]/D")
 		);
-	st_gr.c1_br = event_tree.Branch(
+	st_gr.c1_br = event_tree->Branch(
 		store_name(group_name + "c1"),
 		nullptr,
 		store_name(group_name + "c1[" + group_name + "track_count]/D")
 		);
-	st_gr.hits_count_br = event_tree.Branch(
+	st_gr.hits_count_br = event_tree->Branch(
 		store_name(group_name + "hits_count"),
 		nullptr,
 		store_name(group_name + "hits_count[" + group_name + "track_count]/I")
 		);
-	st_gr.chisq_br = event_tree.Branch(
+	st_gr.chisq_br = event_tree->Branch(
 		store_name(group_name + "chisq"),
 		nullptr,
 		store_name(group_name + "chisq[" + group_name + "track_count]/D")
@@ -100,17 +100,17 @@ void	TreeExportHook::init_drift_group(
 			"d" + _group_name +
 			boost::lexical_cast<string>(i) + "_";
 
-		event_tree.Branch(
+		event_tree->Branch(
 			store_name(group_name + "num_wires"),
 			&st_gr.num_wires,
 			store_name(group_name + "num_wires/i")
 			);
-		st_gr.wire_pos_br = event_tree.Branch(
+		st_gr.wire_pos_br = event_tree->Branch(
 			store_name(group_name + "wire_pos"),
 			nullptr,
 			store_name(group_name + "wire_pos[" + group_name + "num_wires]/" WIRE_POS_ROOT_TYPE)
 			);
-		st_gr.time_br = event_tree.Branch(
+		st_gr.time_br = event_tree->Branch(
 			store_name(group_name + "time"),
 			nullptr,
 			store_name(group_name + "time[" + group_name + "num_wires]/" DRIFT_TIME_ROOT_TYPE)
@@ -181,6 +181,8 @@ void	TreeExportHook::handle_event_end()
 {
 	TrackRecognitionHook::handle_event_end();
 
+	dispatch_sync(fill_queue, ^{
+
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
@@ -201,5 +203,7 @@ void	TreeExportHook::handle_event_end()
 		}
 	}
 
-	event_tree.Fill();
+	event_tree->Fill();
+
+	    });
 }
