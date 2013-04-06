@@ -17,8 +17,8 @@ TreeExportHook::TreeExportHook( Geometry &g )
 	fill_queue =
 	    dispatch_queue_create("org.epecur.fill_queue", DISPATCH_QUEUE_SERIAL);
 
-	stored_prop = new unordered_map< group_id_t, map<device_axis_t, prop_group_t> >();
-	stored_drift = new unordered_map< group_id_t, map<device_axis_t, map<int, drift_group_t> > >();
+	stored_trace = new unordered_map< group_id_t, map<device_axis_t, trace_group_t> >();
+	stored_drift = new unordered_map< group_id_t, map<device_axis_t, map<chamber_id_t, drift_group_t> > >();
 
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
@@ -52,7 +52,7 @@ TreeExportHook::~TreeExportHook()
 		delete[] ptr;
 	}
 	delete event_tree;
-	delete stored_prop;
+	delete stored_trace;
 	delete stored_drift;
 }
 
