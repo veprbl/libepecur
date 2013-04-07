@@ -35,7 +35,7 @@ TreeExportHook::TreeExportHook( Geometry &g )
 			{
 				init_track_group(group_name, group_id, axis);
 			}
-			else if (device_type == DEV_TYPE_DRIFT)
+			if (device_type == DEV_TYPE_DRIFT)
 			{
 				init_drift_group(group_name, group_id, axis);
 			}
@@ -194,7 +194,7 @@ void	TreeExportHook::handle_event_end()
 			{
 				write_track_event(group_id, axis);
 			}
-			else if (device_type == DEV_TYPE_DRIFT)
+			if (device_type == DEV_TYPE_DRIFT)
 			{
 				write_drift_event(group_id, axis);
 			}
