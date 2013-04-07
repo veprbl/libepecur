@@ -68,7 +68,7 @@ void	TrackRecognitionHook::handle_drift_data(
 	wire_pos_t	prev_wire_pos = 0;
 	uint16_t	prev_time = 0;
 
-	if (event_wire_pos.size() > 0)
+	if (!event_wire_pos.empty())
 	{
 		prev_wire_pos = event_wire_pos.back();
 		prev_time = event_time.back();
@@ -80,7 +80,7 @@ void	TrackRecognitionHook::handle_drift_data(
 		uint16_t	time = (*time_it);
 		bool		append = true;
 
-		if ((event_wire_pos.size() > 0)
+		if ((!event_wire_pos.empty())
 		    && (abs(prev_wire_pos - wire_pos) == 2))
 		{
 			int16_t	timedelta = time - prev_time;
