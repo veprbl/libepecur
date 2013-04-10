@@ -35,12 +35,35 @@ void	TrackRecognitionHook::handle_prop_data( const wire_id_t* begin, const wire_
 	}
 
 	auto &chamber = last_event[chamber_id];
+	wire_id_t	prev_pos;
+	int	sequence_len = 1, max_sequence_len = 3;
 
 	for(auto pos = begin; pos < end; pos++)
 	{
 		wire_pos_t	wire_pos = geom.get_wire_pos(dev_id, *pos);
 
+		if ((!chamber.empty()) && (prev_pos == (*pos) - 1))
+		{
+			sequence_len++;
+		}
+		else
+		{
+			if (sequence_len > max_sequence_len)
+			{
+				chamber.resize(chamber.size() - sequence_len);
+			}
+			sequence_len = 1;
+		}
+
 		chamber.push_back(wire_pos);
+		BOOST_ASSERT(chamber.size() >= sequence_len);
+
+		prev_pos = *pos;
+	}
+
+	if (sequence_len > max_sequence_len)
+	{
+		chamber.resize(chamber.size() - sequence_len);
 	}
 }
 
