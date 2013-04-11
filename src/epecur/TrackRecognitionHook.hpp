@@ -36,13 +36,13 @@ public:
 
 	TrackRecognitionHook( Geometry &g );
 
-	virtual void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, device_id_t dev_id );
+	virtual void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, device_id_t dev_id ) override;
 	virtual void	handle_drift_data(
 		std::vector<wire_id_t> &wire_id,
 		std::vector<uint16_t> &time,
 		device_id_t dev_id
 		) override;
-	virtual void	handle_event_end();
+	virtual void	handle_event_end() override;
 };
 
 
