@@ -18,6 +18,7 @@
 
 #include "TreeExportApp.hpp"
 #include "TreeExportHook.hpp"
+#include "DriftCalibHook.hpp"
 
 namespace po = boost::program_options;
 
@@ -93,7 +94,7 @@ void	fill_info( TTree &info )
 }
 
 unsigned int	plot_calib_curve(
-	TreeExportHook &hook,
+	DriftCalibHook &hook,
 	chamber_id_t chamber_id,
 	TH1F &calib_curve
 	)
@@ -131,10 +132,12 @@ int	main( int argc, char* argv[] )
 	Geometry	geom(file);
 	TFile		tree_file(output_filepath.c_str(), "RECREATE");
 	TTree		info("info", "information about this file");
+	DriftCalibHook	calib_hook(geom);
 	TreeExportHook	hook(geom);
 
 	try
 	{
+		loadfile(data_filepath, calib_hook);
 		loadfile(data_filepath, hook);
 	}
 	catch( const char *err )
@@ -173,7 +176,7 @@ int	main( int argc, char* argv[] )
 			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 			{
 				auto	num_events = plot_calib_curve(
-					hook,
+					calib_hook,
 					chamber_id,
 					calib_curve
 					);

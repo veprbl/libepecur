@@ -104,31 +104,6 @@ void	TrackRecognitionHook::handle_event_end()
 
 			last_tracks[group_id][axis] = prop_recognize_all_tracks(block, normal_pos, max_chisq);
 		}
-
-		if (geom.group_device_type[group_id] != DEV_TYPE_DRIFT)
-		{
-			continue;
-		}
-
-		BOOST_FOREACH(auto &axis_tup, gr_tup.second)
-		{
-			const vector<chamber_id_t>	&chambers = axis_tup.second;
-
-			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
-			{
-                BOOST_FOREACH(uint16_t time, last_event_drift_time[chamber_id])
-                {
-                    auto	&calib = time_distributions[chamber_id];
-
-                    if (calib.empty())
-                    {
-                        calib.resize(MAX_TIME_COUNTS);
-                    }
-
-                    calib[time]++;
-                }
-            }
-		}
 	}
 
 	StdDrift::handle_event_end();
