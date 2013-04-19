@@ -9,7 +9,6 @@
 
 #include <TFile.h>
 #include <TTree.h>
-#include <TH1F.h>
 
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
@@ -92,31 +91,6 @@ void	fill_info( TTree &info )
 	info.Fill();
 }
 
-unsigned int	plot_calib_curve(
-	DriftCalibHook &hook,
-	chamber_id_t chamber_id,
-	TH1F &calib_curve
-	)
-{
-	uint16_t	time = 0;
-	unsigned int	overal_integral = 0, integral = 0;
-
-	BOOST_FOREACH(auto counts, hook.time_distributions[chamber_id])
-	{
-		overal_integral += counts;
-	}
-
-	BOOST_FOREACH(auto counts, hook.time_distributions[chamber_id])
-	{
-		integral += counts;
-		calib_curve.Fill(time,
-		                 integral / (float)overal_integral);
-		time++;
-	}
-
-	return overal_integral;
-}
-
 int	main( int argc, char* argv[] )
 {
 	ParseCommandLine(argc, argv);
@@ -155,56 +129,7 @@ int	main( int argc, char* argv[] )
 
 	fill_info(info);
 
-	string	title;
-	TTree	drift_calib("drift_calib", "drift chambers calibration curves");
-	TH1F	calib_curve(
-		"calib_curve", "",
-		MAX_TIME_COUNTS + 5, 0, MAX_TIME_COUNTS + 5
-		);
-
-	drift_calib.Branch("calib_curve", "TH1F", &calib_curve);
-
-	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
-	{
-		group_id_t	group_id = gr_tup.first;
-		device_type_t	device_type = geom.group_device_type[group_id];
-
-		if (device_type != DEV_TYPE_DRIFT)
-		{
-			continue;
-		}
-
-		BOOST_FOREACH(auto axis_tup, gr_tup.second)
-		{
-			device_axis_t	axis = axis_tup.first;
-			vector<chamber_id_t>	&chambers =
-				geom.group_chambers[group_id][axis];
-			int	chamber_num = 1;
-
-			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
-			{
-				auto	num_events = plot_calib_curve(
-					calib_hook,
-					chamber_id,
-					calib_curve
-					);
-
-				title = "d" +
-					boost::lexical_cast<string>(int(group_id)) +
-					((axis == DEV_AXIS_X) ? "X" : "Y") +
-					boost::lexical_cast<string>(int(chamber_num)) +
-					" num_events = " +
-					boost::lexical_cast<string>(num_events);
-
-				calib_curve.SetTitle(title.c_str());
-
-				drift_calib.Fill();
-				calib_curve.Reset();
-
-				chamber_num++;
-			}
-		}
-	}
+	calib_hook.generate_calibration_curves();
 
 	tree_file.Write();
 
