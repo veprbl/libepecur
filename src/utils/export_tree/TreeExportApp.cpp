@@ -116,7 +116,7 @@ int	main( int argc, char* argv[] )
 		cerr << err << endl;
 	}
 
-	TreeExportHook	hook(geom);
+	TreeExportHook	hook(geom, &calib_hook.calibration_curve);
 
 	try
 	{

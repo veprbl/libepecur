@@ -6,10 +6,14 @@
 
 #include "TrackRecognitionHook.hpp"
 
-TrackRecognitionHook::TrackRecognitionHook( Geometry &g )
+TrackRecognitionHook::TrackRecognitionHook(
+	Geometry &g,
+	StdDrift::calibration_curve_t *c
+	)
 	: StdDrift(g),
 	  last_event_finished(false),
-	  geom(g)
+	  geom(g),
+	  calibration_curve(c)
 {
 	// nothing
 }

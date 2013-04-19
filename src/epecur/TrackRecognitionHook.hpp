@@ -25,10 +25,11 @@ private:
 public:
 
 	Geometry	geom;
+	StdDrift::calibration_curve_t	*calibration_curve;
 	unordered_map< chamber_id_t, vector<wire_pos_t> >	last_event;
 	unordered_map< group_id_t, map< device_axis_t, vector<track_info_t> > >	last_tracks;
 
-	TrackRecognitionHook( Geometry &g );
+	TrackRecognitionHook( Geometry &g, StdDrift::calibration_curve_t *c = NULL );
 
 	virtual void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, device_id_t dev_id ) override;
 	virtual void	handle_drift_data(

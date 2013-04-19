@@ -51,7 +51,7 @@ private:
 
 public:
 
-	TreeExportHook( Geometry &g );
+	TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c );
 	~TreeExportHook();
 	const char*	store_name( string name );
 	virtual void	handle_event_end();
