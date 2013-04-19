@@ -12,16 +12,17 @@
 
 #include <boost/unordered/unordered_map.hpp>
 
+#include "StdDrift.hpp"
+
 using boost::unordered_map;
 
 static const int	MAX_TIME_COUNTS = 384;
 
-class	TrackRecognitionHook: public LoadHook
+class	TrackRecognitionHook: public StdDrift
 {
 private:
 
 	bool		last_event_finished;
-	bool		drift_cleanup;
 
 public:
 
@@ -30,8 +31,6 @@ public:
 	unordered_map< group_id_t, map< device_axis_t, vector<track_info_t> > >	last_tracks;
 
 	// drift
-	map< chamber_id_t, vector<wire_pos_t> >	last_event_drift_wire_pos;
-	map< chamber_id_t, vector<uint16_t> >	last_event_drift_time;
 	map< chamber_id_t, vector<unsigned int> >	time_distributions;
 
 	TrackRecognitionHook( Geometry &g );
