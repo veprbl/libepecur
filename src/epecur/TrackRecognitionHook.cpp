@@ -111,6 +111,7 @@ void	TrackRecognitionHook::handle_event_end()
 	BOOST_FOREACH(auto &gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
+		device_type_t	device_type = geom.group_device_type[group_id];
 		double	max_chisq = geom.group_max_chisq[group_id];
 
 		BOOST_FOREACH(auto &axis_tup, gr_tup.second)
@@ -127,7 +128,18 @@ void	TrackRecognitionHook::handle_event_end()
 
 			vector<double>	&normal_pos = geom.normal_pos[group_id][axis];
 
-			last_tracks[group_id][axis] = prop_recognize_all_tracks(block, normal_pos, max_chisq);
+			if (device_type == DEV_TYPE_PROP)
+			{
+				last_tracks[group_id][axis] = recognize_all_tracks<track_type_t::prop>(block, normal_pos, max_chisq);
+			}
+			else if (device_type == DEV_TYPE_DRIFT)
+			{
+				last_tracks[group_id][axis] = recognize_all_tracks<track_type_t::drift>(block, normal_pos, max_chisq);
+			}
+			else
+			{
+				throw "Invalid dev type";
+			}
 		}
 	}
 

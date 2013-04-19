@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 	BOOST_CHECK_EQUAL(combination_id, num_combinations);
 }
 
-BOOST_AUTO_TEST_CASE( check_prop_recognize_track )
+BOOST_AUTO_TEST_CASE( check_recognize_track )
 {
 	vector<wire_pos_t>	v1;
 	v1.push_back(1); v1.push_back(2); v1.push_back(3);
@@ -67,10 +67,10 @@ BOOST_AUTO_TEST_CASE( check_prop_recognize_track )
 	normal_pos.push_back(3);
 	normal_pos.push_back(4);
 
-	prop_recognize_track(data, normal_pos);
+	recognize_track(data, normal_pos);
 }
 
-BOOST_AUTO_TEST_CASE( check_prop_recognize_all_tracks )
+BOOST_AUTO_TEST_CASE( check_recognize_all_tracks_prop )
 {
 	vector<wire_pos_t>	v1;
 	v1.push_back(1); v1.push_back(50);
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE( check_prop_recognize_all_tracks )
 	normal_pos.push_back(3);
 	normal_pos.push_back(4);
 
-	vector<track_info_t>	tracks = prop_recognize_all_tracks(data, normal_pos);
+	vector<track_info_t>	tracks = recognize_all_tracks<track_type_t::prop>(data, normal_pos);
 
 	BOOST_REQUIRE_EQUAL(tracks.size(), 2u);
 	BOOST_CHECK_EQUAL(tracks[0].c0, 50);

@@ -76,7 +76,7 @@ bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> 
 	return true;
 }
 
-track_info_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos )
+track_info_t	recognize_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos )
 {
 	const chamber_id_t	chambers_count = data.size();
 	vector<wire_pos_ptr_t>	best_wire_pos_ptr(chambers_count);
@@ -143,7 +143,8 @@ track_info_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, co
 				});
 }
 
-vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq )
+template<track_type_t track_type>
+vector<track_info_t>	recognize_all_tracks( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq )
 /*
  * Warning: This function will delete recognized wires from your original vectors.
  */
@@ -164,7 +165,7 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 
 	while(delete_empty_chambers(data, normal_pos, used_chambers))
 	{
-		track_info_t	track = prop_recognize_track(data, normal_pos);
+		track_info_t	track = recognize_track(data, normal_pos);
 
 		track.used_chambers = used_chambers;
 
@@ -181,9 +182,23 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 		{
 			chamber_data->erase(chamber_data->begin() + track.wire_pos_ptr[chamber_id]);
 
+			// for drift chamber point consists of the left and right side
+			// so we need to remove both
+			if (track_type == track_type_t::drift)
+			{
+				auto	other_pos = track.wire_pos_ptr[chamber_id] ^ 1;
+				chamber_data->erase(chamber_data->begin() + other_pos);
+			}
+
 			chamber_id++;
 		}
 	}
 
 	return result;
+}
+
+void TRACK_HPP_RECOGNIZE_ALL_TRACK_FORCE()
+{
+	recognize_all_tracks<track_type_t::prop>( vector< vector<wire_pos_t>* >(), vector<double>(), 0);
+	recognize_all_tracks<track_type_t::drift>( vector< vector<wire_pos_t>* >(), vector<double>(), 0);
 }
