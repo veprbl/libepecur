@@ -13,12 +13,9 @@ using namespace std;
 
 class	StdDrift: public LoadHook
 {
-private:
-
-	Geometry	geom;
-
 protected:
 
+	Geometry	geom;
 	bool	drift_cleanup;
 
 public:
