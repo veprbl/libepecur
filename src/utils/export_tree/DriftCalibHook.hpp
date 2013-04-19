@@ -21,7 +21,7 @@ private:
 public:
 
 	map< chamber_id_t, vector<unsigned int> >	time_distributions;
-	map< chamber_id_t, vector<double> >	calibration_curve;
+	StdDrift::calibration_curve_t	calibration_curve;
 
 	DriftCalibHook( Geometry &g );
 	~DriftCalibHook();
