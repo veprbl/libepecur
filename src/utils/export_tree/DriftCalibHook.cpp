@@ -3,8 +3,6 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <TTree.h>
-
 #include <epecur/types.hpp>
 #include <epecur/track.hpp>
 #include <epecur/StdDrift.hpp>
