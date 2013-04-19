@@ -80,7 +80,28 @@ void	TrackRecognitionHook::handle_drift_data(
 	StdDrift::handle_drift_data(wire_id_s, time_s, dev_id);
 
 	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
-	last_event[chamber_id] = last_event_drift_wire_pos[chamber_id];
+
+	// if calibration curve is not provided, just use wire_id's
+	if (calibration_curve == NULL)
+	{
+		last_event[chamber_id] = last_event_drift_wire_pos[chamber_id];
+		return;
+	}
+
+	auto	&wire_pos = last_event_drift_wire_pos[chamber_id];
+	auto	&time = last_event_drift_time[chamber_id];
+	auto	&calib = (*calibration_curve)[chamber_id];
+	auto	wit = wire_pos.begin();
+	auto	tit = time.begin();
+
+	while(wit != wire_pos.end())
+	{
+		const double	DRIFT_DISTANCE = 17.0;
+		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit + 0.5 * calib[*tit]));
+		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit - 0.5 * calib[*tit]));
+		wit++;
+		tit++;
+	}
 }
 
 void	TrackRecognitionHook::handle_event_end()
