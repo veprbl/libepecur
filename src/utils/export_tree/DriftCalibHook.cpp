@@ -14,7 +14,7 @@ DriftCalibHook::DriftCalibHook( Geometry &g )
     , drift_calib("drift_calib", "drift chambers calibration curves")
     , calib_curve(
         "calib_curve", "",
-        MAX_TIME_COUNTS + 5, 0, MAX_TIME_COUNTS + 5
+        MAX_TIME_COUNTS, 0, MAX_TIME_COUNTS
         )
 {
 	drift_calib.Branch("calib_curve", "TH1F", &calib_curve);
