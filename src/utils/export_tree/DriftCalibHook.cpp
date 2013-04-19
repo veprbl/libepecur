@@ -29,6 +29,9 @@ unsigned int	DriftCalibHook::generate_calibration_curve( chamber_id_t chamber_id
 {
 	uint16_t	time = 0;
 	unsigned int	overal_integral = 0, integral = 0;
+	auto	&calib = calibration_curve[chamber_id];
+
+	calib.resize(MAX_TIME_COUNTS);
 
 	BOOST_FOREACH(auto counts, time_distributions[chamber_id])
 	{
@@ -39,6 +42,7 @@ unsigned int	DriftCalibHook::generate_calibration_curve( chamber_id_t chamber_id
 	{
 		integral += counts;
 		auto	value = integral / (float)overal_integral;
+		calib[time] = value;
 		calib_curve.Fill(time, value);
 		time++;
 	}
