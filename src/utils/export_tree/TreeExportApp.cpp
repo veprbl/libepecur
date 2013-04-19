@@ -10,7 +10,6 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TH1F.h>
-#include <TH2F.h>
 
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
