@@ -133,11 +133,20 @@ int	main( int argc, char* argv[] )
 	TFile		tree_file(output_filepath.c_str(), "RECREATE");
 	TTree		info("info", "information about this file");
 	DriftCalibHook	calib_hook(geom);
-	TreeExportHook	hook(geom);
 
 	try
 	{
 		loadfile(data_filepath, calib_hook);
+	}
+	catch( const char *err )
+	{
+		cerr << err << endl;
+	}
+
+	TreeExportHook	hook(geom);
+
+	try
+	{
 		loadfile(data_filepath, hook);
 	}
 	catch( const char *err )
