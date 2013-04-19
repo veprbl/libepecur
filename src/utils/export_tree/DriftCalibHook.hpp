@@ -24,7 +24,6 @@ public:
 	StdDrift::calibration_curve_t	calibration_curve;
 
 	DriftCalibHook( Geometry &g );
-	~DriftCalibHook();
 	void	generate_calibration_curves();
 	void	handle_drift_data(
 		std::vector<wire_id_t> &wire_id_s,

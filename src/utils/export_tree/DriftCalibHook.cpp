@@ -20,11 +20,6 @@ DriftCalibHook::DriftCalibHook( Geometry &g )
 	drift_calib.Branch("calib_curve", "TH1F", &calib_curve);
 }
 
-DriftCalibHook::~DriftCalibHook()
-{
-	// Nothing
-}
-
 unsigned int	DriftCalibHook::generate_calibration_curve( chamber_id_t chamber_id )
 {
 	uint16_t	time = 0;
