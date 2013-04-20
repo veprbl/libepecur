@@ -116,6 +116,8 @@ int	main( int argc, char* argv[] )
 		cerr << err << endl;
 	}
 
+	calib_hook.generate_calibration_curves();
+
 	TreeExportHook	hook(geom, &calib_hook.calibration_curve);
 
 	try
@@ -128,8 +130,6 @@ int	main( int argc, char* argv[] )
 	}
 
 	fill_info(info);
-
-	calib_hook.generate_calibration_curves();
 
 	tree_file.Write();
 
