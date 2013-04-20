@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <cmath>
+#include <bitset>
 
 #include <boost/assert.hpp>
 #include <boost/foreach.hpp>
@@ -93,6 +94,19 @@ void	TrackRecognitionHook::handle_drift_data(
 	auto	&calib = (*calibration_curve)[chamber_id];
 	auto	wit = wire_pos.begin();
 	auto	tit = time.begin();
+
+	if (calib.empty())
+	{
+		static bitset<256>	warnings_generated;
+		bool	generated = warnings_generated[chamber_id];
+		if (!generated)
+		{
+			cerr << "No calibration curve for chamber " << int(chamber_id)
+			     << ". Data is ignored." << endl;
+		}
+		warnings_generated.set(chamber_id);
+		return;
+	}
 
 	while(wit != wire_pos.end())
 	{
