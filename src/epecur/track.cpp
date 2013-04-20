@@ -197,8 +197,5 @@ vector<track_info_t>	recognize_all_tracks( vector< vector<wire_pos_t>* > data, v
 	return result;
 }
 
-void TRACK_HPP_RECOGNIZE_ALL_TRACK_FORCE()
-{
-	recognize_all_tracks<track_type_t::prop>( vector< vector<wire_pos_t>* >(), vector<double>(), 0);
-	recognize_all_tracks<track_type_t::drift>( vector< vector<wire_pos_t>* >(), vector<double>(), 0);
-}
+template vector<track_info_t> recognize_all_tracks<track_type_t::prop>( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq );
+template vector<track_info_t> recognize_all_tracks<track_type_t::drift>( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq );
