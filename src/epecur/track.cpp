@@ -180,14 +180,19 @@ vector<track_info_t>	recognize_all_tracks( vector< vector<wire_pos_t>* > data, v
 
 		BOOST_FOREACH(auto chamber_data, data)
 		{
-			chamber_data->erase(chamber_data->begin() + track.wire_pos_ptr[chamber_id]);
+			wire_pos_ptr_t	deletion_pos = track.wire_pos_ptr[chamber_id];
 
-			// for drift chamber point consists of the left and right side
-			// so we need to remove both
-			if (track_type == track_type_t::drift)
+			if (track_type == track_type_t::prop)
 			{
-				auto	other_pos = track.wire_pos_ptr[chamber_id] ^ 1;
-				chamber_data->erase(chamber_data->begin() + other_pos);
+				chamber_data->erase(chamber_data->begin() + deletion_pos);
+			}
+			else if (track_type == track_type_t::drift)
+			{
+				// for drift chamber point consists of the left and right side
+				// so we need to remove both
+				deletion_pos &= ~1;
+				chamber_data->erase(chamber_data->begin() + deletion_pos);
+				chamber_data->erase(chamber_data->begin() + deletion_pos);
 			}
 
 			chamber_id++;
