@@ -1,7 +1,5 @@
 #include <vector>
 
-#include <gsl/gsl_fit.h>
-
 #include <boost/foreach.hpp>
 
 #include "types.hpp"
@@ -104,7 +102,7 @@ track_info_t	recognize_track( const vector< vector<wire_pos_t>* > &data, const v
 	do
 	{
 		vector<double>	wires;
-		double	c0, c1, cov00, cov01, cov11, sumsq;
+		double	c0, c1, sumsq;
 		int i = 0;
 
 		// fill array with values to fit
@@ -118,8 +116,49 @@ track_info_t	recognize_track( const vector< vector<wire_pos_t>* > &data, const v
 		}
 
 		// perform linear fit
-		gsl_fit_linear(normal_pos.data(), 1, wires.data(), 1, wires.size(),
-			       &c0, &c1, &cov00, &cov01, &cov11, &sumsq);
+		{
+			double	m_x = 0;
+			double	m_y = 0;
+			double	m_dxdy = 0;
+			double	m_dxdx = 0;
+			int		N = normal_pos.size();
+
+			BOOST_FOREACH(double x, normal_pos)
+			{
+				m_x += x;
+			}
+			m_x /= N;
+
+			BOOST_FOREACH(double y, wires)
+			{
+				m_y += y;
+			}
+			m_y /= N;
+
+			auto	xit = normal_pos.begin();
+			auto	yit = wires.begin();
+			while(xit != normal_pos.end())
+			{
+				m_dxdy += (*xit - m_x) * (*yit - m_y);
+				m_dxdx += (*xit - m_x) * (*xit - m_x);
+				xit++; yit++;
+			}
+			m_dxdy /= N;
+			m_dxdx /= N;
+
+			c1 = m_dxdy / m_dxdx;
+			c0 = m_y - c1 * m_x;
+
+			xit = normal_pos.begin();
+			yit = wires.begin();
+			sumsq = 0;
+			while(xit != normal_pos.end())
+			{
+				double	v = *yit - (c0 + *xit * c1);
+				sumsq += v * v;
+				xit++; yit++;
+			}
+		}
 
 		if (first || (best_sumsq > sumsq))
 		{
