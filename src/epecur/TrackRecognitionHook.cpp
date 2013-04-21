@@ -110,9 +110,9 @@ void	TrackRecognitionHook::handle_drift_data(
 
 	while(wit != wire_pos.end())
 	{
-		const double	DRIFT_DISTANCE = 17.0;
-		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit + 0.5 * calib[*tit]));
-		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit - 0.5 * calib[*tit]));
+		const double	DRIFT_DISTANCE = 17.0/2;
+		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit + calib[*tit]));
+		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit - calib[*tit]));
 		wit++;
 		tit++;
 	}
