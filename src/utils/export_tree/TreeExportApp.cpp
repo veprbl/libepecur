@@ -9,8 +9,6 @@
 
 #include <TFile.h>
 #include <TTree.h>
-#include <TH1F.h>
-#include <TH2F.h>
 
 #include <dispatch/dispatch.h>
 
@@ -20,6 +18,7 @@
 
 #include "TreeExportApp.hpp"
 #include "TreeExportHook.hpp"
+#include "DriftCalibHook.hpp"
 
 namespace po = boost::program_options;
 
@@ -28,6 +27,7 @@ using namespace std;
 string data_filepath;
 string geometry_filepath;
 string output_filepath;
+bool rough_drift;
 
 void	ParseCommandLine( int argc, char* argv[] )
 {
@@ -40,6 +40,7 @@ void	ParseCommandLine( int argc, char* argv[] )
 		("help,h", "produce this output")
 		("geometry-file,g", po::value<string>(), "specify geometry description file")
 		("output-file,o", po::value<string>(), "specify output file")
+		("rough-drift", "disable using time information for drift tracks")
 		;
 	cmdline_options.add(visible);
 
@@ -71,6 +72,7 @@ void	ParseCommandLine( int argc, char* argv[] )
 	data_filepath = vm["input-file"].as< vector<string> >()[0];
 	geometry_filepath = vm["geometry-file"].as<string>();
 	output_filepath = vm["output-file"].as<string>();
+	rough_drift = vm.count("rough-drift");
 }
 
 void	fill_info( TTree &info )
@@ -94,31 +96,6 @@ void	fill_info( TTree &info )
 	info.Fill();
 }
 
-unsigned int	plot_calib_curve(
-	TreeExportHook &hook,
-	chamber_id_t chamber_id,
-	TH1F &calib_curve
-	)
-{
-	uint16_t	time = 0;
-	unsigned int	overal_integral = 0, integral = 0;
-
-	BOOST_FOREACH(auto counts, hook.time_distributions[chamber_id])
-	{
-		overal_integral += counts;
-	}
-
-	BOOST_FOREACH(auto counts, hook.time_distributions[chamber_id])
-	{
-		integral += counts;
-		calib_curve.Fill(time,
-		                 integral / (float)overal_integral);
-		time++;
-	}
-
-	return overal_integral;
-}
-
 int	main( int argc, char* argv[] )
 {
 	ParseCommandLine(argc, argv);
@@ -133,7 +110,26 @@ int	main( int argc, char* argv[] )
 	Geometry	geom(file);
 	TFile		tree_file(output_filepath.c_str(), "RECREATE");
 	TTree		info("info", "information about this file");
-	TreeExportHook	hook(geom);
+	StdDrift::calibration_curve_t	*calibration_curve = NULL;
+
+	if (!rough_drift)
+	{
+		DriftCalibHook	calib_hook(geom);
+
+		try
+		{
+			loadfile(data_filepath, calib_hook);
+		}
+		catch( const char *err )
+		{
+			cerr << err << endl;
+		}
+
+		calib_hook.generate_calibration_curves();
+		calibration_curve = &calib_hook.calibration_curve;
+	}
+
+	TreeExportHook	hook(geom, calibration_curve);
 
 	try
 	{
@@ -145,57 +141,6 @@ int	main( int argc, char* argv[] )
 	}
 
 	fill_info(info);
-
-	string	title;
-	TTree	drift_calib("drift_calib", "drift chambers calibration curves");
-	TH1F	calib_curve(
-		"calib_curve", "",
-		MAX_TIME_COUNTS + 5, 0, MAX_TIME_COUNTS + 5
-		);
-
-	drift_calib.Branch("calib_curve", "TH1F", &calib_curve);
-
-	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
-	{
-		group_id_t	group_id = gr_tup.first;
-		device_type_t	device_type = geom.group_device_type[group_id];
-
-		if (device_type != DEV_TYPE_DRIFT)
-		{
-			continue;
-		}
-
-		BOOST_FOREACH(auto axis_tup, gr_tup.second)
-		{
-			device_axis_t	axis = axis_tup.first;
-			vector<chamber_id_t>	&chambers =
-				geom.group_chambers[group_id][axis];
-			int	chamber_num = 1;
-
-			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
-			{
-				auto	num_events = plot_calib_curve(
-					hook,
-					chamber_id,
-					calib_curve
-					);
-
-				title = "d" +
-					boost::lexical_cast<string>(int(group_id)) +
-					((axis == DEV_AXIS_X) ? "X" : "Y") +
-					boost::lexical_cast<string>(int(chamber_num)) +
-					" num_events = " +
-					boost::lexical_cast<string>(num_events);
-
-				calib_curve.SetTitle(title.c_str());
-
-				drift_calib.Fill();
-				calib_curve.Reset();
-
-				chamber_num++;
-			}
-		}
-	}
 
 	tree_file.Write();
 

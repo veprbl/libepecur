@@ -25,6 +25,7 @@ class	LoadHook
 {
 public:
 
+	virtual ~LoadHook() {};
 	virtual LoadHook*	get_copy() { return NULL; };
 	virtual void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, device_id_t dev_id ) {};
 	virtual void	handle_drift_data(

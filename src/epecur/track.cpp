@@ -1,7 +1,5 @@
 #include <vector>
 
-#include <gsl/gsl_fit.h>
-
 #include <boost/foreach.hpp>
 
 #include "types.hpp"
@@ -76,7 +74,7 @@ bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> 
 	return true;
 }
 
-track_info_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos )
+track_info_t	recognize_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos )
 {
 	const chamber_id_t	chambers_count = data.size();
 	vector<wire_pos_ptr_t>	best_wire_pos_ptr(chambers_count);
@@ -104,7 +102,7 @@ track_info_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, co
 	do
 	{
 		vector<double>	wires;
-		double	c0, c1, cov00, cov01, cov11, sumsq;
+		double	c0, c1, sumsq;
 		int i = 0;
 
 		// fill array with values to fit
@@ -118,8 +116,49 @@ track_info_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, co
 		}
 
 		// perform linear fit
-		gsl_fit_linear(normal_pos.data(), 1, wires.data(), 1, wires.size(),
-			       &c0, &c1, &cov00, &cov01, &cov11, &sumsq);
+		{
+			double	m_x = 0;
+			double	m_y = 0;
+			double	m_dxdy = 0;
+			double	m_dxdx = 0;
+			int		N = normal_pos.size();
+
+			BOOST_FOREACH(double x, normal_pos)
+			{
+				m_x += x;
+			}
+			m_x /= N;
+
+			BOOST_FOREACH(double y, wires)
+			{
+				m_y += y;
+			}
+			m_y /= N;
+
+			auto	xit = normal_pos.begin();
+			auto	yit = wires.begin();
+			while(xit != normal_pos.end())
+			{
+				m_dxdy += (*xit - m_x) * (*yit - m_y);
+				m_dxdx += (*xit - m_x) * (*xit - m_x);
+				xit++; yit++;
+			}
+			m_dxdy /= N;
+			m_dxdx /= N;
+
+			c1 = m_dxdy / m_dxdx;
+			c0 = m_y - c1 * m_x;
+
+			xit = normal_pos.begin();
+			yit = wires.begin();
+			sumsq = 0;
+			while(xit != normal_pos.end())
+			{
+				double	v = *yit - (c0 + *xit * c1);
+				sumsq += v * v;
+				xit++; yit++;
+			}
+		}
 
 		if (first || (best_sumsq > sumsq))
 		{
@@ -143,7 +182,8 @@ track_info_t	prop_recognize_track( const vector< vector<wire_pos_t>* > &data, co
 				});
 }
 
-vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq )
+template<track_type_t track_type>
+vector<track_info_t>	recognize_all_tracks( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq )
 /*
  * Warning: This function will delete recognized wires from your original vectors.
  */
@@ -164,7 +204,7 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 
 	while(delete_empty_chambers(data, normal_pos, used_chambers))
 	{
-		track_info_t	track = prop_recognize_track(data, normal_pos);
+		track_info_t	track = recognize_track(data, normal_pos);
 
 		track.used_chambers = used_chambers;
 
@@ -179,7 +219,20 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 
 		BOOST_FOREACH(auto chamber_data, data)
 		{
-			chamber_data->erase(chamber_data->begin() + track.wire_pos_ptr[chamber_id]);
+			wire_pos_ptr_t	deletion_pos = track.wire_pos_ptr[chamber_id];
+
+			if (track_type == track_type_t::prop)
+			{
+				chamber_data->erase(chamber_data->begin() + deletion_pos);
+			}
+			else if (track_type == track_type_t::drift)
+			{
+				// for drift chamber point consists of the left and right side
+				// so we need to remove both
+				deletion_pos &= ~1;
+				chamber_data->erase(chamber_data->begin() + deletion_pos);
+				chamber_data->erase(chamber_data->begin() + deletion_pos);
+			}
 
 			chamber_id++;
 		}
@@ -187,3 +240,6 @@ vector<track_info_t>	prop_recognize_all_tracks( vector< vector<wire_pos_t>* > da
 
 	return result;
 }
+
+template vector<track_info_t> recognize_all_tracks<track_type_t::prop>( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq );
+template vector<track_info_t> recognize_all_tracks<track_type_t::drift>( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq );

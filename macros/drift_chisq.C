@@ -11,7 +11,7 @@ TFile	f("26061082.root", "READ");
 
 TH1F*	makehist( string name )
 {
-	TH1F	*hist = new TH1F(name.c_str(), name.c_str(), 20, 0, 2);
+	TH1F	*hist = new TH1F(name.c_str(), name.c_str(), 1000, 0, 2);
 	events->Draw((name + " >> " + name).c_str()), (name + " < 20").c_str());
 	hist->SetLabelSize(0.05, "X");
 	hist->SetLabelSize(0.05, "Y");

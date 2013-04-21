@@ -2,6 +2,7 @@ set( EXPORT_TREE_SRCS
 
 	TreeExportApp.cpp
 	TreeExportHook.cpp
+	DriftCalibHook.cpp
 
 )
 

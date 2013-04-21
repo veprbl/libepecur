@@ -1,15 +1,20 @@
 #include <cstdlib>
 #include <cmath>
+#include <bitset>
 
 #include <boost/assert.hpp>
 #include <boost/foreach.hpp>
 
 #include "TrackRecognitionHook.hpp"
 
-TrackRecognitionHook::TrackRecognitionHook( Geometry &g )
-	: last_event_finished(false),
-	  drift_cleanup(false),
-	  geom(g)
+TrackRecognitionHook::TrackRecognitionHook(
+	Geometry &g,
+	StdDrift::calibration_curve_t *c
+	)
+	: StdDrift(g),
+	  last_event_finished(false),
+	  geom(g),
+	  calibration_curve(c)
 {
 	// nothing
 }
@@ -35,12 +40,35 @@ void	TrackRecognitionHook::handle_prop_data( const wire_id_t* begin, const wire_
 	}
 
 	auto &chamber = last_event[chamber_id];
+	wire_id_t	prev_pos;
+	int	sequence_len = 1, max_sequence_len = 3;
 
 	for(auto pos = begin; pos < end; pos++)
 	{
 		wire_pos_t	wire_pos = geom.get_wire_pos(dev_id, *pos);
 
+		if ((!chamber.empty()) && (prev_pos == (*pos) - 1))
+		{
+			sequence_len++;
+		}
+		else
+		{
+			if (sequence_len > max_sequence_len)
+			{
+				chamber.resize(chamber.size() - sequence_len);
+			}
+			sequence_len = 1;
+		}
+
 		chamber.push_back(wire_pos);
+		BOOST_ASSERT(chamber.size() >= sequence_len);
+
+		prev_pos = *pos;
+	}
+
+	if (sequence_len > max_sequence_len)
+	{
+		chamber.resize(chamber.size() - sequence_len);
 	}
 }
 
@@ -50,71 +78,44 @@ void	TrackRecognitionHook::handle_drift_data(
 	device_id_t dev_id
 	)
 {
-	if (drift_cleanup)
-	{
-		last_event_drift_wire_pos.clear();
-		last_event_drift_time.clear();
-
-		drift_cleanup = false;
-	}
+	StdDrift::handle_drift_data(wire_id_s, time_s, dev_id);
 
 	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
-	auto	&event_wire_pos = last_event_drift_wire_pos[chamber_id];
-	auto	&event_time = last_event_drift_time[chamber_id];
 
-	BOOST_ASSERT(wire_id_s.size() == time_s.size());
-
-	auto	time_it = time_s.begin();
-	wire_pos_t	prev_wire_pos = 0;
-	uint16_t	prev_time = 0;
-
-	if (!event_wire_pos.empty())
+	// if calibration curve is not provided, just use wire_id's
+	if (calibration_curve == NULL)
 	{
-		prev_wire_pos = event_wire_pos.back();
-		prev_time = event_time.back();
+		last_event[chamber_id] = last_event_drift_wire_pos[chamber_id];
+		return;
 	}
 
-	BOOST_FOREACH(wire_id_t wire_id, wire_id_s)
+	auto	&wire_pos = last_event_drift_wire_pos[chamber_id];
+	auto	&time = last_event_drift_time[chamber_id];
+	auto	&calib = (*calibration_curve)[chamber_id];
+	auto	wit = wire_pos.begin();
+	auto	tit = time.begin();
+
+	if (calib.empty())
 	{
-		wire_pos_t	wire_pos = geom.get_wire_pos(dev_id, wire_id);
-		uint16_t	time = (*time_it);
-		bool		append = true;
-
-		if ((!event_wire_pos.empty())
-		    && (abs(prev_wire_pos - wire_pos) == 2))
+		static bitset<256>	warnings_generated;
+		bool	generated = warnings_generated[chamber_id];
+		if (!generated)
 		{
-			int16_t	timedelta = time - prev_time;
-
-			if ((timedelta >= -4) && (timedelta < 0))
-			{
-				event_wire_pos.back() = wire_pos;
-				event_time.back() = time;
-				prev_wire_pos = wire_pos;
-				prev_time = time;
-
-				append = false;
-			}
-
-			if ((timedelta > 0) && (timedelta <= 4))
-			{
-				append = false;
-			}
+			cerr << "No calibration curve for chamber " << int(chamber_id)
+			     << ". Data is ignored." << endl;
 		}
-
-		if (append)
-		{
-			event_wire_pos.push_back(wire_pos);
-			event_time.push_back(time);
-			prev_wire_pos = wire_pos;
-			prev_time = time;
-		}
-
-		time_it++;
+		warnings_generated.set(chamber_id);
+		return;
 	}
 
-	last_event[chamber_id] = event_wire_pos;
-
-	BOOST_ASSERT(event_wire_pos.size() == event_time.size());
+	while(wit != wire_pos.end())
+	{
+		const double	DRIFT_DISTANCE = 17.0/2;
+		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit + calib[*tit]));
+		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit - calib[*tit]));
+		wit++;
+		tit++;
+	}
 }
 
 void	TrackRecognitionHook::handle_event_end()
@@ -124,6 +125,7 @@ void	TrackRecognitionHook::handle_event_end()
 	BOOST_FOREACH(auto &gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
+		device_type_t	device_type = geom.group_device_type[group_id];
 		double	max_chisq = geom.group_max_chisq[group_id];
 
 		BOOST_FOREACH(auto &axis_tup, gr_tup.second)
@@ -140,35 +142,22 @@ void	TrackRecognitionHook::handle_event_end()
 
 			vector<double>	&normal_pos = geom.normal_pos[group_id][axis];
 
-			last_tracks[group_id][axis] = prop_recognize_all_tracks(block, normal_pos, max_chisq);
-		}
-
-		if (geom.group_device_type[group_id] != DEV_TYPE_DRIFT)
-		{
-			continue;
-		}
-
-		BOOST_FOREACH(auto &axis_tup, gr_tup.second)
-		{
-			const vector<chamber_id_t>	&chambers = axis_tup.second;
-
-			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
+			if ((device_type == DEV_TYPE_PROP) ||
+			    ((device_type == DEV_TYPE_DRIFT) && (calibration_curve == NULL)))
 			{
-                BOOST_FOREACH(uint16_t time, last_event_drift_time[chamber_id])
-                {
-                    auto	&calib = time_distributions[chamber_id];
-
-                    if (calib.empty())
-                    {
-                        calib.resize(MAX_TIME_COUNTS);
-                    }
-
-                    calib[time]++;
-                }
-            }
+				last_tracks[group_id][axis] = recognize_all_tracks<track_type_t::prop>(block, normal_pos, max_chisq);
+			}
+			else if (device_type == DEV_TYPE_DRIFT)
+			{
+				last_tracks[group_id][axis] = recognize_all_tracks<track_type_t::drift>(block, normal_pos, max_chisq);
+			}
+			else
+			{
+				throw "Invalid dev type";
+			}
 		}
 	}
 
+	StdDrift::handle_event_end();
 	last_event_finished = true;
-	drift_cleanup = true;
 }

@@ -3,12 +3,13 @@ set( EPECUR_SRCS
 	geometry.cpp
 	loadfile.cpp
 	track.cpp
+	StdDrift.cpp
 	TrackRecognitionHook.cpp
 
 )
 
-link_directories ( ${Boost_LIBRARY_DIRS} ${GSL_LIBRARY_DIRS} )
-include_directories ( ${Boost_INCLUDE_DIRS} ${Boost_Endian_INCLUDE_DIRS} ${GSL_INCLUDE_DIRS} )
+link_directories ( ${Boost_LIBRARY_DIRS} )
+include_directories ( ${Boost_INCLUDE_DIRS} ${Boost_Endian_INCLUDE_DIRS} )
 
 add_library(
 	epecur
@@ -18,5 +19,4 @@ add_library(
 target_link_libraries (
 	epecur
 	${Boost_LIBRARIES}
-	${GSL_LIBRARIES}
 	)

@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 	BOOST_CHECK_EQUAL(combination_id, num_combinations);
 }
 
-BOOST_AUTO_TEST_CASE( check_prop_recognize_track )
+BOOST_AUTO_TEST_CASE( check_recognize_track )
 {
 	vector<wire_pos_t>	v1;
 	v1.push_back(1); v1.push_back(2); v1.push_back(3);
@@ -67,10 +67,10 @@ BOOST_AUTO_TEST_CASE( check_prop_recognize_track )
 	normal_pos.push_back(3);
 	normal_pos.push_back(4);
 
-	prop_recognize_track(data, normal_pos);
+	recognize_track(data, normal_pos);
 }
 
-BOOST_AUTO_TEST_CASE( check_prop_recognize_all_tracks )
+BOOST_AUTO_TEST_CASE( check_recognize_all_tracks_prop )
 {
 	vector<wire_pos_t>	v1;
 	v1.push_back(1); v1.push_back(50);
@@ -93,13 +93,43 @@ BOOST_AUTO_TEST_CASE( check_prop_recognize_all_tracks )
 	normal_pos.push_back(3);
 	normal_pos.push_back(4);
 
-	vector<track_info_t>	tracks = prop_recognize_all_tracks(data, normal_pos);
+	vector<track_info_t>	tracks = recognize_all_tracks<track_type_t::prop>(data, normal_pos);
 
 	BOOST_REQUIRE_EQUAL(tracks.size(), 2u);
 	BOOST_CHECK_EQUAL(tracks[0].c0, 50);
 	BOOST_CHECK_EQUAL(tracks[0].c1, 0);
 	BOOST_CHECK_EQUAL(tracks[1].c0, 0);
 	BOOST_CHECK_EQUAL(tracks[1].c1, 1);
+}
+
+BOOST_AUTO_TEST_CASE( check_recognize_all_tracks_drift )
+{
+	vector<wire_pos_t>	v1;
+	v1.push_back(1); v1.push_back(2);
+	vector<wire_pos_t>	v2;
+	v2.push_back(1); v2.push_back(2);
+	vector<wire_pos_t>	v3;
+	v3.push_back(2); v3.push_back(3);
+	vector<wire_pos_t>	v4;
+	v4.push_back(2); v4.push_back(3);
+
+	vector< vector<wire_pos_t>* >	data;
+	data.push_back(&v1);
+	data.push_back(&v2);
+	data.push_back(&v3);
+	data.push_back(&v4);
+
+	vector<double>	normal_pos;
+	normal_pos.push_back(1);
+	normal_pos.push_back(2);
+	normal_pos.push_back(3);
+	normal_pos.push_back(4);
+
+	vector<track_info_t>	tracks = recognize_all_tracks<track_type_t::drift>(data, normal_pos);
+
+	BOOST_REQUIRE_EQUAL(tracks.size(), 1u);
+	BOOST_CHECK_EQUAL(tracks[0].c0, 2);
+	BOOST_CHECK_EQUAL(tracks[0].c1, 0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

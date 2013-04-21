@@ -10,8 +10,8 @@
 
 #include "TreeExportHook.hpp"
 
-TreeExportHook::TreeExportHook( Geometry &g )
-	: TrackRecognitionHook(g)
+TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
+	: TrackRecognitionHook(g, c)
 {
 	event_tree = new TTree("events", "recognized tracks for prop chambers and triggered drift wires");
 	fill_queue =
