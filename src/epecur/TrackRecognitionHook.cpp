@@ -142,7 +142,8 @@ void	TrackRecognitionHook::handle_event_end()
 
 			vector<double>	&normal_pos = geom.normal_pos[group_id][axis];
 
-			if (device_type == DEV_TYPE_PROP)
+			if ((device_type == DEV_TYPE_PROP) ||
+			    ((device_type == DEV_TYPE_DRIFT) && (calibration_curve == NULL)))
 			{
 				last_tracks[group_id][axis] = recognize_all_tracks<track_type_t::prop>(block, normal_pos, max_chisq);
 			}
