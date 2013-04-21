@@ -17,7 +17,7 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 	fill_queue =
 	    dispatch_queue_create("org.epecur.fill_queue", DISPATCH_QUEUE_SERIAL);
 
-	stored_trace = new unordered_map< group_id_t, map<device_axis_t, trace_group_t> >();
+	stored_track = new unordered_map< group_id_t, map<device_axis_t, track_group_t> >();
 	stored_drift = new unordered_map< group_id_t, map<device_axis_t, map<chamber_id_t, drift_group_t> > >();
 
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
@@ -52,7 +52,7 @@ TreeExportHook::~TreeExportHook()
 		delete[] ptr;
 	}
 	delete event_tree;
-	delete stored_trace;
+	delete stored_track;
 	delete stored_drift;
 }
 
@@ -60,7 +60,7 @@ void	TreeExportHook::init_track_group(
 	string group_name, group_id_t group_id, device_axis_t axis
 	)
 {
-	trace_group_t	&st_gr = (*stored_trace)[group_id][axis];
+	track_group_t	&st_gr = (*stored_track)[group_id][axis];
 	group_name = "t" + group_name + "_";
 
 	event_tree->Branch(
@@ -139,7 +139,7 @@ void	TreeExportHook::write_track_event(
 	)
 {
 	vector<track_info_t>	&tracks = last_tracks[group_id][axis];
-	trace_group_t	&st_gr = (*stored_trace)[group_id][axis];
+	track_group_t	&st_gr = (*stored_track)[group_id][axis];
 
 	st_gr.track_count = tracks.size();
 	st_gr.c0.clear();

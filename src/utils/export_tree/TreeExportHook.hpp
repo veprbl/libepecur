@@ -14,7 +14,7 @@
 
 using boost::unordered_map;
 
-struct trace_group_t
+struct track_group_t
 {
 	uint32_t	track_count;
 	vector<double>	c0, c1, chisq;
@@ -34,7 +34,7 @@ private:
 
 	TTree	*event_tree;
 	dispatch_queue_t	fill_queue;
-	unordered_map< group_id_t, map<device_axis_t, trace_group_t> >	*stored_trace;
+	unordered_map< group_id_t, map<device_axis_t, track_group_t> >	*stored_track;
 	unordered_map< group_id_t, map<device_axis_t, map<chamber_id_t, drift_group_t> > >	*stored_drift;
 
 	vector<char*>	names;
