@@ -110,10 +110,10 @@ int	main( int argc, char* argv[] )
 	TTree		info("info", "information about this file");
 	StdDrift::calibration_curve_t	*calibration_curve = NULL;
 
+	DriftCalibHook	calib_hook(geom);
+
 	if (!rough_drift)
 	{
-		DriftCalibHook	calib_hook(geom);
-
 		try
 		{
 			loadfile(data_filepath, calib_hook);
