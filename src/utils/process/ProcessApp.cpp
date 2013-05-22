@@ -61,6 +61,25 @@ void	ParseCommandLine( int argc, char* argv[] )
 	geometry_filepath = vm["geometry-file"].as<string>();
 }
 
+map<string, string>	get_info_hash( TTree *info )
+{
+	map<string, string>	result;
+	char    key[MAX_VALUE_LEN];
+	char    value[MAX_VALUE_LEN];
+
+	info->GetBranch("key")->SetAddress(key);
+	info->GetBranch("value")->SetAddress(value);
+
+	int count = info->GetEntries();
+	for(int i = 0; i < count; i++)
+	{
+		info->GetEntry(i);
+		result[key] = value;
+	}
+
+	return result;
+}
+
 int	main( int argc, char* argv[] )
 {
 	ParseCommandLine(argc, argv);
@@ -74,6 +93,22 @@ int	main( int argc, char* argv[] )
 
 	Geometry	geom(file);
 	TFile		tree_file(input_filepath.c_str());
+
+	TTree	*info = (TTree*)tree_file.FindObjectAny("info");
+
+	if (!info)
+	{
+		throw "Missing info tree!";
+	}
+
+	info->Scan("key:value", "", "colsize=30");
+
+	cerr << "File GIT_COMMIT_ID: "
+	     << get_info_hash(info)["GIT_COMMIT_ID"]
+	     << endl;
+	cerr << "Current software GIT_COMMIT_ID: "
+	     << GIT_COMMIT_ID
+	     << endl;
 
 	return 0;
 }
