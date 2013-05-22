@@ -1,4 +1,5 @@
 add_subdirectory(axial_shift)
 add_subdirectory(export_tree)
 add_subdirectory(momentum_dispersion)
+add_subdirectory(process)
 add_subdirectory(show_events)
