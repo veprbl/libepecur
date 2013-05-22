@@ -41,7 +41,7 @@ execute_process(COMMAND git diff --cached --quiet
 math(EXPR c "${a} | ${b}")
 
 if (${c} EQUAL 1)
-	set(GIT_COMMIT_ID "durty working tree")
+	set(GIT_COMMIT_ID "dirty working tree")
 	message(AUTHOR_WARNING "Git working tree isn't clean! Please don't use compiled uncommited code for real work. You will never remember what exactly changes you did to obtain your results.")
 endif()
 
