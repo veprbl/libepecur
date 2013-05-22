@@ -103,12 +103,19 @@ int	main( int argc, char* argv[] )
 
 	info->Scan("key:value", "", "colsize=30");
 
-	cerr << "File GIT_COMMIT_ID: "
-	     << get_info_hash(info)["GIT_COMMIT_ID"]
-	     << endl;
-	cerr << "Current software GIT_COMMIT_ID: "
-	     << GIT_COMMIT_ID
-	     << endl;
+	string file_commit_id = get_info_hash(info)["GIT_COMMIT_ID"];
+	if (file_commit_id != GIT_COMMIT_ID)
+	{
+		cerr << endl
+		     << "Warning: Commit id mismatch"
+		     << endl
+		     << "File created by: "
+		     << file_commit_id
+		     << endl
+		     << "Current software is: "
+		     << GIT_COMMIT_ID
+		     << endl;
+	}
 
 	return 0;
 }
