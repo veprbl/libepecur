@@ -5,6 +5,8 @@
 #include <TH1F.h>
 #include <TString.h>
 
+#include "utils.C"
+
 using std::string;
 
 TCanvas	c1;
@@ -51,8 +53,8 @@ void	drift_chisq()
 {
 	int	i;
 
-	c1.Divide(2, 2, 0.01, 0.01);
-	c2.Divide(2, 2, 0.01, 0.01);
+	c1.Divide(2, 2, 0.01, 0.02);
+	c2.Divide(2, 2, 0.01, 0.02);
 
 	i = 0;
 	c1.cd(++i);
@@ -73,6 +75,18 @@ void	drift_chisq()
 	makehist("t3Y", 1);
 	c2.cd(++i);
 	makehist("t4Y", 1);
+
+	TText	*t;
+	TTree	*info = (TTree*)f.FindObjectAny("info");
+	TString	info_str = get_info_str(info);
+	c1.cd(0);
+	t = new TText(0.005, 0.005, info_str);
+	t->SetTextSize(0.02);
+	t->Draw();
+	c2.cd(0);
+	t = new TText(0.005, 0.005, info_str);
+	t->SetTextSize(0.02);
+	t->Draw();
 
 	c1.Show();
 	c2.Show();
