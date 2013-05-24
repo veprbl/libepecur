@@ -1,6 +1,7 @@
 set( PROCESS_SRCS
 
 	ProcessApp.cpp
+	ProcessMain.cpp
 
 )
 
