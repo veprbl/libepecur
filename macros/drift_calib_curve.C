@@ -18,8 +18,6 @@ void	drift_calib_curve()
 	{
 		drift_calib->GetEntry(i);
 
-		calib_curve->SetLabelSize(0.08, "X");
-
 		calib_curve_canvas.cd(i + 1);
 		calib_curve->Draw();
 

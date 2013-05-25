@@ -78,6 +78,14 @@ void	DriftCalibHook::generate_calibration_curves()
 					boost::lexical_cast<string>(num_events);
 
 				calib_curve.SetTitle(title.c_str());
+				calib_curve.SetLabelSize(0.04, "X");
+				calib_curve.SetLabelSize(0.04, "Y");
+				calib_curve.SetTitleSize(0.05, "X");
+				calib_curve.SetTitleSize(0.05, "Y");
+				calib_curve.SetTitleOffset(0.9, "X");
+				calib_curve.SetTitleOffset(0.9, "Y");
+				calib_curve.GetXaxis()->SetTitle("T, [Counts]");
+				calib_curve.GetYaxis()->SetTitle("x/(8.5 mm)");
 
 				drift_calib.Fill();
 				calib_curve.Reset();
