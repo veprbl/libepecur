@@ -125,9 +125,9 @@ void	Process( TTree *events )
 	for(int i = -1; i < events->GetEntries(); i++)
 	{
 		events->GetEntry(i);
-		cond = (tg_LX.track_count != 1) || (tg_LY.track_count != 1)
-		    || (tg_RX.track_count != 1) || (tg_RY.track_count != 1);
-		if (!cond)
+		cond = (tg_LX.track_count == 1) && (tg_LY.track_count == 1)
+		    && (tg_RX.track_count == 1) && (tg_RY.track_count == 1);
+		if (cond)
 		{
 			cerr << i << " of " << events->GetEntries() << endl;
 			track3d_t	t_L = make_track<left_right_t::left>(i, tg_LX, tg_LY);
