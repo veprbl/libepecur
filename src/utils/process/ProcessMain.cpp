@@ -45,8 +45,6 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 	tg_Y.c0_br->GetEntry(event_id);
 	tg_Y.c1_br->GetEntry(event_id);
 
-	cout << tg_X.track_count << "\t" << tg_Y.track_count << endl;
-
 	static ublas::matrix<double> m1(3, 3), m2(3, 3), A(3, 3);
 
 	m1(0, 0) = 1; m1(1, 0) = 0;  m1(2, 0) = 0;
@@ -100,18 +98,6 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 	ublas::unit_vector<double> xk(3, 1);
 	ublas::unit_vector<double> xl(3, 2);
 	a = o + ublas::prod(A, xk) * tg_Y.c0[0] + ublas::prod(A, xl) * tg_X.c0[0];
-
-	cout << "X\t" << tg_X.c0[0] << "\t" << tg_X.c1[0] << endl;
-	cout << "Y\t" << tg_Y.c0[0] << "\t" << tg_Y.c1[0] << endl;
-
-	cout << a << endl;
-	cout << b << endl;
-
-	auto	norm_a = ublas::norm_2(a);
-	auto	norm_b = ublas::norm_2(b);
-	auto	inner_ab = ublas::inner_prod(a, b);
-
-	cout << sqrt(norm_a * norm_a - inner_ab * inner_ab/(norm_b * norm_b)) << endl;
 
 	return track3d_t{a, b};
 }
