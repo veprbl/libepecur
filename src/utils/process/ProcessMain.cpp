@@ -130,8 +130,8 @@ void	Process( TTree *events )
 	{
 		i++;
 		events->GetEntry(i);
-		cond = (tg_LX.track_count == 0) || (tg_LY.track_count == 0)
-		    || (tg_RX.track_count == 0) || (tg_RY.track_count == 0);
+		cond = (tg_LX.track_count != 1) || (tg_LY.track_count != 1)
+		    || (tg_RX.track_count != 1) || (tg_RY.track_count != 1);
 		if (!cond)
 		{
 			j++;
