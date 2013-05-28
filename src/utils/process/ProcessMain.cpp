@@ -124,7 +124,10 @@ void	Process( TTree *events )
 	bool cond;
 	for(int i = -1; i < events->GetEntries(); i++)
 	{
-		events->GetEntry(i);
+		events->GetBranch("t3X_track_count")->GetEntry(i);
+		events->GetBranch("t3Y_track_count")->GetEntry(i);
+		events->GetBranch("t4X_track_count")->GetEntry(i);
+		events->GetBranch("t4Y_track_count")->GetEntry(i);
 		cond = (tg_LX.track_count == 1) && (tg_LY.track_count == 1)
 		    && (tg_RX.track_count == 1) && (tg_RY.track_count == 1);
 		if (cond)
