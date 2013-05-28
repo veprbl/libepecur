@@ -110,20 +110,6 @@ void	Process( TTree *events )
     events->GetBranch("t3Y_track_count")->SetAddress(&tg_LY.track_count);
     events->GetBranch("t4X_track_count")->SetAddress(&tg_RX.track_count);
     events->GetBranch("t4Y_track_count")->SetAddress(&tg_RY.track_count);
-	int i = -1, j = 0;
-	bool cond;
-	do
-	{
-		i++;
-		events->GetEntry(i);
-		cond = (tg_LX.track_count != 1) || (tg_LY.track_count != 1)
-		    || (tg_RX.track_count != 1) || (tg_RY.track_count != 1);
-		if (!cond)
-		{
-			j++;
-		}
-	}
-	while(cond || (j != 2));
 
 	tg_LX.c0_br = events->GetBranch("t3X_c0");
 	tg_LX.c1_br = events->GetBranch("t3X_c1");
@@ -135,10 +121,21 @@ void	Process( TTree *events )
 	tg_RY.c0_br = events->GetBranch("t4Y_c0");
 	tg_RY.c1_br = events->GetBranch("t4Y_c1");
 
-	track3d_t	t_L = make_track<left_right_t::left>(i, tg_LX, tg_LY);
-	track3d_t	t_R = make_track<left_right_t::right>(i, tg_RX, tg_RY);
+	bool cond;
+	for(int i = -1; i < events->GetEntries(); i++)
+	{
+		events->GetEntry(i);
+		cond = (tg_LX.track_count != 1) || (tg_LY.track_count != 1)
+		    || (tg_RX.track_count != 1) || (tg_RY.track_count != 1);
+		if (!cond)
+		{
+			cerr << i << " of " << events->GetEntries() << endl;
+			track3d_t	t_L = make_track<left_right_t::left>(i, tg_LX, tg_LY);
+			track3d_t	t_R = make_track<left_right_t::right>(i, tg_RX, tg_RY);
 
-	auto cr = cross(t_L.b, t_R.b);
-	double cr_norm = norm_2(cr);
-	cout << ublas::inner_prod(cr, t_L.a - t_R.a) / cr_norm << endl;
+			auto cr = cross(t_L.b, t_R.b);
+			double cr_norm = norm_2(cr);
+			cout << ublas::inner_prod(cr, t_L.a - t_R.a) / cr_norm << endl;
+		}
+	}
 }
