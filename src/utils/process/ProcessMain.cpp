@@ -1,4 +1,5 @@
 #include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/lu.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
 #include "../export_tree/TreeExportHook.hpp"
@@ -138,7 +139,33 @@ void	Process( TTree *events )
 
 			auto cr = cross(t_L.b, t_R.b);
 			double cr_norm = norm_2(cr);
-			cout << ublas::inner_prod(cr, t_L.a - t_R.a) / cr_norm << endl;
+
+			// Following code solves linear system
+			// (t_L.b, t_R.b, cr) * x = t_L.a - t_R.a
+			ublas::matrix<double>	B(3, 3);
+			ublas::vector<double>	x;
+			ublas::permutation_matrix<>	pm(B.size1());
+
+			for(int row = 0; row < B.size1(); row++)
+			{
+				B(row, 0) = t_L.b(row);
+				B(row, 1) = t_R.b(row);
+				B(row, 2) = cr(row);
+			}
+			x = t_L.a - t_R.a; // put RHS into x
+
+			int	res = ublas::lu_factorize(B, pm);
+			if(res != 0)
+			{
+				throw "lu_factorize()==0";
+			}
+
+			ublas::lu_substitute(B, pm, x);
+
+			x(2) -= ublas::inner_prod(cr, t_L.a - t_R.a) / cr_norm;
+			ublas::vector<double>	intersect;
+			intersect = ((t_L.a - x(0) * t_L.b) + (t_R.a + x(1) * t_R.b)) / 2;
+			cerr << intersect << endl;
 		}
 	}
 }
