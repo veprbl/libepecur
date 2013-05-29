@@ -14,7 +14,7 @@ float	yrot = 0;
 
 void	display( void )
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
 
@@ -23,8 +23,16 @@ void	display( void )
 		0.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f);
 
+	glEnable(GL_LIGHT0);
+
 	glRotatef(-xrot, 0.0f, 0.0f, 1.0f);
 	glRotatef(yrot, 1.0f, 0.0f, 0.0f);
+
+	GLfloat	light_pos[] = {1.0, 1.0, 1.0, 1.0};
+	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+
+	static GLfloat	col[] = {1.0, 1.0, 1.0, 0.5};
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, col);
 
 	glPushMatrix();
 	glScalef(1/500.0, 1/500.0, 1/500.0);
@@ -37,6 +45,8 @@ void	display( void )
 	}
 	glEnd();
 	glPopMatrix();
+
+	glDisable(GL_LIGHT0);
 
 	glBegin(GL_LINES);
 	glColor3f(1.0, 0.0, 0.0);
@@ -98,13 +108,27 @@ void	ProcessVisualize( int argc, char *argv[] )
 {
 	glutInit(&argc, argv);
 	glutInitWindowSize(640, 480);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("libepecur");
 
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutMouseFunc(mouse);
 	glutMotionFunc(mouse_move);
+
+	glEnable(GL_LIGHTING);
+
+	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+	GLfloat	diffuse[] = {0.0, 1.0, 0.0, 1.0};
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+	GLfloat	specular[] = {0.0, 0.0, 0.0, 1.0};
+	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.0);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.0);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 1.0);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_DEPTH_TEST);
 
     glutMainLoop();
 }
