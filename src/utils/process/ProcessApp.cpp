@@ -12,6 +12,7 @@
 
 #include "ProcessApp.hpp"
 #include "ProcessMain.hpp"
+#include "ProcessVisualizer.hpp"
 
 namespace po = boost::program_options;
 
@@ -118,7 +119,8 @@ int	main( int argc, char* argv[] )
 		     << endl;
 	}
 
-	Process((TTree*)tree_file.FindObjectAny("events"));
+	Process((TTree*)tree_file.FindObjectAny("events"), &vis_result);
+	ProcessVisualize(argc, argv);
 
 	return 0;
 }

@@ -2,6 +2,7 @@
 #include <boost/numeric/ublas/lu.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
+#include "ProcessMain.hpp"
 #include "../export_tree/TreeExportHook.hpp"
 
 using namespace boost::numeric;
@@ -103,7 +104,7 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 	return track3d_t{a, b};
 }
 
-void	Process( TTree *events )
+void	Process( TTree *events, process_result_t *result )
 {
 	track_group_t	tg_LX, tg_LY, tg_RX, tg_RY;
 
@@ -162,9 +163,8 @@ void	Process( TTree *events )
 			ublas::lu_substitute(B, pm, x);
 
 			x(2) -= ublas::inner_prod(cr, t_L.a - t_R.a) / cr_norm;
-			ublas::vector<double>	intersect;
-			intersect = ((t_L.a - x(0) * t_L.b) + (t_R.a + x(1) * t_R.b)) / 2;
-			cerr << intersect << endl;
+			result->i1.push_back(t_L.a - x(0) * t_L.b);
+			result->i2.push_back(t_R.a + x(1) * t_R.b);
 		}
 	}
 }
