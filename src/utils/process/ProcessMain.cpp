@@ -133,7 +133,6 @@ void	Process( TTree *events )
 		    && (tg_RX.track_count == 1) && (tg_RY.track_count == 1);
 		if (cond)
 		{
-			cerr << i << " of " << events->GetEntries() << endl;
 			track3d_t	t_L = make_track<left_right_t::left>(i, tg_LX, tg_LY);
 			track3d_t	t_R = make_track<left_right_t::right>(i, tg_RX, tg_RY);
 
@@ -154,8 +153,8 @@ void	Process( TTree *events )
 			}
 			x = t_L.a - t_R.a; // put RHS into x
 
-			int	res = ublas::lu_factorize(B, pm);
-			if(res != 0)
+			int	singular = ublas::lu_factorize(B, pm);
+			if(singular)
 			{
 				throw "lu_factorize()==0";
 			}
