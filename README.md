@@ -57,7 +57,7 @@ Branches:
 
 * *{prefix}\_track\_count* - size of the following arrays
 * *{prefix}\_c0[]* - constant of track line, mm
-* *{prefix}\_c1[]* - slope of track line, mm/cm
+* *{prefix}\_c1[]* - slope of track line, mm/mm
 * *{prefix}\_hits\_count[]* - count of planes where hit was detected
 * *{prefix}\_chisq[]* - chi squared of track line fit
 
