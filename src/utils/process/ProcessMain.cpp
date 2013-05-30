@@ -20,7 +20,7 @@ ublas::vector<T>    cross( const ublas::vector<T> &a, const ublas::vector<T> &b 
 	return result;
 }
 
-enum left_right_t {left, right};
+enum cham_group_t {drift_left, drift_right};
 
 double  Psi_L = 1.0447;
 double  Psi_R = -1.0209;
@@ -30,7 +30,7 @@ struct track3d_t
 	ublas::vector<double>	a, b;
 };
 
-template<left_right_t side>
+template<cham_group_t cham_group>
 track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 {
 	tg_X.c0.resize(tg_X.track_count);
@@ -54,11 +54,11 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 	m1(0, 2) = 0; m1(1, 2) = -1; m1(2, 2) = 0;
 
 	double Psi;
-	if (side == left_right_t::left)
+	if (cham_group == cham_group_t::drift_left)
 	{
 		Psi = Psi_L;
 	}
-	else if (side == left_right_t::right)
+	else if (cham_group == cham_group_t::drift_right)
 	{
 		Psi = Psi_R;
 	}
@@ -75,13 +75,13 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 
 	ublas::vector<double> o(3), a(3), b(3);
 
-	if (side == left_right_t::left)
+	if (cham_group == cham_group_t::drift_left)
 	{
 		o(0) = 165.2;
 		o(1) = 512.4;
 		o(2) = 0.3;
 	}
-	else if (side == left_right_t::right)
+	else if (cham_group == cham_group_t::drift_right)
 	{
 		o(0) = 159.7;
 		o(1) = -524.0;
@@ -134,8 +134,8 @@ void	Process( TTree *events, process_result_t *result )
 		    && (tg_RX.track_count == 1) && (tg_RY.track_count == 1);
 		if (cond)
 		{
-			track3d_t	t_L = make_track<left_right_t::left>(i, tg_LX, tg_LY);
-			track3d_t	t_R = make_track<left_right_t::right>(i, tg_RX, tg_RY);
+			track3d_t	t_L = make_track<cham_group_t::drift_left>(i, tg_LX, tg_LY);
+			track3d_t	t_R = make_track<cham_group_t::drift_right>(i, tg_RX, tg_RY);
 
 			auto cr = cross(t_L.b, t_R.b);
 			double cr_norm = norm_2(cr);
