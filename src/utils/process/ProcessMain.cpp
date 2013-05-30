@@ -108,10 +108,10 @@ void	Process( TTree *events, process_result_t *result )
 {
 	track_group_t	tg_LX, tg_LY, tg_RX, tg_RY;
 
-    events->GetBranch("t3X_track_count")->SetAddress(&tg_LX.track_count);
-    events->GetBranch("t3Y_track_count")->SetAddress(&tg_LY.track_count);
-    events->GetBranch("t4X_track_count")->SetAddress(&tg_RX.track_count);
-    events->GetBranch("t4Y_track_count")->SetAddress(&tg_RY.track_count);
+	events->GetBranch("t3X_track_count")->SetAddress(&tg_LX.track_count);
+	events->GetBranch("t3Y_track_count")->SetAddress(&tg_LY.track_count);
+	events->GetBranch("t4X_track_count")->SetAddress(&tg_RX.track_count);
+	events->GetBranch("t4Y_track_count")->SetAddress(&tg_RY.track_count);
 
 	tg_LX.c0_br = events->GetBranch("t3X_c0");
 	tg_LX.c1_br = events->GetBranch("t3X_c1");
