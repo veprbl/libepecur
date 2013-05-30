@@ -20,7 +20,7 @@ ublas::vector<T>    cross( const ublas::vector<T> &a, const ublas::vector<T> &b 
 	return result;
 }
 
-enum cham_group_t {drift_left, drift_right};
+enum cham_group_t {prop_2nd, drift_left, drift_right};
 
 double  Psi_L = 1.0447;
 double  Psi_R = -1.0209;
@@ -62,6 +62,10 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 	{
 		Psi = Psi_R;
 	}
+	else if (cham_group == cham_group_t::prop_2nd)
+	{
+		Psi = 0;
+	}
 	else
 	{
 		throw;
@@ -87,6 +91,12 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 		o(1) = -524.0;
 		o(2) = -3.0;
 	}
+	else if (cham_group == cham_group_t::prop_2nd)
+	{
+		o(0) = -1486.0;
+		o(1) = 0;
+		o(2) = 2;
+	}
 	else
 	{
 		throw;
@@ -106,12 +116,19 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 
 void	Process( TTree *events, process_result_t *result )
 {
-	track_group_t	tg_LX, tg_LY, tg_RX, tg_RY;
+	track_group_t	tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
 
+	events->GetBranch("t2X_track_count")->SetAddress(&tg_F2X.track_count);
+	events->GetBranch("t2Y_track_count")->SetAddress(&tg_F2Y.track_count);
 	events->GetBranch("t3X_track_count")->SetAddress(&tg_LX.track_count);
 	events->GetBranch("t3Y_track_count")->SetAddress(&tg_LY.track_count);
 	events->GetBranch("t4X_track_count")->SetAddress(&tg_RX.track_count);
 	events->GetBranch("t4Y_track_count")->SetAddress(&tg_RY.track_count);
+
+	tg_F2X.c0_br = events->GetBranch("t2X_c0");
+	tg_F2X.c1_br = events->GetBranch("t2X_c1");
+	tg_F2Y.c0_br = events->GetBranch("t2Y_c0");
+	tg_F2Y.c1_br = events->GetBranch("t2Y_c1");
 
 	tg_LX.c0_br = events->GetBranch("t3X_c0");
 	tg_LX.c1_br = events->GetBranch("t3X_c1");
@@ -126,16 +143,20 @@ void	Process( TTree *events, process_result_t *result )
 	bool cond;
 	for(int i = -1; i < events->GetEntries(); i++)
 	{
+		events->GetBranch("t2X_track_count")->GetEntry(i);
+		events->GetBranch("t2Y_track_count")->GetEntry(i);
 		events->GetBranch("t3X_track_count")->GetEntry(i);
 		events->GetBranch("t3Y_track_count")->GetEntry(i);
 		events->GetBranch("t4X_track_count")->GetEntry(i);
 		events->GetBranch("t4Y_track_count")->GetEntry(i);
 		cond = (tg_LX.track_count == 1) && (tg_LY.track_count == 1)
-		    && (tg_RX.track_count == 1) && (tg_RY.track_count == 1);
+		    && (tg_RX.track_count == 1) && (tg_RY.track_count == 1)
+		    && (tg_F2X.track_count == 1) && (tg_F2Y.track_count == 1);
 		if (cond)
 		{
 			track3d_t	t_L = make_track<cham_group_t::drift_left>(i, tg_LX, tg_LY);
 			track3d_t	t_R = make_track<cham_group_t::drift_right>(i, tg_RX, tg_RY);
+			track3d_t	t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y);
 
 			auto cr = cross(t_L.b, t_R.b);
 			double cr_norm = norm_2(cr);
