@@ -25,7 +25,7 @@ void	drift_calib_curve()
 		copy = new TH1F(n, n, max_time, 0.0, max_time);
 		for(int j = 0; j < max_time; j++)
 		{
-			copy->SetBinContent(j, calib_curve.GetBinContent(j));
+			copy->SetBinContent(j, calib_curve->GetBinContent(j));
 		}
 		copy->GetXaxis()->SetTitle("T, [Counts]");
 		copy->GetYaxis()->SetTitle("X/X_0");
