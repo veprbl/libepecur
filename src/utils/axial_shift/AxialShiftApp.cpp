@@ -139,7 +139,7 @@ void	AxialShiftApp::Init()
 	int	rows_count = 4;
 	int	cols_count = ceil(shift_hist.size() / (float)rows_count);
 
-	hist_pad->Divide(rows_count, cols_count);
+	hist_pad->Divide(rows_count, cols_count, 0.005, 0.005);
 
 	int	pad_id = 1;
 
