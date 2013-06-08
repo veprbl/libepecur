@@ -25,6 +25,12 @@ void	AxialShiftHook::handle_event_end()
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
+		device_type_t	device_type = geom.group_device_type[group_id];
+
+		if (device_type != DEV_TYPE_PROP)
+		{
+			continue;
+		}
 
 		BOOST_FOREACH(auto axis_tup, gr_tup.second)
 		{
