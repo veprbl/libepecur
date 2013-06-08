@@ -11,6 +11,8 @@
 #include <epecur/geometry.hpp>
 
 #include "ProcessApp.hpp"
+#include "ProcessMain.hpp"
+#include "ProcessVisualizer.hpp"
 
 namespace po = boost::program_options;
 
@@ -116,6 +118,9 @@ int	main( int argc, char* argv[] )
 		     << GIT_COMMIT_ID
 		     << endl;
 	}
+
+	Process((TTree*)tree_file.FindObjectAny("events"), &vis_result);
+	ProcessVisualize(argc, argv);
 
 	return 0;
 }
