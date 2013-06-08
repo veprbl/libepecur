@@ -106,7 +106,14 @@ void	AxialShiftApp::Init()
 
 	hook = new AxialShiftHook(geom, shift_hist);
 
-	loadfile(data_filepath, *hook);
+	try
+	{
+		loadfile(data_filepath, *hook);
+	}
+	catch(const char *e)
+	{
+		cerr << "Error: " << e << endl;
+	}
 
 	cout << "Track miss count (chamber -> count -> part)" << endl;
 
