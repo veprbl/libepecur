@@ -1,20 +1,22 @@
+#include <TROOT.h>
+#include <TColor.h>
+
+void init_custom_palette()
 {
-
-// http://www.slac.stanford.edu/BFROOT/www/doc/workbook/root3/rootlogon.C
-
-cout << endl << "Welcome to rootlogon.C" << endl;
-cout << "For approved plots use: gROOT->SetStyle(\"BABAR\");"
-<< endl << endl;
-
-//..BABAR style from RooLogon.C in workdir
-TStyle *babarStyle= new TStyle("BABAR","BaBar approved plots style");
-
 // custom palette
 Double_t r[] = {1.0, 1.0, 1.0, 0.0};
 Double_t g[] = {1.0, 1.0, 0.0, 0.0};
 Double_t b[] = {1.0, 0.0, 0.0, 0.0};
 Double_t s[] = {0.0, 0.33, 0.66, 1.0};
 TColor::CreateGradientColorTable(4, s, r, g, b, 255);
+}
+
+void init_babar_style()
+{
+// http://www.slac.stanford.edu/BFROOT/www/doc/workbook/root3/rootlogon.C
+
+//..BABAR style from RooLogon.C in workdir
+TStyle *babarStyle= new TStyle("BABAR","BaBar approved plots style");
 
 // use plain black on white colors
 babarStyle->SetFrameBorderMode(0);
@@ -68,3 +70,12 @@ gStyle->SetPadTickX(1);
 gStyle->SetPadTickY(1);
 }
 
+void rootlogon()
+{
+cout << endl << "Welcome to rootlogon.C" << endl;
+cout << "For approved plots use: gROOT->SetStyle(\"BABAR\");"
+<< endl << endl;
+
+init_babar_style();
+init_custom_palette();
+}
