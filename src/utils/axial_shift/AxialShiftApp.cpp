@@ -17,6 +17,8 @@
 #include <epecur/loadfile.hpp>
 #include <epecur/types.hpp>
 
+#include "../../../contrib/rootlogon.C"
+
 #include "AxialShiftApp.hpp"
 #include "AxialShiftHook.hpp"
 
@@ -167,6 +169,10 @@ void	AxialShiftApp::Init()
 
 void	AxialShiftApp::init_hists( Geometry &geom )
 {
+	init_babar_style();
+	gROOT->SetStyle("BABAR");
+	init_custom_palette();
+
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
