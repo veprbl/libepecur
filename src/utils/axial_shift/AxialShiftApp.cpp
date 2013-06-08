@@ -191,6 +191,9 @@ void	AxialShiftApp::init_hists( Geometry &geom )
 				string	hist_name = "F" + boost::lexical_cast<string>(int(group_id)) + (axis == DEV_AXIS_X ? "X" : "Y") + boost::lexical_cast<string>(int(plane_id));
 
 				shift_hist[chamber_id] = new TH1I(hist_name.c_str(), hist_name.c_str(), 50, -5.0, 5.0);
+
+				shift_hist[chamber_id]->GetXaxis()->SetTitle("\\Delta X, [mm]");
+				shift_hist[chamber_id]->GetYaxis()->SetTitle("N");
 			}
 		}
 
