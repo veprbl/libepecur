@@ -9,6 +9,13 @@ cout << "For approved plots use: gROOT->SetStyle(\"BABAR\");"
 //..BABAR style from RooLogon.C in workdir
 TStyle *babarStyle= new TStyle("BABAR","BaBar approved plots style");
 
+// custom palette
+Double_t r[] = {1.0, 1.0, 1.0, 0.0};
+Double_t g[] = {1.0, 1.0, 0.0, 0.0};
+Double_t b[] = {1.0, 0.0, 0.0, 0.0};
+Double_t s[] = {0.0, 0.33, 0.66, 1.0};
+TColor::CreateGradientColorTable(4, s, r, g, b, 255);
+
 // use plain black on white colors
 babarStyle->SetFrameBorderMode(0);
 babarStyle->SetCanvasBorderMode(0);
