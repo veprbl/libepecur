@@ -127,19 +127,10 @@ void	AxialShiftApp::Init()
 	main_canvas = new TCanvas("main_canvas", ApplicationName(), 200, 10, 1000, 500);
 	main_canvas->Connect("Closed()", "TApplication", this, "Terminate()");
 
-	string	title_text = data_filepath + ": " + GIT_COMMIT_ID;
-
-	title_text_widget = new TPaveText(0.3, 0.945, 0.7, 0.99);
-	title_text_widget->AddText(title_text.c_str());
-	title_text_widget->Draw();
-
-	hist_pad = new TPad("hist_pad", "title", 0, 0, 1, 0.94);
-	hist_pad->Draw();
-
 	int	rows_count = 4;
 	int	cols_count = ceil(shift_hist.size() / (float)rows_count);
 
-	hist_pad->Divide(rows_count, cols_count, 0.005, 0.005);
+	main_canvas->Divide(rows_count, cols_count, 0.005, 0.005);
 
 	int	pad_id = 1;
 
@@ -157,7 +148,7 @@ void	AxialShiftApp::Init()
 		TH1I*	hist = chamb_tup.second;
 		double	new_shift_value = geom.chamber_axial_shift[chamber_id] - hist->GetMean();
 
-		hist_pad->cd(pad_id);
+		main_canvas->cd(pad_id);
 
 		cout << "// " << hist->GetTitle() << ".axial_shift = " << new_shift_value << endl;
 
