@@ -8,7 +8,7 @@ TFile	f("26061082.root", "READ");
 
 void	drift_calib_curve()
 {
-	TH1F	*calib_curve = 0;
+	TH1F	*calib_curve = 0, *copy = 0;
 
 	drift_calib->SetBranchAddress("calib_curve", &calib_curve);
 
@@ -19,7 +19,17 @@ void	drift_calib_curve()
 		drift_calib->GetEntry(i);
 
 		calib_curve_canvas.cd(i + 1);
-		calib_curve->Draw();
+		TString	n("h");
+		n += i;
+		int	max_time = calib_curve->GetXaxis()->GetNbins();
+		copy = new TH1F(n, n, max_time, 0.0, max_time);
+		for(int j = 0; j < max_time; j++)
+		{
+			copy->SetBinContent(j, calib_curve.GetBinContent(j));
+		}
+		copy->GetXaxis()->SetTitle("T, [Counts]");
+		copy->GetYaxis()->SetTitle("X/X_0");
+		copy->Draw();
 
 		calib_curve = 0; // TRICK :P
 	}
