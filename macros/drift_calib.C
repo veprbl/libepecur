@@ -40,12 +40,6 @@ void	drift_calib()
 
 	c3.cd();
 	TH1F *u = new TH1F("d3X1_time_d", "", 380, 0, 380);
-	u->SetLabelSize(0.04, "X");
-	u->SetLabelSize(0.04, "Y");
-	u->SetTitleSize(0.05, "X");
-	u->SetTitleSize(0.05, "Y");
-	u->SetTitleOffset(0.9, "X");
-	u->SetTitleOffset(1.1, "Y");
 	u->GetXaxis()->SetTitle("T, [Counts]");
 	u->GetYaxis()->SetTitle("N");
 	events->Draw("d3X1_time >> d3X1_time_d");
