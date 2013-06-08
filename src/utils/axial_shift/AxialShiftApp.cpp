@@ -136,10 +136,10 @@ void	AxialShiftApp::Init()
 	hist_pad = new TPad("hist_pad", "title", 0, 0, 1, 0.94);
 	hist_pad->Draw();
 
-	int	rows_count = floor(sqrt(shift_hist.size()));
+	int	rows_count = 4;
 	int	cols_count = ceil(shift_hist.size() / (float)rows_count);
 
-	hist_pad->Divide(rows_count, cols_count, 0, 0);
+	hist_pad->Divide(rows_count, cols_count);
 
 	int	pad_id = 1;
 
