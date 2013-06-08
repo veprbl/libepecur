@@ -124,7 +124,7 @@ void	AxialShiftApp::Init()
 		cout << int(tup.first) << " ->\t" << tup.second << "->\t" << tup.second/float(hook->track_count) << endl;
 	}
 
-	main_canvas = new TCanvas("main_canvas", ApplicationName(), 200, 10, 1000, 500);
+	main_canvas = new TCanvas("main_canvas", ApplicationName(), 200, 10, 1000, 250);
 	main_canvas->Connect("Closed()", "TApplication", this, "Terminate()");
 
 	int	rows_count = 4;
