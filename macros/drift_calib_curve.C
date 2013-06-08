@@ -3,7 +3,7 @@
 #include <TH2F.h>
 #include <TH1F.h>
 
-TCanvas	calib_curve_canvas;
+TCanvas	calib_curve_canvas, c2;
 TFile	f("26061082.root", "READ");
 
 void	drift_calib_curve()
@@ -34,5 +34,8 @@ void	drift_calib_curve()
 		calib_curve = 0; // TRICK :P
 	}
 
+	c2.cd();
+	copy->DrawCopy();
 	calib_curve_canvas.Show();
+	c2.Show();
 }
