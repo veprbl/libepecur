@@ -163,6 +163,7 @@ void	AxialShiftApp::init_hists( Geometry &geom )
 	init_babar_style();
 	gROOT->SetStyle("BABAR");
 	gStyle->SetOptTitle(1);
+	gStyle->SetTitleX(0.43);
 	init_custom_palette();
 
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
