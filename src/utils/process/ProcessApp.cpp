@@ -119,8 +119,36 @@ int	main( int argc, char* argv[] )
 		     << endl;
 	}
 
-	Process((TTree*)tree_file.FindObjectAny("events"), &vis_result);
-	ProcessVisualize(argc, argv);
+	if (tree_file.FindObjectAny("intersections"))
+	{
+		cerr << "Deleting previous data" << endl;
+		tree_file.ReOpen("UPDATE");
+		tree_file.Delete("intersections;*");
+		tree_file.ReOpen("READ");
+
+		if (tree_file.FindObjectAny("intersections"))
+		{
+			cerr << "Delete didn't work" << endl;
+			throw;
+		}
+	}
+
+	TTree	intersections("intersections", "Track intersections");
+	intersection_set_t	s;
+
+	s.br_lr = intersections.Branch("LR", &s.i_lr, "LR_x/D:LR_y/D:LR_z/D");
+	s.br_rl = intersections.Branch("RL", &s.i_rl, "RL_x/D:RL_y/D:RL_z/D");
+//  Not enabled yet
+//	s.br_f2r = intersections.Branch("F2R", &s.i_f2r, "F2R_x/D:F2R_y/D:F2R_z/D");
+//	s.br_f2l = intersections.Branch("F2L", &s.i_f2l, "F2L_x/D:F2L_y/D:F2L_z/D");
+//	s.br_rf2 = intersections.Branch("RF2", &s.i_rf2, "RF2_x/D:RF2_y/D:RF2_z/D");
+//	s.br_lf2 = intersections.Branch("LF2", &s.i_lf2, "LF2_x/D:LF2_y/D:LF2_z/D");
+
+	Process((TTree*)tree_file.FindObjectAny("events"), &vis_result, &s);
+
+	tree_file.ReOpen("UPDATE");
+	intersections.Write("intersections");
+	tree_file.Close();
 
 	return 0;
 }

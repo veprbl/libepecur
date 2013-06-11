@@ -114,7 +114,45 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 	return track3d_t{a, b};
 }
 
-void	Process( TTree *events, process_result_t *result )
+void	find_intersection_points(
+	const track3d_t &t1, const track3d_t &t2,
+	intersection_t *i1, intersection_t *i2
+	)
+{
+	auto cr = cross(t1.b, t2.b);
+	double cr_norm = norm_2(cr);
+
+	// Following code solves linear system
+	// (t1.b, t2.b, cr) * x = t1.a - t2.a
+	ublas::matrix<double>	B(3, 3);
+	ublas::vector<double>	x;
+	ublas::permutation_matrix<>	pm(B.size1());
+
+	for(int row = 0; row < B.size1(); row++)
+	{
+		B(row, 0) = t1.b(row);
+		B(row, 1) = t2.b(row);
+		B(row, 2) = cr(row);
+	}
+	x = t1.a - t2.a; // put RHS into x
+
+	int	singular = ublas::lu_factorize(B, pm);
+	if(singular)
+	{
+		throw "lu_factorize()==0";
+	}
+
+	ublas::lu_substitute(B, pm, x);
+
+	x(2) -= ublas::inner_prod(cr, t1.a - t2.a) / cr_norm;
+	ublas::vector<double>	iv1 = t1.a - x(0) * t1.b;
+	ublas::vector<double>	iv2 = t2.a + x(1) * t2.b;
+
+	i1->x = iv1(0); i1->y = iv1(1); i1->z = iv1(2);
+	i2->x = iv2(0); i2->y = iv2(1); i2->z = iv2(2);
+}
+
+void	Process( TTree *events, process_result_t *result, intersection_set_t *s )
 {
 	track_group_t	tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
 
@@ -158,34 +196,9 @@ void	Process( TTree *events, process_result_t *result )
 			track3d_t	t_R = make_track<cham_group_t::drift_right>(i, tg_RX, tg_RY);
 			track3d_t	t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y);
 
-			auto cr = cross(t_L.b, t_R.b);
-			double cr_norm = norm_2(cr);
-
-			// Following code solves linear system
-			// (t_L.b, t_R.b, cr) * x = t_L.a - t_R.a
-			ublas::matrix<double>	B(3, 3);
-			ublas::vector<double>	x;
-			ublas::permutation_matrix<>	pm(B.size1());
-
-			for(int row = 0; row < B.size1(); row++)
-			{
-				B(row, 0) = t_L.b(row);
-				B(row, 1) = t_R.b(row);
-				B(row, 2) = cr(row);
-			}
-			x = t_L.a - t_R.a; // put RHS into x
-
-			int	singular = ublas::lu_factorize(B, pm);
-			if(singular)
-			{
-				throw "lu_factorize()==0";
-			}
-
-			ublas::lu_substitute(B, pm, x);
-
-			x(2) -= ublas::inner_prod(cr, t_L.a - t_R.a) / cr_norm;
-			result->i1.push_back(t_L.a - x(0) * t_L.b);
-			result->i2.push_back(t_R.a + x(1) * t_R.b);
+			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
+			s->br_lr->Fill();
+			s->br_rl->Fill();
 		}
 	}
 }
