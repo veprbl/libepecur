@@ -32,7 +32,7 @@ babarStyle->SetPaperSize(20,26);
 babarStyle->SetPadTopMargin(0.05);
 babarStyle->SetPadRightMargin(0.12);
 babarStyle->SetPadBottomMargin(0.16);
-babarStyle->SetPadLeftMargin(0.12);
+babarStyle->SetPadLeftMargin(0.13);
 
 // use large Times-Roman fonts
 babarStyle->SetTextFont(132);
