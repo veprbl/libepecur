@@ -4,11 +4,11 @@
 void init_custom_palette()
 {
 // custom palette
-Double_t r[] = {1.0, 1.0, 1.0, 0.0};
-Double_t g[] = {1.0, 1.0, 0.0, 0.0};
-Double_t b[] = {1.0, 0.0, 0.0, 0.0};
-Double_t s[] = {0.0, 0.33, 0.66, 1.0};
-TColor::CreateGradientColorTable(4, s, r, g, b, 255);
+Double_t r[] = {1.0, 1.0, 0.0};
+Double_t g[] = {1.0, 0.0, 0.0};
+Double_t b[] = {0.0, 0.0, 0.0};
+Double_t s[] = {0.0, 0.66, 1.0};
+TColor::CreateGradientColorTable(3, s, r, g, b, 255);
 }
 
 void init_babar_style()
