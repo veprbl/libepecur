@@ -25,11 +25,6 @@ public:
 
 	DriftCalibHook( Geometry &g );
 	void	generate_calibration_curves();
-	void	handle_drift_data(
-		std::vector<wire_id_t> &wire_id_s,
-		std::vector<uint16_t> &time_s,
-		device_id_t dev_id
-		) override;
 	virtual void	handle_event_end() override;
 };
 
