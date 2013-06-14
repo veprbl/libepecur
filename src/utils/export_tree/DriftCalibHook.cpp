@@ -10,7 +10,7 @@
 #include "DriftCalibHook.hpp"
 
 DriftCalibHook::DriftCalibHook( Geometry &g )
-    : StdDrift(g)
+    : TrackRecognitionHook(g, NULL) // NULL will make TRH recognize rough drift tracks
     , drift_calib("drift_calib", "drift chambers calibration curves")
     , calib_curve(
         "calib_curve", "",
@@ -22,27 +22,36 @@ DriftCalibHook::DriftCalibHook( Geometry &g )
 
 unsigned int	DriftCalibHook::generate_calibration_curve( chamber_id_t chamber_id )
 {
-	uint16_t	time = 0;
-	unsigned int	overal_integral = 0, integral = 0;
+	unsigned int	result = 0;
 	auto	&calib = calibration_curve[chamber_id];
 
-	calib.resize(MAX_TIME_COUNTS);
+	calib.resize(MAX_ANGLE_COUNTS);
 
-	BOOST_FOREACH(auto counts, time_distributions[chamber_id])
+	for(small_angle_t psi = 0; psi < MAX_ANGLE_COUNTS; psi++)
 	{
-		overal_integral += counts;
+		uint16_t	time = 0;
+		unsigned int	overal_integral = 0, integral = 0;
+
+		calib[psi].resize(MAX_TIME_COUNTS);
+
+		BOOST_FOREACH(auto counts, time_distributions[chamber_id][psi])
+		{
+			overal_integral += counts;
+		}
+
+		BOOST_FOREACH(auto counts, time_distributions[chamber_id][psi])
+		{
+			integral += counts;
+			auto	value = integral / (float)overal_integral;
+			calib[psi][time] = value;
+			calib_curve.Fill(time, value);
+			time++;
+		}
+
+		result += overal_integral;
 	}
 
-	BOOST_FOREACH(auto counts, time_distributions[chamber_id])
-	{
-		integral += counts;
-		auto	value = integral / (float)overal_integral;
-		calib[time] = value;
-		calib_curve.Fill(time, value);
-		time++;
-	}
-
-	return overal_integral;
+	return result;
 }
 
 void	DriftCalibHook::generate_calibration_curves()
@@ -90,6 +99,8 @@ void	DriftCalibHook::generate_calibration_curves()
 
 void	DriftCalibHook::handle_event_end()
 {
+	TrackRecognitionHook::handle_event_end();
+
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
@@ -101,20 +112,35 @@ void	DriftCalibHook::handle_event_end()
 
 		BOOST_FOREACH(auto &axis_tup, gr_tup.second)
 		{
-			const vector<chamber_id_t>	&chambers = axis_tup.second;
+			device_axis_t	axis = axis_tup.first;
+			vector<chamber_id_t>	&chambers =
+			    geom.group_chambers[group_id][axis];
+			vector<track_info_t>	&tracks = last_tracks[group_id][axis];
 
-			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
+			BOOST_FOREACH(track_info_t &track, tracks)
 			{
-				BOOST_FOREACH(uint16_t time, last_event_drift_time[chamber_id])
+				auto	wire_index_it = track.wire_pos_ptr.begin();
+				small_angle_t	psi = c1_to_angle(track.c1);
+
+				BOOST_FOREACH(auto chamber_index, track.used_chambers)
 				{
+					chamber_id_t	chamber_id = chambers[chamber_index];
+					uint16_t	t =
+					    last_event_drift_time[chamber_id][*(wire_index_it++)];
+
 					auto	&calib = time_distributions[chamber_id];
 
 					if (calib.empty())
 					{
-						calib.resize(MAX_TIME_COUNTS);
+						calib.resize(MAX_ANGLE_COUNTS);
 					}
 
-					calib[time]++;
+					if (calib[psi].empty())
+					{
+						calib[psi].resize(MAX_TIME_COUNTS);
+					}
+
+					calib[psi][t]++;
 				}
 			}
 		}

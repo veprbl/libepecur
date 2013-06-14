@@ -11,10 +11,16 @@
 #include <map>
 
 #include <boost/unordered/unordered_map.hpp>
+#include <boost/optional.hpp>
 
 #include "StdDrift.hpp"
 
 using boost::unordered_map;
+
+static const int	MAX_TIME_COUNTS = 384;
+static const int	MAX_ANGLE_COUNTS = 180;
+static const int	ANGLE_COUNTS_OFFSET = 90;
+static const double	DRIFT_STEP = 17.0; // mm
 
 class	TrackRecognitionHook: public StdDrift
 {
@@ -30,6 +36,14 @@ public:
 	unordered_map< group_id_t, map< device_axis_t, vector<track_info_t> > >	last_tracks;
 
 	TrackRecognitionHook( Geometry &g, StdDrift::calibration_curve_t *c = NULL );
+
+	double	c1_to_angle( double c1 );
+	boost::optional<track_info_t>	recognize_drift_track(
+		const track_info_t	&rough_track,
+		const vector<double>  &normal_pos,
+		const vector<chamber_id_t>    &chambers,
+		double	max_chisq
+		);
 
 	virtual void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, device_id_t dev_id ) override;
 	virtual void	handle_drift_data(

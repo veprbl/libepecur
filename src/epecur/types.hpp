@@ -14,7 +14,7 @@ BOOST_STATIC_ASSERT(sizeof(wire_id_ptr_t) >= sizeof(wire_id_t));
 typedef	double	wire_pos_t;
 typedef	uint8_t	wire_pos_ptr_t;
 
-typedef int8_t	small_angle_t;	// supposed to be from -90 to 90
+typedef int16_t	small_angle_t;
 
 typedef	uint8_t	plane_id_t;
 typedef	uint8_t	chamber_id_t;

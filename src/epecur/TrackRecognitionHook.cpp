@@ -82,40 +82,52 @@ void	TrackRecognitionHook::handle_drift_data(
 
 	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
 
-	// if calibration curve is not provided, just use wire_id's
-	if (calibration_curve == NULL)
+	last_event[chamber_id] = last_event_drift_wire_pos[chamber_id];
+}
+
+double	TrackRecognitionHook::c1_to_angle( double c1 )
+{
+	small_angle_t	psi = round(atan(c1 * DRIFT_STEP / 2) / M_PI * 180);
+	psi += ANGLE_COUNTS_OFFSET;
+
+	BOOST_ASSERT(psi < MAX_ANGLE_COUNTS);
+	BOOST_ASSERT(psi >= 0);
+
+	return psi;
+}
+
+boost::optional<track_info_t>	TrackRecognitionHook::recognize_drift_track(
+	const track_info_t	&rough_track,
+	const vector<double>	&normal_pos,
+	const vector<chamber_id_t>    &chambers,
+	double	max_chisq
+	)
+{
+	vector< vector<wire_pos_t>* >	block;
+	auto	wire_index_it = rough_track.wire_pos_ptr.begin();
+	small_angle_t	psi = c1_to_angle(rough_track.c1);
+
+	BOOST_FOREACH(auto chamber_index, rough_track.used_chambers)
 	{
-		last_event[chamber_id] = last_event_drift_wire_pos[chamber_id];
-		return;
+		chamber_id_t	chamber_id = chambers[chamber_index];
+		wire_pos_ptr_t	wire_index = *(wire_index_it++);
+		auto	&wire_pos = last_event_drift_wire_pos[chamber_id][wire_index];
+		auto	&time = last_event_drift_time[chamber_id][wire_index];
+		auto	&calib = (*calibration_curve)[chamber_id][psi];
+
+		last_event[chamber_id].clear();
+		last_event[chamber_id].push_back(DRIFT_STEP/2*(wire_pos + calib[time]));
+		last_event[chamber_id].push_back(DRIFT_STEP/2*(wire_pos - calib[time]));
+		block.push_back(&last_event[chamber_id]);
 	}
 
-	auto	&wire_pos = last_event_drift_wire_pos[chamber_id];
-	auto	&time = last_event_drift_time[chamber_id];
-	auto	&calib = (*calibration_curve)[chamber_id];
-	auto	wit = wire_pos.begin();
-	auto	tit = time.begin();
-
-	if (calib.empty())
+	vector<track_info_t>	tr = recognize_all_tracks<track_type_t::drift>(block, normal_pos, max_chisq);
+	BOOST_ASSERT(tr.size() <= 2);
+	if (tr.empty())
 	{
-		static bitset<256>	warnings_generated;
-		bool	generated = warnings_generated[chamber_id];
-		if (!generated)
-		{
-			cerr << "No calibration curve for chamber " << int(chamber_id)
-			     << ". Data is ignored." << endl;
-		}
-		warnings_generated.set(chamber_id);
-		return;
+		return boost::optional<track_info_t>();
 	}
-
-	while(wit != wire_pos.end())
-	{
-		const double	DRIFT_DISTANCE = 17.0/2;
-		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit + calib[*tit]));
-		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit - calib[*tit]));
-		wit++;
-		tit++;
-	}
+	return tr.front();
 }
 
 void	TrackRecognitionHook::handle_event_end()
@@ -132,28 +144,62 @@ void	TrackRecognitionHook::handle_event_end()
 		{
 			device_axis_t	axis = axis_tup.first;
 			const vector<chamber_id_t>	&chambers = axis_tup.second;
+			bool	continue_flag = false;
 
 			block.clear();
 
 			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 			{
 				block.push_back(&last_event[chamber_id]);
+
+				if ((device_type == DEV_TYPE_DRIFT) && calibration_curve)
+				{
+					auto	&calib = (*calibration_curve)[chamber_id];
+					if (calib.empty())
+					{
+						static bitset<256>	warnings_generated;
+						bool	generated = warnings_generated[chamber_id];
+						if (!generated)
+						{
+							cerr << "No calibration curve for chamber "
+							     << int(chamber_id)
+							     << ". Data is ignored." << endl;
+						}
+						warnings_generated.set(chamber_id);
+						continue_flag = true;
+					}
+				}
+			}
+
+			if (continue_flag)
+			{
+				continue;
 			}
 
 			vector<double>	&normal_pos = geom.normal_pos[group_id][axis];
 
-			if ((device_type == DEV_TYPE_PROP) ||
-			    ((device_type == DEV_TYPE_DRIFT) && (calibration_curve == NULL)))
+			if (device_type == DEV_TYPE_DRIFT)
 			{
-				last_tracks[group_id][axis] = recognize_all_tracks<track_type_t::prop>(block, normal_pos, max_chisq);
+				//	max_chisq /= DRIFT_STEP*DRIFT_STEP;
 			}
-			else if (device_type == DEV_TYPE_DRIFT)
+			vector<track_info_t> tracks = recognize_all_tracks<track_type_t::prop>(block, normal_pos, max_chisq);
+
+			if ((device_type == DEV_TYPE_DRIFT) && (calibration_curve != NULL))
 			{
-				last_tracks[group_id][axis] = recognize_all_tracks<track_type_t::drift>(block, normal_pos, max_chisq);
+				last_tracks[group_id][axis].clear();
+				BOOST_FOREACH(track_info_t &track, tracks)
+				{
+					boost::optional<track_info_t> ti =
+					    recognize_drift_track(track, normal_pos, chambers, max_chisq);
+					if (ti)
+					{
+						last_tracks[group_id][axis].push_back(*ti);
+					}
+				}
 			}
 			else
 			{
-				throw "Invalid dev type";
+				last_tracks[group_id][axis] = tracks;
 			}
 		}
 	}

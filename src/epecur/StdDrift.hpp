@@ -20,7 +20,7 @@ protected:
 
 public:
 
-	typedef map< chamber_id_t, vector<double> >	calibration_curve_t;
+	typedef map< chamber_id_t, vector< vector<double> > >	calibration_curve_t;
 
 	map< chamber_id_t, vector<wire_pos_t> >	last_event_drift_wire_pos;
 	map< chamber_id_t, vector<uint16_t> >	last_event_drift_time;
