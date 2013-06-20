@@ -17,6 +17,8 @@
 #include <epecur/loadfile.hpp>
 #include <epecur/types.hpp>
 
+#include "../../../contrib/rootlogon.C"
+
 #include "AxialShiftApp.hpp"
 #include "AxialShiftHook.hpp"
 
@@ -122,22 +124,13 @@ void	AxialShiftApp::Init()
 		cout << int(tup.first) << " ->\t" << tup.second << "->\t" << tup.second/float(hook->track_count) << endl;
 	}
 
-	main_canvas = new TCanvas("main_canvas", ApplicationName(), 200, 10, 1000, 500);
+	main_canvas = new TCanvas("main_canvas", ApplicationName(), 200, 10, 1000, 250);
 	main_canvas->Connect("Closed()", "TApplication", this, "Terminate()");
 
-	string	title_text = data_filepath + ": " + GIT_COMMIT_ID;
-
-	title_text_widget = new TPaveText(0.3, 0.945, 0.7, 0.99);
-	title_text_widget->AddText(title_text.c_str());
-	title_text_widget->Draw();
-
-	hist_pad = new TPad("hist_pad", "title", 0, 0, 1, 0.94);
-	hist_pad->Draw();
-
-	int	rows_count = floor(sqrt(shift_hist.size()));
+	int	rows_count = 4;
 	int	cols_count = ceil(shift_hist.size() / (float)rows_count);
 
-	hist_pad->Divide(rows_count, cols_count, 0, 0);
+	main_canvas->Divide(rows_count, cols_count, 0.005, 0.005);
 
 	int	pad_id = 1;
 
@@ -155,7 +148,7 @@ void	AxialShiftApp::Init()
 		TH1I*	hist = chamb_tup.second;
 		double	new_shift_value = geom.chamber_axial_shift[chamber_id] - hist->GetMean();
 
-		hist_pad->cd(pad_id);
+		main_canvas->cd(pad_id);
 
 		cout << "// " << hist->GetTitle() << ".axial_shift = " << new_shift_value << endl;
 
@@ -167,11 +160,21 @@ void	AxialShiftApp::Init()
 
 void	AxialShiftApp::init_hists( Geometry &geom )
 {
-	gStyle->SetOptLogy(1);
+	init_babar_style();
+	gROOT->SetStyle("BABAR");
+	gStyle->SetOptTitle(1);
+	gStyle->SetTitleX(0.43);
+	init_custom_palette();
 
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
+		device_type_t	device_type = geom.group_device_type[group_id];
+
+		if (device_type != DEV_TYPE_PROP)
+		{
+			continue;
+		}
 
 		BOOST_FOREACH(auto axis_tup, gr_tup.second)
 		{
@@ -180,9 +183,18 @@ void	AxialShiftApp::init_hists( Geometry &geom )
 			BOOST_FOREACH(chamber_id_t chamber_id, axis_tup.second)
 			{
 				plane_id_t	plane_id = geom.chamber_plane[chamber_id];
+
+				if ((group_id != 1) || (axis != DEV_AXIS_X))
+				{
+					continue;
+				}
+
 				string	hist_name = "F" + boost::lexical_cast<string>(int(group_id)) + (axis == DEV_AXIS_X ? "X" : "Y") + boost::lexical_cast<string>(int(plane_id));
 
 				shift_hist[chamber_id] = new TH1I(hist_name.c_str(), hist_name.c_str(), 50, -5.0, 5.0);
+
+				shift_hist[chamber_id]->GetXaxis()->SetTitle("\\Delta X, [mm]");
+				shift_hist[chamber_id]->GetYaxis()->SetTitle("N");
 			}
 		}
 

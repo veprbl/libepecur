@@ -25,6 +25,12 @@ void	AxialShiftHook::handle_event_end()
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
+		device_type_t	device_type = geom.group_device_type[group_id];
+
+		if (device_type != DEV_TYPE_PROP)
+		{
+			continue;
+		}
 
 		BOOST_FOREACH(auto axis_tup, gr_tup.second)
 		{
@@ -49,7 +55,13 @@ void	AxialShiftHook::handle_event_end()
 				BOOST_FOREACH(uint chamber_id_pos, track.used_chambers)
 				{
 					chamber_id_t	chamber_id = axis_tup.second[chamber_id_pos];
+					plane_id_t	plane_id = geom.chamber_plane[chamber_id];
 					double shift;
+
+					if ((group_id != 1) || (axis != DEV_AXIS_X))
+					{
+						continue;
+					}
 
 					shift = track.chamber_wires_pos[i] - (track.c0 + track.c1 * normal_pos[chamber_id_pos]);
 

@@ -2,11 +2,12 @@
 
 #include <TFile.h>
 #include <TCanvas.h>
+#include <TH1F.h>
 #include <TH2F.h>
 
 using std::string;
 
-TCanvas	c1, c2;
+TCanvas	c1, c2, c3;
 TFile	f("26061082.root", "READ");
 int	pad_id;
 
@@ -14,7 +15,7 @@ void	show_hist( TCanvas &c, string func )
 {
 	c.cd(++pad_id);
 	TH2F *uu = new TH2F("uu", func.c_str(), 180, -90, 90, 380, 0, 380);
-	events->Draw((func + " >> uu").c_str(), "", "col");
+	events->Draw((func + " >> uu").c_str(), "", "zcol");
 }
 
 void	drift_calib()
@@ -36,4 +37,11 @@ void	drift_calib()
 	show_hist(c2, "d4Y3_time:d4Y3_wire_pos");
 	show_hist(c2, "d3Y1_time:d3Y1_wire_pos");
 	show_hist(c2, "d4Y1_time:d4Y1_wire_pos");
+
+	c3.cd();
+	TH1F *u = new TH1F("d3X1_time_d", "", 380, 0, 380);
+	u->GetXaxis()->SetTitle("T, [Counts]");
+	u->GetYaxis()->SetTitle("N");
+	events->Draw("d3X1_time >> d3X1_time_d");
+	c3.Show();
 }
