@@ -14,42 +14,6 @@ find_package( GLUT )
 
 set( EPECUR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/ )
 
-execute_process(COMMAND git rev-parse HEAD
-	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-	OUTPUT_VARIABLE GIT_COMMIT_ID
-	RESULT_VARIABLE err_code
-	ERROR_QUIET
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-if (${err_code} EQUAL 127)
-	message(FATAL_ERROR "Git is not avaliable!")
-endif()
-
-if (${err_code} EQUAL 128)
-	message(SEND_ERROR "Git repository is not avaliable!")
-endif()
-
-message(STATUS "Last Git commit is ${GIT_COMMIT_ID}")
-
-execute_process(COMMAND git diff --quiet
-	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-	RESULT_VARIABLE a
-	OUTPUT_QUIET)
-
-execute_process(COMMAND git diff --cached --quiet
-	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-	RESULT_VARIABLE b
-	OUTPUT_QUIET)
-
-math(EXPR c "${a} | ${b}")
-
-if (${c} EQUAL 1)
-	set(GIT_COMMIT_ID "dirty working tree")
-	message(AUTHOR_WARNING "Git working tree isn't clean! Please don't use compiled uncommited code for real work. You will never remember what exactly changes you did to obtain your results.")
-endif()
-
-add_definitions(-DGIT_COMMIT_ID="${GIT_COMMIT_ID}")
-
 option(USE_CLANG "build application with clang" OFF)
 if (USE_CLANG)
 	set(CMAKE_C_COMPILER "/usr/bin/clang")

@@ -5,6 +5,7 @@ set( EPECUR_SRCS
 	track.cpp
 	StdDrift.cpp
 	TrackRecognitionHook.cpp
+	git-rev-export.cpp
 
 )
 
@@ -19,4 +20,12 @@ add_library(
 target_link_libraries (
 	epecur
 	${Boost_LIBRARIES}
+	)
+
+add_dependencies(epecur git_rev)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+add_custom_target(git_rev
+	${PROJECT_SOURCE_DIR}/get_rev_id.sh > ${CMAKE_CURRENT_BINARY_DIR}/git-rev.hpp
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	VERBATIM
 	)

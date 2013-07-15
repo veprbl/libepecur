@@ -15,6 +15,7 @@
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
 #include <epecur/types.hpp>
+#include <epecur/git-rev-export.hpp>
 
 #include "MomentumDispersionApp.hpp"
 #include "EvSumHook.hpp"

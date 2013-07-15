@@ -9,6 +9,7 @@
 #include <TTree.h>
 
 #include <epecur/geometry.hpp>
+#include <epecur/git-rev-export.hpp>
 
 #include "ProcessApp.hpp"
 #include "ProcessMain.hpp"

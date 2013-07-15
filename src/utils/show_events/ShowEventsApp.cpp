@@ -22,6 +22,7 @@
 #include <epecur/loadfile.hpp>
 #include <epecur/track.hpp>
 #include <epecur/types.hpp>
+#include <epecur/git-rev-export.hpp>
 
 #include "ShowEventsApp.hpp"
 #include "EvShowHook.hpp"
