@@ -1,7 +1,7 @@
 #ifndef __PROCESS_VISUALIZER_HPP
 #define __PROCESS_VISUALIZER_HPP
 
-#include <glut.h>
+#include <GL/glut.h>
 
 #include "ProcessMain.hpp"
 
