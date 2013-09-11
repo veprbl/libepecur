@@ -1,7 +1,11 @@
 #ifndef __PROCESS_VISUALIZER_HPP
 #define __PROCESS_VISUALIZER_HPP
 
-#include <GL/glut.h>
+#ifdef __APPLE__
+	#include <GLUT/glut.h>
+#else
+	#include <GL/glut.h>
+#endif
 
 #include "ProcessMain.hpp"
 
