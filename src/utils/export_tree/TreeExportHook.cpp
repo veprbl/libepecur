@@ -65,22 +65,22 @@ void	TreeExportHook::init_track_group(
 		);
 	st_gr.c0_br = event_tree.Branch(
 		store_name(group_name + "c0"),
-		nullptr,
+		(void*)nullptr,
 		store_name(group_name + "c0[" + group_name + "track_count]/D")
 		);
 	st_gr.c1_br = event_tree.Branch(
 		store_name(group_name + "c1"),
-		nullptr,
+		(void*)nullptr,
 		store_name(group_name + "c1[" + group_name + "track_count]/D")
 		);
 	st_gr.hits_count_br = event_tree.Branch(
 		store_name(group_name + "hits_count"),
-		nullptr,
+		(void*)nullptr,
 		store_name(group_name + "hits_count[" + group_name + "track_count]/I")
 		);
 	st_gr.chisq_br = event_tree.Branch(
 		store_name(group_name + "chisq"),
-		nullptr,
+		(void*)nullptr,
 		store_name(group_name + "chisq[" + group_name + "track_count]/D")
 		);
 }
@@ -107,12 +107,12 @@ void	TreeExportHook::init_drift_group(
 			);
 		st_gr.wire_pos_br = event_tree.Branch(
 			store_name(group_name + "wire_pos"),
-			nullptr,
+			(void*)nullptr,
 			store_name(group_name + "wire_pos[" + group_name + "num_wires]/" WIRE_POS_ROOT_TYPE)
 			);
 		st_gr.time_br = event_tree.Branch(
 			store_name(group_name + "time"),
-			nullptr,
+			(void*)nullptr,
 			store_name(group_name + "time[" + group_name + "num_wires]/" DRIFT_TIME_ROOT_TYPE)
 			);
 
