@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <iterator>
+#include <cmath>
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>

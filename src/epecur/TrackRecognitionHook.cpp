@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <bitset>
+#include <iostream>
 
 #include <boost/assert.hpp>
 #include <boost/foreach.hpp>
