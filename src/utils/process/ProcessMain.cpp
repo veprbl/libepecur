@@ -197,6 +197,8 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 			track3d_t	t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y);
 
 			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
+			find_intersection_points(t_F2, t_L, &s->i_f2l, &s->i_lf2);
+			find_intersection_points(t_F2, t_R, &s->i_f2r, &s->i_rf2);
 			intersections.Fill();
 		}
 	}
