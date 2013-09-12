@@ -25,7 +25,7 @@ target_link_libraries (
 add_dependencies(epecur git_rev)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_custom_target(git_rev
-	${PROJECT_SOURCE_DIR}/get_rev_id.sh > ${CMAKE_CURRENT_BINARY_DIR}/git-rev.hpp
+	${PROJECT_SOURCE_DIR}/get_rev_id.sh ${CMAKE_CURRENT_BINARY_DIR}/git-rev.hpp
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	VERBATIM
 	)
