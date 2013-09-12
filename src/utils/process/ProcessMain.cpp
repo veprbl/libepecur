@@ -179,7 +179,7 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 	tg_RY.c1_br = events->GetBranch("t4Y_c1");
 
 	bool cond;
-	for(int i = -1; i < events->GetEntries(); i++)
+	for(int i = 1; i < events->GetEntries(); i++)
 	{
 		events->GetBranch("t2X_track_count")->GetEntry(i);
 		events->GetBranch("t2Y_track_count")->GetEntry(i);
