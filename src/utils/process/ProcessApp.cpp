@@ -145,7 +145,7 @@ int	main( int argc, char* argv[] )
 //	s.br_rf2 = intersections.Branch("RF2", &s.i_rf2, "RF2_x/D:RF2_y/D:RF2_z/D");
 //	s.br_lf2 = intersections.Branch("LF2", &s.i_lf2, "LF2_x/D:LF2_y/D:LF2_z/D");
 
-	Process((TTree*)tree_file.FindObjectAny("events"), &vis_result, &s);
+	Process((TTree*)tree_file.FindObjectAny("events"), &vis_result, &s, intersections);
 
 	tree_file.ReOpen("UPDATE");
 	intersections.Write("intersections");

@@ -152,7 +152,7 @@ void	find_intersection_points(
 	i2->x = iv2(0); i2->y = iv2(1); i2->z = iv2(2);
 }
 
-void	Process( TTree *events, process_result_t *result, intersection_set_t *s )
+void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TTree &intersections )
 {
 	track_group_t	tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
 
@@ -197,8 +197,7 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s )
 			track3d_t	t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y);
 
 			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
-			s->br_lr->Fill();
-			s->br_rl->Fill();
+			intersections.Fill();
 		}
 	}
 }
