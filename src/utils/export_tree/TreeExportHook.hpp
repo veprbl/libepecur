@@ -15,9 +15,9 @@ using boost::unordered_map;
 struct track_group_t
 {
 	uint32_t	track_count;
-	vector<double>	c0, c1, chisq;
+	vector<double>	c0, c1, chisq, prev_chisq;
 	vector<uint32_t>	hits_count;
-	TBranch		*c0_br, *c1_br, *chisq_br, *hits_count_br;
+	TBranch		*c0_br, *c1_br, *chisq_br, *prev_chisq_br, *hits_count_br;
 };
 
 struct drift_group_t

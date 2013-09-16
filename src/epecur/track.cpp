@@ -1,4 +1,5 @@
 #include <vector>
+#include <cfloat>
 
 #include <boost/foreach.hpp>
 
@@ -95,7 +96,7 @@ track_info_t	recognize_track( const vector< vector<wire_pos_t>* > &data, const v
 	}
 
 	double	best_c0, best_c1;
-	double	best_sumsq;
+	double	best_sumsq, prev_best_sumsq = FLT_MAX;
 	vector<double>	best_wires_pos;
 	bool	first = true;
 
@@ -162,6 +163,7 @@ track_info_t	recognize_track( const vector< vector<wire_pos_t>* > &data, const v
 
 		if (first || (best_sumsq > sumsq))
 		{
+			prev_best_sumsq = best_sumsq;
 			best_sumsq = sumsq;
 			best_c0 = c0;
 			best_c1 = c1;
@@ -178,7 +180,7 @@ track_info_t	recognize_track( const vector< vector<wire_pos_t>* > &data, const v
 	while(next( wire_pos_ptr, &wire_count[0], chambers_count ));
 
 	return track_info_t({
-			best_c0, best_c1, best_sumsq, best_wires_pos, best_wire_pos_ptr
+			best_c0, best_c1, best_sumsq, prev_best_sumsq, best_wires_pos, best_wire_pos_ptr
 				});
 }
 

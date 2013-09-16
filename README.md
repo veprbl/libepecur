@@ -60,6 +60,7 @@ Branches:
 * *{prefix}\_c1[]* - slope of track line, mm/mm
 * *{prefix}\_hits\_count[]* - count of planes where hit was detected
 * *{prefix}\_chisq[]* - chi squared of track line fit
+* *{prefix}\_prev\_chisq[]* - second minimal value for chi squared of track line fit
 
 ##### Drift
 

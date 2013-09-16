@@ -83,6 +83,11 @@ void	TreeExportHook::init_track_group(
 		(void*)nullptr,
 		store_name(group_name + "chisq[" + group_name + "track_count]/D")
 		);
+	st_gr.prev_chisq_br = event_tree.Branch(
+		store_name(group_name + "prev_chisq"),
+		(void*)nullptr,
+		store_name(group_name + "prev_chisq[" + group_name + "track_count]/D")
+		);
 }
 
 void	TreeExportHook::init_drift_group(
@@ -141,6 +146,7 @@ void	TreeExportHook::write_track_event(
 	st_gr.c1.clear();
 	st_gr.hits_count.clear();
 	st_gr.chisq.clear();
+	st_gr.prev_chisq.clear();
 
 	BOOST_FOREACH(track_info_t &track, tracks)
 	{
@@ -148,12 +154,14 @@ void	TreeExportHook::write_track_event(
 		st_gr.c1.push_back(track.c1);
 		st_gr.hits_count.push_back(track.used_chambers.size());
 		st_gr.chisq.push_back(track.chisq);
+		st_gr.prev_chisq.push_back(track.prev_chisq);
 	}
 
 	st_gr.c0_br->SetAddress(st_gr.c0.data());
 	st_gr.c1_br->SetAddress(st_gr.c1.data());
 	st_gr.hits_count_br->SetAddress(st_gr.hits_count.data());
 	st_gr.chisq_br->SetAddress(st_gr.chisq.data());
+	st_gr.prev_chisq_br->SetAddress(st_gr.prev_chisq.data());
 }
 
 void	TreeExportHook::write_drift_event(

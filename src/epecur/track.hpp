@@ -14,6 +14,7 @@ struct track_info_t
 	double	c0;
 	double	c1;
 	double	chisq;
+	double	prev_chisq;
 	vector<double>	chamber_wires_pos;
 	vector<wire_pos_ptr_t>	wire_pos_ptr;
 	vector<uint>	used_chambers;
