@@ -183,12 +183,6 @@ void	AxialShiftApp::init_hists( Geometry &geom )
 			BOOST_FOREACH(chamber_id_t chamber_id, axis_tup.second)
 			{
 				plane_id_t	plane_id = geom.chamber_plane[chamber_id];
-
-				if ((group_id != 1) || (axis != DEV_AXIS_X))
-				{
-					continue;
-				}
-
 				string	hist_name = "F" + boost::lexical_cast<string>(int(group_id)) + (axis == DEV_AXIS_X ? "X" : "Y") + boost::lexical_cast<string>(int(plane_id));
 
 				shift_hist[chamber_id] = new TH1I(hist_name.c_str(), hist_name.c_str(), 50, -5.0, 5.0);
