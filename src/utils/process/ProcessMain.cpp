@@ -30,6 +30,11 @@ struct track3d_t
 	ublas::vector<double>	a, b;
 };
 
+struct plane3d_t
+{
+	ublas::vector<double>	a, norm;
+};
+
 template<cham_group_t cham_group>
 track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 {
@@ -152,6 +157,15 @@ void	find_intersection_points(
 	i2->x = iv2(0); i2->y = iv2(1); i2->z = iv2(2);
 }
 
+ublas::vector<double>	intersect_with_plane(
+	const track3d_t &t, const plane3d_t &p
+	)
+{
+	double	d = ublas::inner_prod(t.b, p.norm);
+	double	x = ublas::inner_prod(p.a - t.a, p.norm) / d;
+	return t.a + t.b * x;
+}
+
 void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TTree &intersections )
 {
 	track_group_t	tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
@@ -199,6 +213,19 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
 			find_intersection_points(t_F2, t_L, &s->i_f2l, &s->i_lf2);
 			find_intersection_points(t_F2, t_R, &s->i_f2r, &s->i_rf2);
+
+			plane3d_t	plane;
+			plane.a = ublas::vector<double>(3);
+			plane.a(0) = 0.0;    plane.a(1) = 0.0;    plane.a(2) = 0.0;
+			plane.norm = ublas::vector<double>(3);
+			plane.norm(0) = 0.0; plane.norm(1) = 1.0; plane.norm(2) = 0.0;
+
+			ublas::vector<double>	lp = intersect_with_plane(t_L, plane);
+			ublas::vector<double>	rp = intersect_with_plane(t_R, plane);
+
+			intersections.GetBranch("LP")->SetAddress(&lp.data()[0]);
+			intersections.GetBranch("RP")->SetAddress(&rp.data()[0]);
+
 			intersections.Fill();
 		}
 	}

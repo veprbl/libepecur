@@ -144,6 +144,8 @@ int	main( int argc, char* argv[] )
 	s.br_rf2 = intersections.Branch("RF2", &s.i_rf2, "RF2_x/D:RF2_y/D:RF2_z/D");
 	s.br_lf2 = intersections.Branch("LF2", &s.i_lf2, "LF2_x/D:LF2_y/D:LF2_z/D");
 
+	intersections.Branch("LP", NULL, "LP_x/D:LP_y/D:LP_z/D");
+	intersections.Branch("RP", NULL, "RP_x/D:RP_y/D:RP_z/D");
 
 	Process((TTree*)tree_file.FindObjectAny("events"), &vis_result, &s, intersections);
 
