@@ -1,7 +1,7 @@
 Installation
 ============
 
-In order to build this software you will need cmake, boost-devel, root, git.
+In order to build this software you will need cmake, boost-devel, root, git, glut.
 
     mkdir build
     cd build
