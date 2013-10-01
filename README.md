@@ -8,6 +8,15 @@ In order to build this software you will need cmake, boost-devel, root, git, glu
     cmake .. -DCMAKE_BUILD_TYPE=Release
     make
 
+Scientific Linux
+----------------
+
+Few workarounds for problems encoutered while compiling libepecur on Scientific Linux 6.4
+
+    sudo sed -i 's/GET_FILENAME_COMPONENT(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)/\0\n\0/' /usr/lib64/boost/Boost-relwithdebinfo.cmake
+    sudo ln -s /usr/lib64/libicuuc.so.42.1 /usr/lib64/libicuuc.so
+    sudo ln -s /usr/lib64/libicui18n.so.42 /usr/lib64/libicui18n.so
+
 
 Utilities
 =========
