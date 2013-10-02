@@ -20,6 +20,10 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax)
 	c.cd(++pad_id);
 	intersections->Draw(("RP_" + i + " >> uu2_" + i).c_str());
 	c.cd(++pad_id);
+	TH1F	*uu3 = new TH1F(*uu1);
+	uu3->Add(uu2, -1);
+	uu3->Draw();
+	c.cd(++pad_id);
 	char	cut_str[256];
 	snprintf(
 		cut_str, sizeof(cut_str),
@@ -44,7 +48,7 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax)
  */
 void	track_plane_section()
 {
-	c.Divide(3, 2);
+	c.Divide(4, 2);
 	c.Show();
 
 	plot_intersection_per_coord("x", -500, 300);
