@@ -1,9 +1,39 @@
+#include <cstring>
+
 #include <TFile.h>
 #include <TCanvas.h>
+
+using std::string;
 
 TCanvas	c;
 TFile	f("26061082.root", "READ");
 int		pad_id = 0;
+
+void	plot_intersection_per_coord(string i, int xmin, int xmax)
+{
+	TH1F	*uu1 = new TH1F(("uu1_" + i).c_str(), ("LX_" + i).c_str(),
+	                        xmax - xmin, xmin, xmax);
+	TH1F	*uu2 = new TH1F(("uu2_" + i).c_str(), ("LX_" + i).c_str(),
+	                        xmax - xmin, xmin, xmax);
+	c.cd(++pad_id);
+	intersections->Draw(("LP_" + i + " >> uu1_" + i).c_str());
+	c.cd(++pad_id);
+	intersections->Draw(("RP_" + i + " >> uu2_" + i).c_str());
+	c.cd(++pad_id);
+	char	cut_str[256];
+	snprintf(
+		cut_str, sizeof(cut_str),
+		"(LP_%s > %i) && (LP_%s < %i) && (RP_%s > %i) && (RP_%s < %i)",
+		i.c_str(), xmin,
+		i.c_str(), xmax,
+		i.c_str(), xmin,
+		i.c_str(), xmax
+		);
+	intersections->Draw(
+		("LP_" + i + " - RP_" + i).c_str(),
+		cut_str
+		);
+}
 
 /*!
  * This script is showing coordinates for drift track section with
@@ -17,17 +47,6 @@ void	track_plane_section()
 	c.Divide(3, 2);
 	c.Show();
 
-	c.cd(++pad_id);
-	intersections->Draw("LP_x", "(LP_x > -500) && (LP_x < 300)");
-	c.cd(++pad_id);
-	intersections->Draw("RP_x", "(RP_x > -500) && (RP_x < 300)");
-	c.cd(++pad_id);
-	intersections->Draw("LP_x - RP_x", "(LP_x > -500) && (LP_x < 300) && (RP_x > -500) && (RP_x < 300)");
-
-	c.cd(++pad_id);
-	intersections->Draw("LP_z", "abs(LP_z) < 30");
-	c.cd(++pad_id);
-	intersections->Draw("RP_z", "abs(RP_z) < 30");
-	c.cd(++pad_id);
-	intersections->Draw("LP_z - RP_z", "(abs(LP_z) < 30) && (abs(RP_z) < 30)");
+	plot_intersection_per_coord("x", -500, 300);
+	plot_intersection_per_coord("z", -30, 30);
 }
