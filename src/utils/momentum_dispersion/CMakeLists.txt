@@ -19,3 +19,7 @@ target_link_libraries (
 	${ROOT_LIBRARIES}
 	epecur
 	)
+
+install(TARGETS momentum_dispersion
+	RUNTIME DESTINATION bin
+	)

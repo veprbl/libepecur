@@ -20,3 +20,7 @@ target_link_libraries (
 	${ROOT_LIBRARIES}
 	epecur
 	)
+
+install(TARGETS export_tree
+	RUNTIME DESTINATION bin
+	)

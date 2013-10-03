@@ -23,3 +23,7 @@ target_link_libraries (
 	${GLUT_LIBRARIES}
 	epecur
 	)
+
+install(TARGETS process
+	RUNTIME DESTINATION bin
+	)
