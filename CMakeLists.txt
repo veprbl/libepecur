@@ -29,3 +29,5 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
 add_subdirectory(src)
 add_subdirectory(tests)
+
+install(FILES contrib/geom_apr10.c DESTINATION share)
