@@ -135,6 +135,7 @@ int	main( int argc, char* argv[] )
 	}
 
 	TTree	intersections("intersections", "Track intersections");
+	intersections.SetDirectory(0); // for now this is a memory-resident tree
 	intersection_set_t	s;
 
 	s.br_lr = intersections.Branch("LR", &s.i_lr, "LR_x/D:LR_y/D:LR_z/D");
