@@ -13,7 +13,7 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax)
 {
 	TH1F	*uu1 = new TH1F(("uu1_" + i).c_str(), ("LX_" + i).c_str(),
 	                        xmax - xmin, xmin, xmax);
-	TH1F	*uu2 = new TH1F(("uu2_" + i).c_str(), ("LX_" + i).c_str(),
+	TH1F	*uu2 = new TH1F(("uu2_" + i).c_str(), ("RX_" + i).c_str(),
 	                        xmax - xmin, xmin, xmax);
 	c.cd(++pad_id);
 	intersections->Draw(("LP_" + i + " >> uu1_" + i).c_str());
