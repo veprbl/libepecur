@@ -94,7 +94,7 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 	{
 		o(0) = 159.7;
 		o(1) = -524.0;
-		o(2) = -3.0;
+		o(2) = -2.8;
 	}
 	else if (cham_group == cham_group_t::prop_2nd)
 	{
