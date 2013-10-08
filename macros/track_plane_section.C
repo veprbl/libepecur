@@ -23,12 +23,14 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax)
 	intersections->Draw(("LP_" + i + " >> uu1_" + i).c_str());
 	if (i == "x")
 	{
+		uu1->Smooth(10);
 		assert(sl->Search(uu1, 1, "") == 3);
 	}
 	c.cd(++pad_id);
 	intersections->Draw(("RP_" + i + " >> uu2_" + i).c_str());
 	if (i == "x")
 	{
+		uu2->Smooth(10);
 		assert(sr->Search(uu2, 1, "") == 3);
 	}
 	c.cd(++pad_id);
