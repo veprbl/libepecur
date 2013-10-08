@@ -59,13 +59,14 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 	m1(0, 2) = 0; m1(1, 2) = -1; m1(2, 2) = 0;
 
 	double Psi;
+	double Psi_correction = 0.006;
 	if (cham_group == cham_group_t::drift_left)
 	{
-		Psi = Psi_L;
+		Psi = Psi_L + Psi_correction;
 	}
 	else if (cham_group == cham_group_t::drift_right)
 	{
-		Psi = Psi_R;
+		Psi = Psi_R + Psi_correction;
 	}
 	else if (cham_group == cham_group_t::prop_2nd)
 	{
@@ -84,15 +85,16 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 
 	ublas::vector<double> o(3), a(3), b(3);
 
+	double	X_correction = 8.0;
 	if (cham_group == cham_group_t::drift_left)
 	{
-		o(0) = 165.2;
+		o(0) = 165.2 - X_correction/2;
 		o(1) = 512.4;
 		o(2) = 0.3;
 	}
 	else if (cham_group == cham_group_t::drift_right)
 	{
-		o(0) = 159.7;
+		o(0) = 159.7 + X_correction/2;
 		o(1) = -524.0;
 		o(2) = -2.8;
 	}
