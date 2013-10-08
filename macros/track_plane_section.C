@@ -2,6 +2,7 @@
 
 #include <TFile.h>
 #include <TCanvas.h>
+#include <TSpectrum.h>
 
 using std::string;
 
@@ -15,10 +16,21 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax)
 	                        xmax - xmin, xmin, xmax);
 	TH1F	*uu2 = new TH1F(("uu2_" + i).c_str(), ("RX_" + i).c_str(),
 	                        xmax - xmin, xmin, xmax);
+	TSpectrum	*sl = new TSpectrum(3);
+	TSpectrum	*sr = new TSpectrum(3);
+
 	c.cd(++pad_id);
 	intersections->Draw(("LP_" + i + " >> uu1_" + i).c_str());
+	if (i == "x")
+	{
+		assert(sl->Search(uu1, 1, "") == 3);
+	}
 	c.cd(++pad_id);
 	intersections->Draw(("RP_" + i + " >> uu2_" + i).c_str());
+	if (i == "x")
+	{
+		assert(sr->Search(uu2, 1, "") == 3);
+	}
 	c.cd(++pad_id);
 	TH1F	*uu3 = new TH1F(*uu1);
 	uu3->Add(uu2, -1);
@@ -37,6 +49,20 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax)
 		("LP_" + i + " - RP_" + i).c_str(),
 		cut_str
 		);
+	if (i == "x")
+	{
+		double l1 = sl->GetPositionX()[2];
+		double l2 = sl->GetPositionX()[0];
+		double r1 = sr->GetPositionX()[2];
+		double r2 = sr->GetPositionX()[0];
+		assert(l1 < l2);
+		assert(r1 < r2);
+		printf("\nPeak positions:\n\tLeft plot:\t%f\t%f\n\tRight plot:\t%f\t%f\n\n",
+		       l1, l2, r1, r2);
+		printf("Peak alignment plan:\n\tMove by:\t%f\n\tScale by:\t%f\n\n",
+		       (l1 + l2 - r1 - r2) / 2,
+		       (l2 - l1) / (r2 - r1));
+	}
 }
 
 /*!
