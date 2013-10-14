@@ -10,7 +10,7 @@ TCanvas	c;
 TFile	f("26061082.root", "READ");
 int		pad_id = 0;
 
-void	plot_intersection_per_coord(string i, int xmin, int xmax)
+void	plot_intersection_per_coord(string i, int xmin, int xmax, int rms_max)
 {
 	TH1F	*uu1 = new TH1F(("uu1_" + i).c_str(), ("LX_" + i).c_str(),
 	                        xmax - xmin, xmin, xmax);
@@ -38,19 +38,22 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax)
 	uu3->Add(uu2, -1);
 	uu3->Draw();
 	c.cd(++pad_id);
-	char	cut_str[256];
+	char	func_str[256], cut_str[256];
+	snprintf(func_str, sizeof(func_str),
+		"LP_%s - RP_%s",
+		i.c_str(), i.c_str()
+		);
 	snprintf(
 		cut_str, sizeof(cut_str),
-		"(LP_%s > %i) && (LP_%s < %i) && (RP_%s > %i) && (RP_%s < %i)",
+		"(LP_%s > %i) && (LP_%s < %i) && (RP_%s > %i) && (RP_%s < %i)"
+		" && (abs(%s) < %i)",
 		i.c_str(), xmin,
 		i.c_str(), xmax,
 		i.c_str(), xmin,
-		i.c_str(), xmax
+		i.c_str(), xmax,
+		func_str, rms_max
 		);
-	intersections->Draw(
-		("LP_" + i + " - RP_" + i).c_str(),
-		cut_str
-		);
+	intersections->Draw(func_str, cut_str);
 	if (i == "x")
 	{
 		double l1 = sl->GetPositionX()[2];
@@ -79,6 +82,6 @@ void	track_plane_section()
 	c.Divide(4, 2);
 	c.Show();
 
-	plot_intersection_per_coord("x", -500, 300);
-	plot_intersection_per_coord("z", -30, 30);
+	plot_intersection_per_coord("x", -500, 300, 150);
+	plot_intersection_per_coord("z", -30, 30, 30);
 }
