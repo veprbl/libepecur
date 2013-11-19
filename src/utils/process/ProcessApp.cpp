@@ -88,6 +88,7 @@ int	main( int argc, char* argv[] )
 {
 	ParseCommandLine(argc, argv);
 
+	TApplication	app("Event visualizer", &argc, argv);
 	ifstream	file(geometry_filepath.c_str(), ios::in);
 
 	if (!file.is_open())
@@ -154,6 +155,10 @@ int	main( int argc, char* argv[] )
 	tree_file.ReOpen("UPDATE");
 	intersections.Write("intersections");
 	tree_file.Close();
+
+	ProcessVisualize(argc, argv);
+
+	while(1) { app.Run(); };
 
 	return 0;
 }
