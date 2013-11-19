@@ -217,6 +217,8 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 			find_intersection_points(t_F2, t_L, &s->i_f2l, &s->i_lf2);
 			find_intersection_points(t_F2, t_R, &s->i_f2r, &s->i_rf2);
 
+			result->push_back({event_cause, s->i_lr, s->i_rl});
+
 			plane3d_t	plane;
 			plane.a = ublas::vector<double>(3);
 			plane.a(0) = 0.0;    plane.a(1) = 0.0;    plane.a(2) = 0.0;
