@@ -5,6 +5,7 @@
 
 #include <boost/program_options.hpp>
 
+#include <TApplication.h>
 #include <TFile.h>
 #include <TTree.h>
 

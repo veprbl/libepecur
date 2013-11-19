@@ -3,25 +3,22 @@
 
 #include <vector>
 
-#include <boost/numeric/ublas/matrix.hpp>
-
 #include <TTree.h>
 #include <TBranch.h>
-
-using namespace boost::numeric;
-
-typedef std::vector< ublas::vector<double> >	vector_list_t;
-
-struct process_result_t
-{
-	vector_list_t	i1;
-	vector_list_t	i2;
-};
 
 struct intersection_t
 {
 	double	x, y, z;
 };
+
+
+struct event_t
+{
+	int32_t	event_cause;
+	intersection_t	i1, i2;
+};
+
+typedef std::vector<event_t>	process_result_t;
 
 struct intersection_set_t
 {

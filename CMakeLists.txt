@@ -8,9 +8,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 find_package( Boost 1.41 REQUIRED iostreams filesystem system program_options regex test_exec_monitor unit_test_framework )
 find_package( BoostEndian )
 find_package( ROOT )
-find_package( OpenGL )
-find_package( GLU )
-find_package( GLUT )
 
 set( EPECUR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/ )
 
