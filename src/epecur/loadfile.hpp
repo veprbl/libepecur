@@ -32,6 +32,11 @@ public:
 		std::vector<uint16_t> &time,
 		device_id_t dev_id
 		) {};
+	virtual void	handle_trig_info(
+		uint8_t devices_mask,
+		uint16_t event_cause,
+		uint32_t gate_time
+		) {};
 	virtual void	handle_event_end() {};
 };
 

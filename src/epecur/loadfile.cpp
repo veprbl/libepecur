@@ -164,6 +164,25 @@ void	read_drift_data(
 	hook.handle_drift_data(result_wire_id, result_time, dev_id);
 }
 
+void	handle_trig_normal(
+	const char* &pos, const char* max_pos,
+	LoadHook &hook
+	)
+{
+	uint8_t	    devices_mask;
+	uint16_t    event_cause;
+	uint32_t    gate_time;
+
+	devices_mask =
+	    read_magic_integer<decltype(devices_mask)>(pos, 1);
+	event_cause =
+	    read_magic_integer<decltype(event_cause)>(pos, 2);
+	gate_time =
+	    read_magic_integer<decltype(gate_time)>(pos, 3);
+
+	hook.handle_trig_info(devices_mask, event_cause, gate_time);
+}
+
 void	handle_trig_end_cycle( const char* &pos, const char* max_pos )
 {
 	typedef	uint32_t counter_value_t;
@@ -243,8 +262,12 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook 
 			if (flags & END_OF_CYCLE_FLAG)
 			{
 				handle_trig_end_cycle(pos, max_pos);
-				break;
 			}
+			else
+			{
+				handle_trig_normal(pos, max_pos, hook);
+			}
+			break;
 		case DEV_TYPE_HODO:
 		case DEV_TYPE_CAMAC:
 		default:
