@@ -18,6 +18,12 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 		  "and triggered drift wires"
 		  )
 {
+	event_tree.Branch(
+		"event_cause",
+		&event_info.event_cause,
+		"event_cause/i"
+		);
+
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
@@ -183,6 +189,15 @@ void	TreeExportHook::write_drift_event(
 		st_gr.wire_pos_br->SetAddress(wire_pos.data());
 		st_gr.time_br->SetAddress(time.data());
 	}
+}
+
+void	TreeExportHook::handle_trig_info(
+	uint8_t devices_mask,
+	uint16_t event_cause,
+	uint32_t gate_time
+	)
+{
+	event_info.event_cause = event_cause;
 }
 
 void	TreeExportHook::handle_event_end()

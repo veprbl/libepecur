@@ -12,6 +12,11 @@
 
 using boost::unordered_map;
 
+struct event_info_t
+{
+	uint32_t	event_cause;
+};
+
 struct track_group_t
 {
 	uint32_t	track_count;
@@ -31,6 +36,7 @@ class TreeExportHook : public TrackRecognitionHook
 private:
 
 	TTree	event_tree;
+	event_info_t	event_info;
 	unordered_map< group_id_t, map<device_axis_t, track_group_t> >	stored_track;
 	unordered_map< group_id_t, map<device_axis_t, map<chamber_id_t, drift_group_t> > >	stored_drift;
 
@@ -54,6 +60,11 @@ public:
 	TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c );
 	~TreeExportHook();
 	const char*	store_name( string name );
+	virtual void	handle_trig_info(
+		uint8_t devices_mask,
+		uint16_t event_cause,
+		uint32_t gate_time
+		) override;
 	virtual void	handle_event_end();
 };
 
