@@ -156,7 +156,7 @@ int	main( int argc, char* argv[] )
 	intersections.Write("intersections");
 	tree_file.Close();
 
-	ProcessVisualize(argc, argv);
+	ProcessVisualize();
 
 	while(1) { app.Run(); };
 

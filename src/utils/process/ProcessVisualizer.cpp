@@ -8,7 +8,7 @@
 
 process_result_t vis_result;
 
-void	ProcessVisualize( int argc, char *argv[] )
+void	ProcessVisualize()
 {
 	TEveManager::Create();
 
