@@ -168,8 +168,10 @@ ublas::vector<double>	intersect_with_plane(
 
 void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TTree &intersections )
 {
+	int32_t	event_cause;
 	track_group_t	tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
 
+	events->GetBranch("event_cause")->SetAddress(&event_cause);
 	events->GetBranch("t2X_track_count")->SetAddress(&tg_F2X.track_count);
 	events->GetBranch("t2Y_track_count")->SetAddress(&tg_F2Y.track_count);
 	events->GetBranch("t3X_track_count")->SetAddress(&tg_LX.track_count);
@@ -195,6 +197,7 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 	bool cond;
 	for(int i = 1; i < events->GetEntries(); i++)
 	{
+		events->GetBranch("event_cause")->GetEntry(i);
 		events->GetBranch("t2X_track_count")->GetEntry(i);
 		events->GetBranch("t2Y_track_count")->GetEntry(i);
 		events->GetBranch("t3X_track_count")->GetEntry(i);
