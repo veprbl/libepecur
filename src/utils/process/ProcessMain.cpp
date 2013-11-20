@@ -189,7 +189,7 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 	tg_RY.c0_br = events->GetBranch("t4Y_c0");
 	tg_RY.c1_br = events->GetBranch("t4Y_c1");
 
-	for(int i = 1; i < events->GetEntries(); i++)
+	for(int i = 1; i <= events->GetEntries(); i++)
 	{
 		track3d_t	t_L, t_R, t_F2;
 		events->GetBranch("event_cause")->GetEntry(i);
