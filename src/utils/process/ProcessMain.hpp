@@ -23,6 +23,7 @@ struct track3d_t
 struct event_t
 {
 	int32_t	event_cause;
+	track3d_t	inc, l, r;
 	intersection_t	i1, i2;
 };
 
