@@ -189,9 +189,9 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 	tg_RY.c0_br = events->GetBranch("t4Y_c0");
 	tg_RY.c1_br = events->GetBranch("t4Y_c1");
 
-	bool cond;
 	for(int i = 1; i < events->GetEntries(); i++)
 	{
+		track3d_t	t_L, t_R, t_F2;
 		events->GetBranch("event_cause")->GetEntry(i);
 		events->GetBranch("t2X_track_count")->GetEntry(i);
 		events->GetBranch("t2Y_track_count")->GetEntry(i);
@@ -199,14 +199,15 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 		events->GetBranch("t3Y_track_count")->GetEntry(i);
 		events->GetBranch("t4X_track_count")->GetEntry(i);
 		events->GetBranch("t4Y_track_count")->GetEntry(i);
-		cond = (tg_LX.track_count == 1) && (tg_LY.track_count == 1)
-		    && (tg_RX.track_count == 1) && (tg_RY.track_count == 1)
-		    && (tg_F2X.track_count == 1) && (tg_F2Y.track_count == 1);
-		if (cond)
+
+		bool	left_arm = (tg_LX.track_count == 1) && (tg_LY.track_count == 1);
+		bool	right_arm = (tg_RX.track_count == 1) && (tg_RY.track_count == 1);
+		bool	incident = (tg_F2X.track_count == 1) && (tg_F2Y.track_count == 1);
+		if (left_arm && right_arm && incident)
 		{
-			track3d_t	t_L = make_track<cham_group_t::drift_left>(i, tg_LX, tg_LY);
-			track3d_t	t_R = make_track<cham_group_t::drift_right>(i, tg_RX, tg_RY);
-			track3d_t	t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y);
+			t_L = make_track<cham_group_t::drift_left>(i, tg_LX, tg_LY);
+			t_R = make_track<cham_group_t::drift_right>(i, tg_RX, tg_RY);
+			t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y);
 
 			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
 			find_intersection_points(t_F2, t_L, &s->i_f2l, &s->i_lf2);
