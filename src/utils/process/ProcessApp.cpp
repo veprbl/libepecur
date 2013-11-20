@@ -136,6 +136,7 @@ int	main( int argc, char* argv[] )
 		}
 	}
 
+	TTree	*events = (TTree*)tree_file.FindObjectAny("events");
 	TTree	intersections("intersections", "Track intersections");
 	intersections.SetDirectory(0); // for now this is a memory-resident tree
 	intersection_set_t	s;
@@ -150,7 +151,7 @@ int	main( int argc, char* argv[] )
 	intersections.Branch("LP", NULL, "LP_x/D:LP_y/D:LP_z/D");
 	intersections.Branch("RP", NULL, "RP_x/D:RP_y/D:RP_z/D");
 
-	Process((TTree*)tree_file.FindObjectAny("events"), &vis_result, &s, intersections);
+	Process(events, &vis_result, &s, events_meta, intersections);
 
 	tree_file.ReOpen("UPDATE");
 	intersections.Write("intersections");
