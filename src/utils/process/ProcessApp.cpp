@@ -156,7 +156,8 @@ int	main( int argc, char* argv[] )
 	intersections.Branch("LP", NULL, "LP_x/D:LP_y/D:LP_z/D");
 	intersections.Branch("RP", NULL, "RP_x/D:RP_y/D:RP_z/D");
 
-	events_meta.Branch("theta", NULL, "theta/D");
+	events_meta.Branch("theta_l", NULL, "theta_l/D");
+	events_meta.Branch("theta_r", NULL, "theta_r/D");
 
 	Process(events, &vis_result, &s, events_meta, intersections);
 

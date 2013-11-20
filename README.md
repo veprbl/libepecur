@@ -100,7 +100,7 @@ path to a geometry file and the programs source code revision id.
 Contains reconstructed track projections for proportional chambers and wire\_id's
 and drift time's for drift chambers.
 
-##### Proportional
+##### Recognized track projections
 
 Branch name starts with chamber *{prefix}* which has form *t{group_id}{axis_id}*.
 For example: *t1X*, *t1Y*, *t2X*, *t2Y*.
@@ -114,7 +114,7 @@ Branches:
 * *{prefix}\_chisq[]* - chi squared of track line fit
 * *{prefix}\_prev\_chisq[]* - second minimal value for chi squared of track line fit
 
-##### Drift
+##### Drift chamber specific
 
 Branch name starts with a *{prefix}* which has form *d{group_id}{axis_id}{plane}*.
 For example: *d3Y1*, *d5X1*.
