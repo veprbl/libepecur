@@ -3,14 +3,22 @@
 
 #include <vector>
 
+#include <boost/numeric/ublas/matrix.hpp>
+
 #include <TTree.h>
 #include <TBranch.h>
+
+using namespace boost::numeric;
 
 struct intersection_t
 {
 	double	x, y, z;
 };
 
+struct track3d_t
+{
+	ublas::vector<double>	a, b;
+};
 
 struct event_t
 {

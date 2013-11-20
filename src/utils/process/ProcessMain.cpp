@@ -25,11 +25,6 @@ enum cham_group_t {prop_2nd, drift_left, drift_right};
 double  Psi_L = 1.0447;
 double  Psi_R = -1.0209;
 
-struct track3d_t
-{
-	ublas::vector<double>	a, b;
-};
-
 struct plane3d_t
 {
 	ublas::vector<double>	a, norm;
