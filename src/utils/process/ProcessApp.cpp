@@ -122,14 +122,17 @@ int	main( int argc, char* argv[] )
 		     << endl;
 	}
 
-	if (tree_file.FindObjectAny("intersections"))
+	if (tree_file.FindObjectAny("intersections")
+	    || tree_file.FindObjectAny("events_meta"))
 	{
 		cerr << "Deleting previous data" << endl;
 		tree_file.ReOpen("UPDATE");
 		tree_file.Delete("intersections;*");
+		tree_file.Delete("events_meta;*");
 		tree_file.ReOpen("READ");
 
-		if (tree_file.FindObjectAny("intersections"))
+		if (tree_file.FindObjectAny("intersections")
+		    || tree_file.FindObjectAny("events_meta"))
 		{
 			cerr << "Delete didn't work" << endl;
 			throw;
@@ -139,6 +142,8 @@ int	main( int argc, char* argv[] )
 	TTree	*events = (TTree*)tree_file.FindObjectAny("events");
 	TTree	intersections("intersections", "Track intersections");
 	intersections.SetDirectory(0); // for now this is a memory-resident tree
+	TTree	events_meta("events_meta", "Additional information");
+	events_meta.SetDirectory(0); // for now this is a memory-resident tree
 	intersection_set_t	s;
 
 	s.br_lr = intersections.Branch("LR", &s.i_lr, "LR_x/D:LR_y/D:LR_z/D");
@@ -151,10 +156,15 @@ int	main( int argc, char* argv[] )
 	intersections.Branch("LP", NULL, "LP_x/D:LP_y/D:LP_z/D");
 	intersections.Branch("RP", NULL, "RP_x/D:RP_y/D:RP_z/D");
 
+	events_meta.Branch("theta", NULL, "theta/D");
+
 	Process(events, &vis_result, &s, events_meta, intersections);
 
 	tree_file.ReOpen("UPDATE");
 	intersections.Write("intersections");
+	events_meta.Write("events_meta");
+	events->AddFriend("events_meta");
+	events->Write(NULL, TObject::kOverwrite);
 	tree_file.Close();
 
 	ProcessVisualize();

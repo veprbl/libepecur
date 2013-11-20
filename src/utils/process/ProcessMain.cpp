@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -161,10 +163,13 @@ ublas::vector<double>	intersect_with_plane(
 	return t.a + t.b * x;
 }
 
-void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TTree &intersections )
+void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TTree &events_meta, TTree &intersections )
 {
 	int32_t	event_cause;
+	double	theta;
 	track_group_t	tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
+
+	events_meta.GetBranch("theta")->SetAddress(&theta);
 
 	events->GetBranch("event_cause")->SetAddress(&event_cause);
 	events->GetBranch("t2X_track_count")->SetAddress(&tg_F2X.track_count);
@@ -203,10 +208,40 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 		bool	left_arm = (tg_LX.track_count == 1) && (tg_LY.track_count == 1);
 		bool	right_arm = (tg_RX.track_count == 1) && (tg_RY.track_count == 1);
 		bool	incident = (tg_F2X.track_count == 1) && (tg_F2Y.track_count == 1);
-		if (left_arm && right_arm && incident)
+
+		if (left_arm)
 		{
 			t_L = make_track<cham_group_t::drift_left>(i, tg_LX, tg_LY);
+		}
+		if (right_arm)
+		{
 			t_R = make_track<cham_group_t::drift_right>(i, tg_RX, tg_RY);
+		}
+		if ((left_arm && !right_arm) || (right_arm && !left_arm))
+		{
+			track3d_t	t_arm;
+			if (left_arm && !right_arm)
+			{
+				t_arm = t_L;
+			}
+			else
+			{
+				t_arm = t_R;
+			}
+			double	cos_theta =
+			    ublas::inner_prod(t_arm.b, ublas::unit_vector<double>(3, 0))
+			    / norm_2(t_arm.b);
+			theta = acos(cos_theta);
+		}
+		else
+		{
+			theta = NAN;
+		}
+
+		events_meta.Fill();
+
+		if (left_arm && right_arm && incident)
+		{
 			t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y);
 
 			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
