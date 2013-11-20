@@ -128,7 +128,7 @@ void	find_intersection_points(
 	ublas::vector<double>	x;
 	ublas::permutation_matrix<>	pm(B.size1());
 
-	for(int row = 0; row < B.size1(); row++)
+	for(unsigned int row = 0; row < B.size1(); row++)
 	{
 		B(row, 0) = t1.b(row);
 		B(row, 1) = t2.b(row);
