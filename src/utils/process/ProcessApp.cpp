@@ -66,6 +66,12 @@ void	ParseCommandLine( int argc, char* argv[] )
 	input_filepath = vm["input-file"].as< vector<string> >()[0];
 	output_filepath = vm["output-file"].as<string>();
 	geometry_filepath = vm["geometry-file"].as<string>();
+
+	if (output_filepath == input_filepath)
+	{
+		cerr << "Output filename is identical to input filename." << endl;
+		exit(1);
+	}
 }
 
 map<string, string>	get_info_hash( TTree *info )
