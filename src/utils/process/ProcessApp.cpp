@@ -87,6 +87,13 @@ map<string, string>	get_info_hash( TTree *info )
 	return result;
 }
 
+void	add_info_value( TTree *info, string key, string value )
+{
+	info->GetBranch("key")->SetAddress((void*)key.c_str());
+	info->GetBranch("value")->SetAddress((void*)value.c_str());
+	info->Fill();
+}
+
 int	main( int argc, char* argv[] )
 {
 	ParseCommandLine(argc, argv);
@@ -130,6 +137,7 @@ int	main( int argc, char* argv[] )
 	TTree	intersections("intersections", "Track intersections");
 	boost::scoped_ptr<TTree>	events_new;
 	boost::scoped_ptr<TTree>	info_new(info->CloneTree());
+	add_info_value(info_new.get(), "PROCESS_GIT_COMMIT_ID", GIT_COMMIT_ID);
 	intersection_set_t	s;
 
 	s.br_lr = intersections.Branch("LR", &s.i_lr, "LR_x/D:LR_y/D:LR_z/D");
@@ -144,6 +152,7 @@ int	main( int argc, char* argv[] )
 
 	Process(events, &vis_result, &s, events_new, intersections);
 
+	info_new->AutoSave();
 	input_file.Close();
 	output_file.Close();
 
