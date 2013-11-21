@@ -36,12 +36,15 @@ void    get_entry_vectors( track_group_t &tg, int entry )
 {
 	tg.c0.resize(tg.track_count);
 	tg.c1.resize(tg.track_count);
+	tg.hits_count.resize(tg.track_count);
 
 	tg.c0_br->SetAddress(tg.c0.data());
 	tg.c1_br->SetAddress(tg.c1.data());
+	tg.hits_count_br->SetAddress(tg.hits_count.data());
 
 	tg.c0_br->GetEntry(entry);
 	tg.c1_br->GetEntry(entry);
+	tg.hits_count_br->GetEntry(entry);
 }
 
 template<cham_group_t cham_group>
@@ -191,6 +194,7 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, bo
 	events->SetBranchStatus("*", 0);
 	events->SetBranchStatus("event_cause", 1);
 	events->SetBranchStatus("*_track_count", 1);
+	events->SetBranchStatus("*_hits_count", 1);
 	events->SetBranchStatus("*_c0", 1);
 	events->SetBranchStatus("*_c1", 1);
 	// clone tree headers
@@ -202,33 +206,45 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, bo
 
 	tg_F2X.c0_br = events->GetBranch("t2X_c0");
 	tg_F2X.c1_br = events->GetBranch("t2X_c1");
+	tg_F2X.hits_count_br = events->GetBranch("t2X_hits_count");
 	tg_F2Y.c0_br = events->GetBranch("t2Y_c0");
 	tg_F2Y.c1_br = events->GetBranch("t2Y_c1");
+	tg_F2Y.hits_count_br = events->GetBranch("t2Y_hits_count");
 
 	tg_LX.c0_br = events->GetBranch("t3X_c0");
 	tg_LX.c1_br = events->GetBranch("t3X_c1");
+	tg_LX.hits_count_br = events->GetBranch("t3X_hits_count");
 	tg_LY.c0_br = events->GetBranch("t3Y_c0");
 	tg_LY.c1_br = events->GetBranch("t3Y_c1");
+	tg_LY.hits_count_br = events->GetBranch("t3Y_hits_count");
 
 	tg_RX.c0_br = events->GetBranch("t4X_c0");
 	tg_RX.c1_br = events->GetBranch("t4X_c1");
+	tg_RX.hits_count_br = events->GetBranch("t4X_hits_count");
 	tg_RY.c0_br = events->GetBranch("t4Y_c0");
 	tg_RY.c1_br = events->GetBranch("t4Y_c1");
+	tg_RY.hits_count_br = events->GetBranch("t4Y_hits_count");
 
 	tg_F2X_new.c0_br = events_new->GetBranch("t2X_c0");
 	tg_F2X_new.c1_br = events_new->GetBranch("t2X_c1");
+	tg_F2X_new.hits_count_br = events_new->GetBranch("t2X_hits_count");
 	tg_F2Y_new.c0_br = events_new->GetBranch("t2Y_c0");
 	tg_F2Y_new.c1_br = events_new->GetBranch("t2Y_c1");
+	tg_F2Y_new.hits_count_br = events_new->GetBranch("t2Y_hits_count");
 
 	tg_LX_new.c0_br = events_new->GetBranch("t3X_c0");
 	tg_LX_new.c1_br = events_new->GetBranch("t3X_c1");
+	tg_LX_new.hits_count_br = events_new->GetBranch("t3X_hits_count");
 	tg_LY_new.c0_br = events_new->GetBranch("t3Y_c0");
 	tg_LY_new.c1_br = events_new->GetBranch("t3Y_c1");
+	tg_LY_new.hits_count_br = events_new->GetBranch("t3Y_hits_count");
 
 	tg_RX_new.c0_br = events_new->GetBranch("t4X_c0");
 	tg_RX_new.c1_br = events_new->GetBranch("t4X_c1");
+	tg_RX_new.hits_count_br = events_new->GetBranch("t4X_hits_count");
 	tg_RY_new.c0_br = events_new->GetBranch("t4Y_c0");
 	tg_RY_new.c1_br = events_new->GetBranch("t4Y_c1");
+	tg_RY_new.hits_count_br = events_new->GetBranch("t4Y_hits_count");
 
 	for(int i = 0; i < events->GetEntries(); i++)
 	{
@@ -268,18 +284,24 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, bo
 		{
 			tg_F2X_new.c0_br->SetAddress(tg_F2X.c0.data());
 			tg_F2X_new.c1_br->SetAddress(tg_F2X.c1.data());
+			tg_F2X_new.hits_count_br->SetAddress(tg_F2X.hits_count.data());
 			tg_F2Y_new.c0_br->SetAddress(tg_F2Y.c0.data());
 			tg_F2Y_new.c1_br->SetAddress(tg_F2Y.c1.data());
+			tg_F2Y_new.hits_count_br->SetAddress(tg_F2Y.hits_count.data());
 
 			tg_LX_new.c0_br->SetAddress(tg_LX.c0.data());
 			tg_LX_new.c1_br->SetAddress(tg_LX.c1.data());
+			tg_LX_new.hits_count_br->SetAddress(tg_LX.hits_count.data());
 			tg_LY_new.c0_br->SetAddress(tg_LY.c0.data());
 			tg_LY_new.c1_br->SetAddress(tg_LY.c1.data());
+			tg_LY_new.hits_count_br->SetAddress(tg_LY.hits_count.data());
 
 			tg_RX_new.c0_br->SetAddress(tg_RX.c0.data());
 			tg_RX_new.c1_br->SetAddress(tg_RX.c1.data());
+			tg_RX_new.hits_count_br->SetAddress(tg_RX.hits_count.data());
 			tg_RY_new.c0_br->SetAddress(tg_RY.c0.data());
 			tg_RY_new.c1_br->SetAddress(tg_RY.c1.data());
+			tg_RY_new.hits_count_br->SetAddress(tg_RY.hits_count.data());
 
 			events_new->Fill();
 
