@@ -172,14 +172,12 @@ double	calc_theta(track3d_t track)
 	return acos(cos_theta);
 }
 
-void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TTree &events_meta, TTree &intersections )
+void	Process( TTree *events, process_result_t *result, intersection_set_t *s, boost::scoped_ptr<TTree> &events_new, TTree &intersections )
 {
 	int32_t	event_cause;
 	double	theta_l, theta_r;
 	track_group_t	tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
-
-	events_meta.GetBranch("theta_l")->SetAddress(&theta_l);
-	events_meta.GetBranch("theta_r")->SetAddress(&theta_r);
+	track_group_t	tg_F2X_new, tg_F2Y_new, tg_LX_new, tg_LY_new, tg_RX_new, tg_RY_new;
 
 	events->GetBranch("event_cause")->SetAddress(&event_cause);
 	events->GetBranch("t2X_track_count")->SetAddress(&tg_F2X.track_count);
@@ -188,6 +186,19 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 	events->GetBranch("t3Y_track_count")->SetAddress(&tg_LY.track_count);
 	events->GetBranch("t4X_track_count")->SetAddress(&tg_RX.track_count);
 	events->GetBranch("t4Y_track_count")->SetAddress(&tg_RY.track_count);
+
+	// select branches to work with
+	events->SetBranchStatus("*", 0);
+	events->SetBranchStatus("event_cause", 1);
+	events->SetBranchStatus("*_track_count", 1);
+	events->SetBranchStatus("*_c0", 1);
+	events->SetBranchStatus("*_c1", 1);
+	// clone tree headers
+	// this also copies branches addresses
+	events_new.reset(events->CloneTree(0));
+
+	events_new->Branch("theta_l", NULL, "theta_l/D")->SetAddress(&theta_l);
+	events_new->Branch("theta_r", NULL, "theta_r/D")->SetAddress(&theta_r);
 
 	tg_F2X.c0_br = events->GetBranch("t2X_c0");
 	tg_F2X.c1_br = events->GetBranch("t2X_c1");
@@ -203,6 +214,21 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 	tg_RX.c1_br = events->GetBranch("t4X_c1");
 	tg_RY.c0_br = events->GetBranch("t4Y_c0");
 	tg_RY.c1_br = events->GetBranch("t4Y_c1");
+
+	tg_F2X_new.c0_br = events_new->GetBranch("t2X_c0");
+	tg_F2X_new.c1_br = events_new->GetBranch("t2X_c1");
+	tg_F2Y_new.c0_br = events_new->GetBranch("t2Y_c0");
+	tg_F2Y_new.c1_br = events_new->GetBranch("t2Y_c1");
+
+	tg_LX_new.c0_br = events_new->GetBranch("t3X_c0");
+	tg_LX_new.c1_br = events_new->GetBranch("t3X_c1");
+	tg_LY_new.c0_br = events_new->GetBranch("t3Y_c0");
+	tg_LY_new.c1_br = events_new->GetBranch("t3Y_c1");
+
+	tg_RX_new.c0_br = events_new->GetBranch("t4X_c0");
+	tg_RX_new.c1_br = events_new->GetBranch("t4X_c1");
+	tg_RY_new.c0_br = events_new->GetBranch("t4Y_c0");
+	tg_RY_new.c1_br = events_new->GetBranch("t4Y_c1");
 
 	for(int i = 0; i < events->GetEntries(); i++)
 	{
@@ -238,10 +264,25 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, TT
 			theta_r = NAN;
 		}
 
-		events_meta.Fill();
-
 		if (left_arm && right_arm && incident)
 		{
+			tg_F2X_new.c0_br->SetAddress(tg_F2X.c0.data());
+			tg_F2X_new.c1_br->SetAddress(tg_F2X.c1.data());
+			tg_F2Y_new.c0_br->SetAddress(tg_F2Y.c0.data());
+			tg_F2Y_new.c1_br->SetAddress(tg_F2Y.c1.data());
+
+			tg_LX_new.c0_br->SetAddress(tg_LX.c0.data());
+			tg_LX_new.c1_br->SetAddress(tg_LX.c1.data());
+			tg_LY_new.c0_br->SetAddress(tg_LY.c0.data());
+			tg_LY_new.c1_br->SetAddress(tg_LY.c1.data());
+
+			tg_RX_new.c0_br->SetAddress(tg_RX.c0.data());
+			tg_RX_new.c1_br->SetAddress(tg_RX.c1.data());
+			tg_RY_new.c0_br->SetAddress(tg_RY.c0.data());
+			tg_RY_new.c1_br->SetAddress(tg_RY.c1.data());
+
+			events_new->Fill();
+
 			t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y);
 
 			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);

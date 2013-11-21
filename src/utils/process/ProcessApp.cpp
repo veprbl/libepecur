@@ -22,6 +22,7 @@ using namespace std;
 
 string geometry_filepath;
 string input_filepath;
+string output_filepath;
 
 void	ParseCommandLine( int argc, char* argv[] )
 {
@@ -33,6 +34,7 @@ void	ParseCommandLine( int argc, char* argv[] )
 	visible.add_options()
 		("help,h", "produce this output")
 		("geometry-file,g", po::value<string>(), "specify geometry description file")
+		("output-file,o", po::value<string>(), "output filepath")
 		;
 	cmdline_options.add(visible);
 
@@ -53,15 +55,16 @@ void	ParseCommandLine( int argc, char* argv[] )
 
 	po::notify(vm);
 
-	if (vm.count("help") || !vm.count("input-file") || !vm.count("geometry-file"))
+	if (vm.count("help") || !vm.count("input-file") || !vm.count("geometry-file") || !vm.count("output-file"))
 	{
-		cerr << "Usage: " << argv[0] << " input-file -g geometry-file" << endl;
+		cerr << "Usage: " << argv[0] << " input-file -g geometry-file -o output-file" << endl;
 		cerr << endl;
 		cerr << visible << endl;
 		exit(1);
 	}
 
 	input_filepath = vm["input-file"].as< vector<string> >()[0];
+	output_filepath = vm["output-file"].as<string>();
 	geometry_filepath = vm["geometry-file"].as<string>();
 }
 
@@ -97,9 +100,10 @@ int	main( int argc, char* argv[] )
 	}
 
 	Geometry	geom(file);
-	TFile		tree_file(input_filepath.c_str());
+	TFile		input_file(input_filepath.c_str());
 
-	TTree	*info = (TTree*)tree_file.FindObjectAny("info");
+	TTree	*info = (TTree*)input_file.FindObjectAny("info");
+	TTree	*events = (TTree*)input_file.FindObjectAny("events");
 
 	if (!info)
 	{
@@ -122,28 +126,10 @@ int	main( int argc, char* argv[] )
 		     << endl;
 	}
 
-	if (tree_file.FindObjectAny("intersections")
-	    || tree_file.FindObjectAny("events_meta"))
-	{
-		cerr << "Deleting previous data" << endl;
-		tree_file.ReOpen("UPDATE");
-		tree_file.Delete("intersections;*");
-		tree_file.Delete("events_meta;*");
-		tree_file.ReOpen("READ");
-
-		if (tree_file.FindObjectAny("intersections")
-		    || tree_file.FindObjectAny("events_meta"))
-		{
-			cerr << "Delete didn't work" << endl;
-			throw;
-		}
-	}
-
-	TTree	*events = (TTree*)tree_file.FindObjectAny("events");
+	TFile	output_file(output_filepath.c_str(), "RECREATE");
 	TTree	intersections("intersections", "Track intersections");
-	intersections.SetDirectory(0); // for now this is a memory-resident tree
-	TTree	events_meta("events_meta", "Additional information");
-	events_meta.SetDirectory(0); // for now this is a memory-resident tree
+	boost::scoped_ptr<TTree>	events_new;
+	boost::scoped_ptr<TTree>	info_new(info->CloneTree());
 	intersection_set_t	s;
 
 	s.br_lr = intersections.Branch("LR", &s.i_lr, "LR_x/D:LR_y/D:LR_z/D");
@@ -156,17 +142,10 @@ int	main( int argc, char* argv[] )
 	intersections.Branch("LP", NULL, "LP_x/D:LP_y/D:LP_z/D");
 	intersections.Branch("RP", NULL, "RP_x/D:RP_y/D:RP_z/D");
 
-	events_meta.Branch("theta_l", NULL, "theta_l/D");
-	events_meta.Branch("theta_r", NULL, "theta_r/D");
+	Process(events, &vis_result, &s, events_new, intersections);
 
-	Process(events, &vis_result, &s, events_meta, intersections);
-
-	tree_file.ReOpen("UPDATE");
-	intersections.Write("intersections");
-	events_meta.Write("events_meta");
-	events->AddFriend("events_meta");
-	events->Write(NULL, TObject::kOverwrite);
-	tree_file.Close();
+	input_file.Close();
+	output_file.Close();
 
 	ProcessVisualize();
 
