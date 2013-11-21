@@ -32,22 +32,23 @@ struct plane3d_t
 	ublas::vector<double>	a, norm;
 };
 
+void    get_entry_vectors( track_group_t &tg, int entry )
+{
+	tg.c0.resize(tg.track_count);
+	tg.c1.resize(tg.track_count);
+
+	tg.c0_br->SetAddress(tg.c0.data());
+	tg.c1_br->SetAddress(tg.c1.data());
+
+	tg.c0_br->GetEntry(entry);
+	tg.c1_br->GetEntry(entry);
+}
+
 template<cham_group_t cham_group>
 track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 {
-	tg_X.c0.resize(tg_X.track_count);
-	tg_X.c1.resize(tg_X.track_count);
-	tg_X.c0_br->SetAddress(tg_X.c0.data());
-	tg_X.c1_br->SetAddress(tg_X.c1.data());
-	tg_X.c0_br->GetEntry(event_id);
-	tg_X.c1_br->GetEntry(event_id);
-
-	tg_Y.c0.resize(tg_Y.track_count);
-	tg_Y.c1.resize(tg_Y.track_count);
-	tg_Y.c0_br->SetAddress(tg_Y.c0.data());
-	tg_Y.c1_br->SetAddress(tg_Y.c1.data());
-	tg_Y.c0_br->GetEntry(event_id);
-	tg_Y.c1_br->GetEntry(event_id);
+	get_entry_vectors(tg_X, event_id);
+	get_entry_vectors(tg_Y, event_id);
 
 	static ublas::matrix<double> m1(3, 3), m2(3, 3), A(3, 3);
 
