@@ -77,11 +77,15 @@ void	ParseCommandLine( int argc, char* argv[] )
 map<string, string>	get_info_hash( TTree *info )
 {
 	map<string, string>	result;
+	TBranch	*key_br = info->GetBranch("key");
+	TBranch	*value_br = info->GetBranch("value");
+	void	*key_adr = key_br->GetAddress();
+	void	*value_adr = value_br->GetAddress();
 	char    key[MAX_VALUE_LEN];
 	char    value[MAX_VALUE_LEN];
 
-	info->GetBranch("key")->SetAddress(key);
-	info->GetBranch("value")->SetAddress(value);
+	key_br->SetAddress(key);
+	value_br->SetAddress(value);
 
 	int count = info->GetEntries();
 	for(int i = 0; i < count; i++)
@@ -89,6 +93,9 @@ map<string, string>	get_info_hash( TTree *info )
 		info->GetEntry(i);
 		result[key] = value;
 	}
+
+	key_br->SetAddress(key_adr);
+	value_br->SetAddress(value_adr);
 
 	return result;
 }
