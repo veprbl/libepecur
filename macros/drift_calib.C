@@ -17,6 +17,7 @@ void	show_hist( TCanvas &c, string id )
 	string	func = id + "_time:" + id + "_wire_pos";
 	TH2F *u = new TH2F(id.c_str(), func.c_str(), 100, -100, 100, 380, 0, 380);
 	events->Draw((func + " >> " + id).c_str(), "", "zcol");
+	u->SetStats(0);
 }
 
 void	drift_calib()
