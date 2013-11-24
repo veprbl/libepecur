@@ -7,7 +7,7 @@
 using std::string;
 
 TCanvas	c;
-TFile	f("26061082.root", "READ");
+TFile	f("26061082-pass2.root", "READ");
 int		pad_id = 0;
 
 void	plot_intersection_per_coord(string i, int xmin, int xmax, int rms_max)
@@ -20,14 +20,14 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax, int rms_max)
 	TSpectrum	*sr = new TSpectrum(3);
 
 	c.cd(++pad_id);
-	intersections->Draw(("LP_" + i + " >> uu1_" + i).c_str());
+	events->Draw(("LP_" + i + " >> uu1_" + i).c_str());
 	if (i == "x")
 	{
 		uu1->Smooth(10);
 		assert(sl->Search(uu1, 1, "") == 3);
 	}
 	c.cd(++pad_id);
-	intersections->Draw(("RP_" + i + " >> uu2_" + i).c_str());
+	events->Draw(("RP_" + i + " >> uu2_" + i).c_str());
 	if (i == "x")
 	{
 		uu2->Smooth(10);
@@ -53,7 +53,7 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax, int rms_max)
 		i.c_str(), xmax,
 		func_str, rms_max
 		);
-	intersections->Draw(func_str, cut_str);
+	events->Draw(func_str, cut_str);
 	if (i == "x")
 	{
 		double l1 = sl->GetPositionX()[2];

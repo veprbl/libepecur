@@ -2,7 +2,7 @@
 #include <TCanvas.h>
 
 TCanvas	c;
-TFile	f("26061082.root", "READ");
+TFile	f("26061082-pass2.root", "READ");
 int		pad_id = 0;
 
 /*!
@@ -18,23 +18,23 @@ void	adjustment_shifts()
 	c.Show();
 
 	c.cd(++pad_id);
-	intersections->Draw("(RL_x-LR_x)", "abs(RL_x - LR_x) < 1");
+	events->Draw("(RL_x-LR_x)", "abs(RL_x - LR_x) < 1");
 	c.cd(++pad_id);
-	intersections->Draw("(RL_y-LR_y)", "abs(RL_y - LR_y) < 2");
+	events->Draw("(RL_y-LR_y)", "abs(RL_y - LR_y) < 2");
 	c.cd(++pad_id);
-	intersections->Draw("(RL_z-LR_z)", "abs(RL_z - LR_z) < 30");
+	events->Draw("(RL_z-LR_z)", "abs(RL_z - LR_z) < 30");
 
 	c.cd(++pad_id);
-	intersections->Draw("(LF2_x-F2L_x)", "abs(LF2_x - F2L_x) < 1");
+	events->Draw("(LF2_x-F2L_x)", "abs(LF2_x - F2L_x) < 1");
 	c.cd(++pad_id);
-	intersections->Draw("(LF2_y-F2L_y)", "abs(LF2_y - F2L_y) < 2");
+	events->Draw("(LF2_y-F2L_y)", "abs(LF2_y - F2L_y) < 2");
 	c.cd(++pad_id);
-	intersections->Draw("(LF2_z-F2L_z)", "abs(LF2_z - F2L_z) < 30");
+	events->Draw("(LF2_z-F2L_z)", "abs(LF2_z - F2L_z) < 30");
 
 	c.cd(++pad_id);
-	intersections->Draw("(F2R_x-RF2_x)", "abs(F2R_x - RF2_x) < 1");
+	events->Draw("(F2R_x-RF2_x)", "abs(F2R_x - RF2_x) < 1");
 	c.cd(++pad_id);
-	intersections->Draw("(F2R_y-RF2_y)", "abs(F2R_y - RF2_y) < 2");
+	events->Draw("(F2R_y-RF2_y)", "abs(F2R_y - RF2_y) < 2");
 	c.cd(++pad_id);
-	intersections->Draw("(F2R_z-RF2_z)", "abs(F2R_z - RF2_z) < 30");
+	events->Draw("(F2R_z-RF2_z)", "abs(F2R_z - RF2_z) < 30");
 }
