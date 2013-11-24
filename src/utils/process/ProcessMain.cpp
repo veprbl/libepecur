@@ -175,7 +175,7 @@ double	calc_theta(track3d_t track)
 	return acos(cos_theta);
 }
 
-void	Process( TTree *events, process_result_t *result, intersection_set_t *s, boost::scoped_ptr<TTree> &events_new, TTree &intersections )
+void	Process( TTree *events, process_result_t *result, intersection_set_t *s, boost::scoped_ptr<TTree> &events_new )
 {
 	int32_t	event_cause;
 	double	theta_l, theta_r;
@@ -200,6 +200,16 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, bo
 	// clone tree headers
 	// this also copies branches addresses
 	events_new.reset(events->CloneTree(0));
+
+	s->br_lr = events_new->Branch("LR", &s->i_lr, "LR_x/D:LR_y/D:LR_z/D");
+	s->br_rl = events_new->Branch("RL", &s->i_rl, "RL_x/D:RL_y/D:RL_z/D");
+	s->br_f2r = events_new->Branch("F2R", &s->i_f2r, "F2R_x/D:F2R_y/D:F2R_z/D");
+	s->br_f2l = events_new->Branch("F2L", &s->i_f2l, "F2L_x/D:F2L_y/D:F2L_z/D");
+	s->br_rf2 = events_new->Branch("RF2", &s->i_rf2, "RF2_x/D:RF2_y/D:RF2_z/D");
+	s->br_lf2 = events_new->Branch("LF2", &s->i_lf2, "LF2_x/D:LF2_y/D:LF2_z/D");
+
+	events_new->Branch("LP", NULL, "LP_x/D:LP_y/D:LP_z/D");
+	events_new->Branch("RP", NULL, "RP_x/D:RP_y/D:RP_z/D");
 
 	events_new->Branch("theta_l", NULL, "theta_l/D")->SetAddress(&theta_l);
 	events_new->Branch("theta_r", NULL, "theta_r/D")->SetAddress(&theta_r);
@@ -303,8 +313,6 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, bo
 			tg_RY_new.c1_br->SetAddress(tg_RY.c1.data());
 			tg_RY_new.hits_count_br->SetAddress(tg_RY.hits_count.data());
 
-			events_new->Fill();
-
 			t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y);
 
 			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
@@ -322,10 +330,10 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, bo
 			ublas::vector<double>	lp = intersect_with_plane(t_L, plane);
 			ublas::vector<double>	rp = intersect_with_plane(t_R, plane);
 
-			intersections.GetBranch("LP")->SetAddress(&lp.data()[0]);
-			intersections.GetBranch("RP")->SetAddress(&rp.data()[0]);
+			events_new->GetBranch("LP")->SetAddress(&lp.data()[0]);
+			events_new->GetBranch("RP")->SetAddress(&rp.data()[0]);
 
-			intersections.Fill();
+			events_new->Fill();
 		}
 	}
 }
