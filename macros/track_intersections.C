@@ -15,13 +15,13 @@ void	plot_one_intersection_per_coord(string i, string j, string id)
 
 	if (i == "x")
 	{
-		nbins = 900;
+		nbins = 300;
 		ymin = -500;
 		ymax = 300;
 	}
 	else
 	{
-		nbins = 100;
+		nbins = 80;
 		ymin = -40;
 		ymax = 40;
 	}
@@ -31,7 +31,7 @@ void	plot_one_intersection_per_coord(string i, string j, string id)
 	new TH2F(
 		hist_name.c_str(),
 		(hist_name + ";" + (i + ", [mm];") + j + ", [mm]").c_str(),
-		100, -40, 40, nbins, ymin, ymax
+		80, -40, 40, nbins, ymin, ymax
 		);
 	events->Draw(
 		(id + "_" + i + ":" + id + "_" + j + " >> " + hist_name).c_str(), "", "ZCOL"
