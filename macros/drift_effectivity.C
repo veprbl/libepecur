@@ -13,11 +13,20 @@ const double	ANGLE_MAX = 2.0;
 const int	ANGLE_BINS = 25;
 const double	X_MIN = -200;
 const double	X_MAX = 120;
+const int	X_BINS = 50;
 
 void	drift_effectivity()
 {
-	TH1F *four_hit = new TH1F("four_hit", "", ANGLE_BINS, 0, ANGLE_MAX);
-	TH1F *any = new TH1F("any", "", ANGLE_BINS, 0, ANGLE_MAX);
+	TH2F *four_hit = new TH2F(
+		"four_hit", "",
+		ANGLE_BINS, 0, ANGLE_MAX,
+		X_BINS, X_MIN, X_MAX
+		);
+	TH2F *any = new TH2F(
+		"any", "",
+		ANGLE_BINS, 0, ANGLE_MAX,
+		X_BINS, X_MIN, X_MAX
+		);
 
 	beam_profile = new TH2F("beam_profile", ";Z, [mm];Y, [mm]", 100, -20, 20, 100, -20, 20);
 	events->Draw("RL_y:RL_z >> beam_profile", "", "ZCOL");
@@ -41,11 +50,11 @@ void	drift_effectivity()
 		X_MAX, X_MIN
 		);
 
-	events->Draw("theta_l >> any", cut);
-	events->Draw("theta_l >> four_hit", Form("(t3X_hits_count[0] == 4) && %s", cut));
-	TH1F *u = new TH1F((*four_hit) / (*any));
+	events->Draw("RL_x:theta_l >> any", cut);
+	events->Draw("RL_x:theta_l >> four_hit", Form("(t3X_hits_count[0] == 4) && %s", cut));
+	TH2F *u = new TH2F((*four_hit) / (*any));
 	u->GetXaxis()->SetTitle("\\Theta, rad");
 	u->GetYaxis()->SetTitle("Effectivity, 1");
-	u->Draw();
+	u->Draw("zcol");
 	c1.Show();
 }
