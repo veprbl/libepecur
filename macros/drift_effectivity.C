@@ -11,6 +11,8 @@ TFile	f("26061082-pass2.root", "READ");
 int	pad_id = 0;
 const double	ANGLE_MAX = 2.0;
 const int	ANGLE_BINS = 25;
+const double	X_MIN = -200;
+const double	X_MAX = 120;
 
 void	drift_effectivity()
 {
@@ -25,16 +27,18 @@ void	drift_effectivity()
 	const char	*cut = Form(
 		"(abs(RL_z - (%f)) < %f) && "
 		"(abs(RL_y - (%f)) < %f) && "
-		"(RL_x < 120) && "
-		"(RL_x > -200) && "
+		"(RL_x < %f) && "
+		"(RL_x > %f) && "
 		"(abs(LR_z - (%f)) < %f) && "
 		"(abs(LR_y - (%f)) < %f) && "
-		"(LR_x < 120) && "
-		"(LR_x > -200)",
+		"(LR_x < %f) && "
+		"(LR_x > %f)",
 		params[1], params[2] * 2,
 		params[3], params[4] * 2,
+		X_MAX, X_MIN,
 		params[1], params[2] * 2,
-		params[3], params[4] * 2
+		params[3], params[4] * 2,
+		X_MAX, X_MIN
 		);
 
 	events->Draw("theta_l >> any", cut);
