@@ -11,11 +11,12 @@ TCanvas	c1, c2, c3;
 TFile	f("26061082.root", "READ");
 int	pad_id;
 
-void	show_hist( TCanvas &c, string func )
+void	show_hist( TCanvas &c, string id )
 {
 	c.cd(++pad_id);
-	TH2F *uu = new TH2F("uu", func.c_str(), 100, -100, 100, 380, 0, 380);
-	events->Draw((func + " >> uu").c_str(), "", "zcol");
+	string	func = id + "_time:" + id + "_wire_pos";
+	TH2F *u = new TH2F(id.c_str(), func.c_str(), 100, -100, 100, 380, 0, 380);
+	events->Draw((func + " >> " + id).c_str(), "", "zcol");
 }
 
 void	drift_calib()
@@ -27,16 +28,16 @@ void	drift_calib()
 	c2.Show();
 
 	pad_id = 0;
-	show_hist(c1, "d3X3_time:d3X3_wire_pos");
-	show_hist(c1, "d4X3_time:d4X3_wire_pos");
-	show_hist(c1, "d3X1_time:d3X1_wire_pos");
-	show_hist(c1, "d4X1_time:d4X1_wire_pos");
+	show_hist(c1, "d3X3");
+	show_hist(c1, "d4X3");
+	show_hist(c1, "d3X1");
+	show_hist(c1, "d4X1");
 
 	pad_id = 0;
-	show_hist(c2, "d3Y3_time:d3Y3_wire_pos");
-	show_hist(c2, "d4Y3_time:d4Y3_wire_pos");
-	show_hist(c2, "d3Y1_time:d3Y1_wire_pos");
-	show_hist(c2, "d4Y1_time:d4Y1_wire_pos");
+	show_hist(c2, "d3Y3");
+	show_hist(c2, "d4Y3");
+	show_hist(c2, "d3Y1");
+	show_hist(c2, "d4Y1");
 
 	c3.cd();
 	TH1F *u = new TH1F("d3X1_time_d", "", 380, 0, 380);
