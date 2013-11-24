@@ -14,7 +14,7 @@ int	pad_id;
 void	show_hist( TCanvas &c, string func )
 {
 	c.cd(++pad_id);
-	TH2F *uu = new TH2F("uu", func.c_str(), 180, -90, 90, 380, 0, 380);
+	TH2F *uu = new TH2F("uu", func.c_str(), 100, -100, 100, 380, 0, 380);
 	events->Draw((func + " >> uu").c_str(), "", "zcol");
 }
 
