@@ -29,6 +29,7 @@ void	drift_calib_curve()
 		}
 		copy->GetXaxis()->SetTitle("T, [Counts]");
 		copy->GetYaxis()->SetTitle("X, [mm]");
+		copy->SetStats(0);
 		copy->Draw();
 
 		calib_curve = 0; // TRICK :P
