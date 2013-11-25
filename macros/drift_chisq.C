@@ -4,6 +4,8 @@
 #include <TCanvas.h>
 #include <TH1F.h>
 #include <TString.h>
+#include <TText.h>
+#include <TTree.h>
 
 #include "utils.C"
 
@@ -12,6 +14,7 @@ using std::string;
 TCanvas	c1;
 TCanvas	c2;
 TFile	f("26061082.root", "READ");
+TTree	*events;
 
 TH1F*	makehist( string id, int ndf )
 {

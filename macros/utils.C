@@ -1,6 +1,11 @@
+#include <string>
+
 #include <TBranch.h>
+#include <TTree.h>
 
 #include "../src/utils/export_tree/TreeExportApp.hpp"
+
+using std::string;
 
 char	key[MAX_VALUE_LEN];
 char	value[MAX_VALUE_LEN];
@@ -16,7 +21,7 @@ char	*get_info( TTree *info, string lookup_key )
 		info->GetEntry(i);
 		if (key == lookup_key)
 		{
-			return &value;
+			return value;
 		}
 	}
 	return NULL;
