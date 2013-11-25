@@ -4,6 +4,7 @@
 #include <TClass.h>
 #include <TCanvas.h>
 #include <TDirectory.h>
+#include <TSystem.h>
 #include <TFile.h>
 #include <TH1.h>
 
@@ -29,6 +30,15 @@ bool	checkoption(char *hoptions, const char *option)
 
 void SaveAllAs(TDirectory *dir, TCanvas &default_canvas, const string &path)
 {
+	if (gSystem->AccessPathName(path.c_str(), kFileExists))
+	{
+		if (gSystem->MakeDirectory(path.c_str()) != 0)
+		{
+			gSystem->Error("MakeDirectory", "Can't create %s", path.c_str());
+			return;
+		}
+	}
+
 	TIter it(dir->GetList());
 	TObject	*obj;
 	while(( obj = it() ))
