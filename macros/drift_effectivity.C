@@ -2,14 +2,16 @@
 
 #include <TFile.h>
 #include <TCanvas.h>
+#include <TF2.h>
+#include <TFitResult.h>
 #include <TH1F.h>
 #include <TH2F.h>
+#include <TTree.h>
 
 using std::string;
 
 TCanvas	c1, c2;
 TFile	f("26061082-pass2.root", "READ");
-int	pad_id = 0;
 const double	ANGLE_MAX = 2.0;
 const int	ANGLE_BINS = 25;
 const double	X_MIN = -200;
@@ -38,9 +40,9 @@ void	drift_effectivity()
 		ANGLE_BINS, 0, ANGLE_MAX
 		);
 
-	beam_profile = new TH2F("beam_profile", ";Z, [mm];Y, [mm]", 100, -20, 20, 100, -20, 20);
+	TH2F	*beam_profile = new TH2F("beam_profile", ";Z, [mm];Y, [mm]", 100, -20, 20, 100, -20, 20);
 	events->Draw("RL_y:RL_z >> beam_profile", "", "ZCOL");
-	xygaus = new TF2("xygaus", "xygaus");
+	TF2	*xygaus = new TF2("xygaus", "xygaus");
 	TFitResultPtr fit = beam_profile->Fit(xygaus, "S"); // S - return fit result 
 	const double *params = fit->GetParams();
 	const char	*cut = Form(
