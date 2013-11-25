@@ -2,10 +2,10 @@
 #include <TTree.h>
 #include <TCanvas.h>
 
-TCanvas	c;
-TFile	f("26061082-pass2.root", "READ");
-int		pad_id = 0;
-TTree	*events;
+static TCanvas	c;
+static TFile	f("26061082-pass2.root", "READ");
+static int		pad_id = 0;
+static TTree	*events;
 
 /*!
  * This script is showing coordinate difference distribution for

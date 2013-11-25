@@ -8,12 +8,12 @@
 
 using std::string;
 
-TCanvas	c1, c2, c3;
-TFile	f("26061082.root", "READ");
-int	pad_id;
-TTree	*events;
+static TCanvas	c1, c2, c3;
+static TFile	f("26061082.root", "READ");
+static int	pad_id;
+static TTree	*events;
 
-void	show_hist( TCanvas &c, string id )
+static void	show_hist( TCanvas &c, string id )
 {
 	c.cd(++pad_id);
 	string	func = id + "_time:" + id + "_wire_pos";

@@ -11,10 +11,10 @@
 
 using std::string;
 
-TCanvas	c1;
-TCanvas	c2;
-TFile	f("26061082.root", "READ");
-TTree	*events;
+static TCanvas	c1;
+static TCanvas	c2;
+static TFile	f("26061082.root", "READ");
+static TTree	*events;
 
 TH1F*	makehist( string id, int ndf )
 {

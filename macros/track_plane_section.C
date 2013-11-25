@@ -9,12 +9,12 @@
 
 using std::string;
 
-TCanvas	c;
-TFile	f("26061082-pass2.root", "READ");
-int		pad_id = 0;
-TTree	*events;
+static TCanvas	c;
+static TFile	f("26061082-pass2.root", "READ");
+static int		pad_id = 0;
+static TTree	*events;
 
-void	plot_intersection_per_coord(string i, int xmin, int xmax, int rms_max)
+static void	plot_intersection_per_coord(string i, int xmin, int xmax, int rms_max)
 {
 	TH1F	*uu1 = new TH1F(("uu1_" + i).c_str(), ("LX_" + i).c_str(),
 	                        xmax - xmin, xmin, xmax);

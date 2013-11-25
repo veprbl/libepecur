@@ -10,14 +10,14 @@
 
 using std::string;
 
-TCanvas	c1, c2;
-TFile	f("26061082-pass2.root", "READ");
-TTree	*events;
-const double	ANGLE_MAX = 2.0;
-const int	ANGLE_BINS = 25;
-const double	X_MIN = -200;
-const double	X_MAX = 120;
-const int	X_BINS = 50;
+static TCanvas	c1, c2;
+static TFile	f("26061082-pass2.root", "READ");
+static TTree	*events;
+static const double	ANGLE_MAX = 2.0;
+static const int	ANGLE_BINS = 25;
+static const double	X_MIN = -200;
+static const double	X_MAX = 120;
+static const int	X_BINS = 50;
 
 void	drift_effectivity()
 {

@@ -3,9 +3,9 @@
 #include <TH1F.h>
 #include <TTree.h>
 
-TCanvas	calib_curve_canvas;
-TFile	f("26061082.root", "READ");
-TTree	*drift_calib;
+static TCanvas	calib_curve_canvas;
+static TFile	f("26061082.root", "READ");
+static TTree	*drift_calib;
 
 void	drift_calib_curve()
 {

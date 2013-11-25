@@ -7,12 +7,12 @@
 
 using std::string;
 
-TCanvas	c;
-TFile	f("26061082-pass2.root", "READ");
-int		pad_id = 0;
-TTree	*events;
+static TCanvas	c;
+static TFile	f("26061082-pass2.root", "READ");
+static int		pad_id = 0;
+static TTree	*events;
 
-void	plot_one_intersection_per_coord(string i, string j, string id)
+static void	plot_one_intersection_per_coord(string i, string j, string id)
 {
 	int	nbins, ymin, ymax;
 
@@ -41,7 +41,7 @@ void	plot_one_intersection_per_coord(string i, string j, string id)
 		);
 }
 
-void	plot_intersections_per_coords(string i, string j)
+static void	plot_intersections_per_coords(string i, string j)
 {
 	plot_one_intersection_per_coord(i, j, "LF2");
 	plot_one_intersection_per_coord(i, j, "RF2");
