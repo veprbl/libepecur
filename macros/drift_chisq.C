@@ -13,18 +13,22 @@ TCanvas	c1;
 TCanvas	c2;
 TFile	f("26061082.root", "READ");
 
-TH1F*	makehist( string name, int ndf )
+TH1F*	makehist( string id, int ndf )
 {
 	int	hits_count = ndf + 2;
-	TString	cut, title;
-	cut += name;
+	TString	hist_name, cut, title;
+	hist_name += id;
+	hist_name += "_chisq_";
+	hist_name += hits_count;
+	hist_name += "hits";
+	cut += id;
 	cut += "_hits_count == ";
 	cut += hits_count;
 	float	min_x = 0;
 	float	max_x = (ndf == 2) ? 2.0 : 0.5;
-	TH1F	*hist = new TH1F(name.c_str(), cut, 1000, min_x, max_x);
-	events->Draw((name + "_chisq >> " + name).c_str(), cut);
-	if (name[1] == '3')
+	TH1F	*hist = new TH1F(hist_name.Data(), cut, 1000, min_x, max_x);
+	events->Draw(Form("%s_chisq >> %s", id.c_str(), hist_name.Data()), cut);
+	if (id[1] == '3')
 	{
 		title += "Left ";
 	}
@@ -32,7 +36,7 @@ TH1F*	makehist( string name, int ndf )
 	{
 		title += "Right ";
 	}
-	title += name[2];
+	title += id[2];
 	title += " (";
 	title += cut;
 	title += ")";
