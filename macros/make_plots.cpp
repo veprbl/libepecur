@@ -61,6 +61,7 @@ void SaveAllAs(TDirectory *dir, TCanvas &default_canvas, const string &path)
 				hist->SetStats(kFALSE);
 			}
 
+			default_canvas.cd();
 			hist->Draw(hoptions);
 			default_canvas.Update();
 
