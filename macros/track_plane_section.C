@@ -35,11 +35,13 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax, int rms_max)
 	}
 	c.cd(++pad_id);
 	TH1F	*uu3 = new TH1F(*uu1);
+	uu3->SetName(("uu3_" + i).c_str());
 	uu3->Add(uu2, -1);
 	uu3->Draw();
 	c.cd(++pad_id);
-	char	func_str[256], cut_str[256];
-	snprintf(func_str, sizeof(func_str),
+	char	func_str[256], varexp_str[256], cut_str[256];
+	snprintf(
+		func_str, sizeof(func_str),
 		"LP_%s - RP_%s",
 		i.c_str(), i.c_str()
 		);
@@ -53,7 +55,12 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax, int rms_max)
 		i.c_str(), xmax,
 		func_str, rms_max
 		);
-	events->Draw(func_str, cut_str);
+	snprintf(
+		varexp_str, sizeof(varexp_str),
+		"%s >> uu4_%s",
+		func_str, i.c_str()
+		);
+	events->Draw(varexp_str, cut_str);
 	if (i == "x")
 	{
 		double l1 = sl->GetPositionX()[2];
