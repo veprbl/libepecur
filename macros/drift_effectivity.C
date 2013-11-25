@@ -68,8 +68,12 @@ void	drift_effectivity()
 	c1.cd();
 	events->Draw("RL_x:theta_l >> any_theta_x", cut);
 	events->Draw("RL_x:theta_l >> four_hit_theta_x", Form("(t3X_hits_count[0] == 4) && %s", cut));
-	TH2F *u_tx = new TH2F((*four_hit_theta_x) / (*any_theta_x));
-	u_tx->SetName("effectivity_theta_x");
+	TH2F *u_tx = new TH2F(
+		"effectivity_theta_x", "",
+		ANGLE_BINS, 0, ANGLE_MAX,
+		X_BINS, X_MIN, X_MAX
+		);
+	u_tx->Divide(four_hit_theta_x, any_theta_x);
 	u_tx->GetXaxis()->SetTitle("\\Theta, rad");
 	u_tx->GetYaxis()->SetTitle("X coordinate on target, mm");
 	u_tx->Draw("zcol");
@@ -77,8 +81,11 @@ void	drift_effectivity()
 	c2.cd();
 	events->Draw("theta_l >> any_theta", cut);
 	events->Draw("theta_l >> four_hit_theta", Form("(t3X_hits_count[0] == 4) && %s", cut));
-	TH1F *u_t = new TH1F((*four_hit_theta) / (*any_theta));
-	u_t->SetName("effectivity_theta");
+	TH1F *u_t = new TH1F(
+		"effectivity_theta", "",
+		ANGLE_BINS, 0, ANGLE_MAX
+		);
+	u_t->Divide(four_hit_theta, any_theta);
 	u_t->GetXaxis()->SetTitle("\\Theta, rad");
 	u_t->GetYaxis()->SetTitle("Effectivity, 1");
 	u_t->Draw();
