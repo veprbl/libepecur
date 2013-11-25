@@ -2,11 +2,12 @@
 
 #include <TFile.h>
 #include <TCanvas.h>
+#include <TH1F.h>
 #include <TH2F.h>
 
 using std::string;
 
-TCanvas	c1;
+TCanvas	c1, c2;
 TFile	f("26061082-pass2.root", "READ");
 int	pad_id = 0;
 const double	ANGLE_MAX = 2.0;
@@ -17,15 +18,24 @@ const int	X_BINS = 50;
 
 void	drift_effectivity()
 {
-	TH2F *four_hit = new TH2F(
-		"four_hit", "",
+	TH2F *four_hit_theta_x = new TH2F(
+		"four_hit_theta_x", "",
 		ANGLE_BINS, 0, ANGLE_MAX,
 		X_BINS, X_MIN, X_MAX
 		);
-	TH2F *any = new TH2F(
-		"any", "",
+	TH2F *any_theta_x = new TH2F(
+		"any_theta_x", "",
 		ANGLE_BINS, 0, ANGLE_MAX,
 		X_BINS, X_MIN, X_MAX
+		);
+
+	TH1F *four_hit_theta = new TH1F(
+		"four_hit_theta", "",
+		ANGLE_BINS, 0, ANGLE_MAX
+		);
+	TH1F *any_theta = new TH1F(
+		"any_theta", "",
+		ANGLE_BINS, 0, ANGLE_MAX
 		);
 
 	beam_profile = new TH2F("beam_profile", ";Z, [mm];Y, [mm]", 100, -20, 20, 100, -20, 20);
@@ -50,12 +60,24 @@ void	drift_effectivity()
 		X_MAX, X_MIN
 		);
 
-	events->Draw("RL_x:theta_l >> any", cut);
-	events->Draw("RL_x:theta_l >> four_hit", Form("(t3X_hits_count[0] == 4) && %s", cut));
-	TH2F *u = new TH2F((*four_hit) / (*any));
-	u->SetName("effectivity");
-	u->GetXaxis()->SetTitle("\\Theta, rad");
-	u->GetYaxis()->SetTitle("X coordinate on target, mm");
-	u->Draw("zcol");
+	c1.cd();
+	events->Draw("RL_x:theta_l >> any_theta_x", cut);
+	events->Draw("RL_x:theta_l >> four_hit_theta_x", Form("(t3X_hits_count[0] == 4) && %s", cut));
+	TH2F *u_tx = new TH2F((*four_hit_theta_x) / (*any_theta_x));
+	u_tx->SetName("effectivity_theta_x");
+	u_tx->GetXaxis()->SetTitle("\\Theta, rad");
+	u_tx->GetYaxis()->SetTitle("X coordinate on target, mm");
+	u_tx->Draw("zcol");
+
+	c2.cd();
+	events->Draw("theta_l >> any_theta", cut);
+	events->Draw("theta_l >> four_hit_theta", Form("(t3X_hits_count[0] == 4) && %s", cut));
+	TH1F *u_t = new TH1F((*four_hit_theta) / (*any_theta));
+	u_t->SetName("effectivity_theta");
+	u_t->GetXaxis()->SetTitle("\\Theta, rad");
+	u_t->GetYaxis()->SetTitle("Effectivity, 1");
+	u_t->Draw();
+
 	c1.Show();
+	c2.Show();
 }
