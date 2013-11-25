@@ -53,6 +53,7 @@ void	drift_effectivity()
 	events->Draw("RL_x:theta_l >> any", cut);
 	events->Draw("RL_x:theta_l >> four_hit", Form("(t3X_hits_count[0] == 4) && %s", cut));
 	TH2F *u = new TH2F((*four_hit) / (*any));
+	u->SetName("effectivity");
 	u->GetXaxis()->SetTitle("\\Theta, rad");
 	u->GetYaxis()->SetTitle("Effectivity, 1");
 	u->Draw("zcol");
