@@ -28,11 +28,13 @@ void	drift_effectivity()
 		ANGLE_BINS, 0, ANGLE_MAX,
 		X_BINS, X_MIN, X_MAX
 		);
+	four_hit_theta_x->SetOption("zcol");
 	TH2F *any_theta_x = new TH2F(
 		"any_theta_x", "",
 		ANGLE_BINS, 0, ANGLE_MAX,
 		X_BINS, X_MIN, X_MAX
 		);
+	any_theta_x->SetOption("zcol");
 
 	TH1F *four_hit_theta = new TH1F(
 		"four_hit_theta", "",
@@ -44,6 +46,7 @@ void	drift_effectivity()
 		);
 
 	TH2F	*beam_profile = new TH2F("beam_profile", ";Z, [mm];Y, [mm]", 100, -20, 20, 100, -20, 20);
+	beam_profile->SetOption("zcol");
 	events->Draw("RL_y:RL_z >> beam_profile", "", "ZCOL");
 	TF2	*xygaus = new TF2("xygaus", "xygaus");
 	TFitResultPtr fit = beam_profile->Fit(xygaus, "S"); // S - return fit result 
@@ -76,6 +79,7 @@ void	drift_effectivity()
 	u_tx->Divide(four_hit_theta_x, any_theta_x);
 	u_tx->GetXaxis()->SetTitle("\\Theta, rad");
 	u_tx->GetYaxis()->SetTitle("X coordinate on target, mm");
+	u_tx->SetOption("zcol");
 	u_tx->Draw("zcol");
 
 	c2.cd();
