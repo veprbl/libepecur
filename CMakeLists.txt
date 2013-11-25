@@ -24,6 +24,7 @@ add_definitions("-Wall -pedantic")
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}) 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}) 
 
+add_subdirectory(macros)
 add_subdirectory(src)
 add_subdirectory(tests)
 
