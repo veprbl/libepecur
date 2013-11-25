@@ -55,7 +55,7 @@ void	drift_effectivity()
 	TH2F *u = new TH2F((*four_hit) / (*any));
 	u->SetName("effectivity");
 	u->GetXaxis()->SetTitle("\\Theta, rad");
-	u->GetYaxis()->SetTitle("Effectivity, 1");
+	u->GetYaxis()->SetTitle("X coordinate on target, mm");
 	u->Draw("zcol");
 	c1.Show();
 }
