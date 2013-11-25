@@ -1,7 +1,9 @@
+#include <cassert>
 #include <cstring>
 
 #include <TFile.h>
 #include <TCanvas.h>
+#include <TH1F.h>
 #include <TSpectrum.h>
 
 using std::string;
