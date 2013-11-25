@@ -1,6 +1,5 @@
 #include <TFile.h>
 #include <TCanvas.h>
-#include <TH2F.h>
 #include <TH1F.h>
 
 TCanvas	calib_curve_canvas;
