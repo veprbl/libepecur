@@ -2,6 +2,7 @@
 
 #include <TFile.h>
 #include <TCanvas.h>
+#include <TTree.h>
 #include <TH2F.h>
 
 using std::string;
@@ -9,6 +10,7 @@ using std::string;
 TCanvas	c;
 TFile	f("26061082-pass2.root", "READ");
 int		pad_id = 0;
+TTree	*events;
 
 void	plot_one_intersection_per_coord(string i, string j, string id)
 {
@@ -55,6 +57,8 @@ void	plot_intersections_per_coords(string i, string j)
  */
 void	track_intersections()
 {
+	events = (TTree*)f.Get("events");
+
 	c.Divide(3, 6);
 	c.Show();
 

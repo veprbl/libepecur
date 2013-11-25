@@ -5,12 +5,14 @@
 #include <TCanvas.h>
 #include <TH1F.h>
 #include <TSpectrum.h>
+#include <TTree.h>
 
 using std::string;
 
 TCanvas	c;
 TFile	f("26061082-pass2.root", "READ");
 int		pad_id = 0;
+TTree	*events;
 
 void	plot_intersection_per_coord(string i, int xmin, int xmax, int rms_max)
 {
@@ -88,6 +90,8 @@ void	plot_intersection_per_coord(string i, int xmin, int xmax, int rms_max)
  */
 void	track_plane_section()
 {
+	events = (TTree*)f.Get("events");
+
 	c.Divide(4, 2);
 	c.Show();
 

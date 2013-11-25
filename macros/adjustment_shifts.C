@@ -1,9 +1,11 @@
 #include <TFile.h>
+#include <TTree.h>
 #include <TCanvas.h>
 
 TCanvas	c;
 TFile	f("26061082-pass2.root", "READ");
 int		pad_id = 0;
+TTree	*events;
 
 /*!
  * This script is showing coordinate difference distribution for
@@ -14,6 +16,8 @@ int		pad_id = 0;
  */
 void	adjustment_shifts()
 {
+	events = (TTree*)f.Get("events");
+
 	c.Divide(3, 3);
 	c.Show();
 

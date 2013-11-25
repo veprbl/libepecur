@@ -1,13 +1,16 @@
 #include <TFile.h>
 #include <TCanvas.h>
 #include <TH1F.h>
+#include <TTree.h>
 
 TCanvas	calib_curve_canvas;
 TFile	f("26061082.root", "READ");
+TTree	*drift_calib;
 
 void	drift_calib_curve()
 {
 	TH1F	*calib_curve = 0, *copy = 0;
+	drift_calib = (TTree*)f.Get("drift_calib");
 
 	drift_calib->SetBranchAddress("calib_curve", &calib_curve);
 

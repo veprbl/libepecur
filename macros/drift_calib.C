@@ -1,6 +1,7 @@
 #include <string>
 
 #include <TFile.h>
+#include <TTree.h>
 #include <TCanvas.h>
 #include <TH1F.h>
 #include <TH2F.h>
@@ -10,6 +11,7 @@ using std::string;
 TCanvas	c1, c2, c3;
 TFile	f("26061082.root", "READ");
 int	pad_id;
+TTree	*events;
 
 void	show_hist( TCanvas &c, string id )
 {
@@ -22,6 +24,8 @@ void	show_hist( TCanvas &c, string id )
 
 void	drift_calib()
 {
+	events = (TTree*)f.Get("events");
+
 	c1.Divide(2, 2);
 	c1.Show();
 

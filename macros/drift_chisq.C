@@ -60,6 +60,8 @@ void	drift_chisq()
 {
 	int	i;
 
+	events = (TTree*)f.Get("events");
+
 	c1.Divide(2, 2, 0.01, 0.02);
 	c2.Divide(2, 2, 0.01, 0.02);
 
