@@ -31,13 +31,14 @@ static void	plot_one_intersection_per_coord(string i, string j, string id)
 
 	string	hist_name = id + i + j;
 	c.cd(++pad_id);
-	new TH2F(
+	TH2F	*h =  new TH2F(
 		hist_name.c_str(),
 		(hist_name + ";" + (i + ", [mm];") + j + ", [mm]").c_str(),
 		80, -40, 40, nbins, ymin, ymax
 		);
+	h->SetOption("zcol");
 	events->Draw(
-		(id + "_" + i + ":" + id + "_" + j + " >> " + hist_name).c_str(), "", "ZCOL"
+		(id + "_" + i + ":" + id + "_" + j + " >> " + hist_name).c_str()
 		);
 }
 
