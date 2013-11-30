@@ -443,7 +443,7 @@ bool	read_record( const char* &pos, const char* window_end, bool is_last_window,
 	default:
 
 		cerr << rec.type << endl;
-		cerr << "unkonwn block addr " << hex << pos << endl;
+		cerr << "unknown block addr " << hex << pos << endl;
 		pos = record_end;
 		throw "Unknown record type!";
 	}
