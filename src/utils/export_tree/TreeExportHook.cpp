@@ -16,7 +16,8 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 		  "events",
 		  "recognized tracks for prop chambers"
 		  "and triggered drift wires"
-		  )
+		  ),
+	  target_info_tree("target_info", "")
 {
 	event_tree.Branch(
 		"event_cause",
@@ -47,6 +48,12 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 			}
 		}
 	}
+
+	target_info_tree.Branch(
+		"target_info",
+		NULL,
+		"R[8]/D:V[7]/D:H[8]/D:manual/I:time/I"
+		);
 }
 
 TreeExportHook::~TreeExportHook()
@@ -225,4 +232,14 @@ void	TreeExportHook::handle_event_end()
 	}
 
 	event_tree.Fill();
+}
+
+void	TreeExportHook::handle_slow_target_info(
+	const slow_target_record_t *rec
+	)
+{
+	static TBranch	*br = target_info_tree.GetBranch("target_info");
+
+	br->SetAddress((void*)rec);
+	target_info_tree.Fill();
 }

@@ -35,7 +35,7 @@ class TreeExportHook : public TrackRecognitionHook
 {
 private:
 
-	TTree	event_tree;
+	TTree	event_tree, target_info_tree;
 	event_info_t	event_info;
 	unordered_map< group_id_t, map<device_axis_t, track_group_t> >	stored_track;
 	unordered_map< group_id_t, map<device_axis_t, map<chamber_id_t, drift_group_t> > >	stored_drift;
@@ -66,6 +66,9 @@ public:
 		uint32_t gate_time
 		) override;
 	virtual void	handle_event_end();
+	virtual void	handle_slow_target_info(
+		const slow_target_record_t *rec
+		) override;
 };
 
 #endif
