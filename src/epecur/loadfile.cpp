@@ -29,6 +29,12 @@ typedef struct
 
 typedef struct
 {
+	ulittle32_t	length;
+	ulittle32_t	type;
+} slow_header_t;
+
+typedef struct
+{
 	ulittle32_t length;	// full record length in bytes
 	ulittle32_t type;	// record type
 	ulittle32_t time;	// record creation time UNIX timestamp
@@ -40,6 +46,7 @@ typedef struct
 #pragma pack(pop)
 
 BOOST_STATIC_ASSERT(sizeof(event_header_t) == 12);
+BOOST_STATIC_ASSERT(sizeof(slow_target_record_t) == 192);
 BOOST_STATIC_ASSERT(sizeof(record_header_t) == 20);
 
 const uint	END_OF_CYCLE_FLAG(0x80000000);
@@ -293,6 +300,39 @@ void	read_cycle( const char* &pos, const char *max_pos, LoadHook &hook )
 	}
 }
 
+void	read_slow( const char* &pos, const char *max_pos, LoadHook &hook )
+{
+	slow_header_t	slow_header;
+	const char	*record_max_pos;
+
+	while(pos < max_pos)
+	{
+		mem_read(pos, slow_header);
+		record_max_pos = pos + slow_header.length - sizeof(slow_header);
+
+		switch(slow_header.type)
+		{
+		case EP_SRCID_TGT:
+
+			BOOST_ASSERT(slow_header.length == 200);
+			const slow_target_record_t	*rec;
+			rec = reinterpret_cast<decltype(rec)>(pos);
+			hook.handle_slow_target_info(rec);
+			pos = record_max_pos;
+
+			break;
+		case EP_SRCID_NMR:
+		case EP_SRCID_TRGB:
+		case EP_SRCID_CAMERA:
+		default:
+
+			pos = record_max_pos;
+
+			break;
+		}
+	}
+}
+
 bool	is_valid_record( record_header_t &rec )
 {
 	if ((rec.type != REC_TYPE_CYCLE)
@@ -435,6 +475,10 @@ bool	read_record( const char* &pos, const char* window_end, bool is_last_window,
 
 		break;
 	case REC_TYPE_SLOW:
+
+		read_slow(pos, record_end, hook);
+
+		break;
 	case REC_TYPE_RAW:
 
 		pos = record_end;

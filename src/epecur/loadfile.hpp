@@ -21,6 +21,23 @@ enum record_type_t
 	REC_TYPE_RAW	= 0x10000
 };
 
+enum slow_type_t
+{
+	EP_SRCID_TGT	= 1001,
+	EP_SRCID_NMR	= 1002,
+	EP_SRCID_TRGB  	= 1003,
+	EP_SRCID_CAMERA	= 1004
+};
+
+typedef struct
+{
+	double	R[8];
+	double	V[7];		// pressure sensors V[0-3] and vacuum sensors V[4-7]
+	double	H[8];
+	int32_t	manual;	// R[manual] is invalid
+	int32_t	time;	// measurement UNIX timestamp
+} slow_target_record_t;
+
 class	LoadHook
 {
 public:
@@ -38,6 +55,9 @@ public:
 		uint32_t gate_time
 		) {};
 	virtual void	handle_event_end() {};
+	virtual void	handle_slow_target_info(
+		const slow_target_record_t *rec
+		) {};
 };
 
 void	loadfile( std::string filename, LoadHook &hook );
