@@ -65,5 +65,5 @@ void	ProcessVisualize()
 	gEve->AddElement(list);
 	gEve->AddElement(evp);
 	gEve->AddElement(chp);
-	gEve->Redraw3D(kTRUE);
+	gEve->Redraw3D(kFALSE);
 }
