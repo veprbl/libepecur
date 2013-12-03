@@ -154,6 +154,7 @@ int	main( int argc, char* argv[] )
 
 	Process(events, &vis_result, &s, events_new);
 
+	events_new->AutoSave();
 	info_new->AutoSave();
 	input_file.Close();
 	output_file.Close();
