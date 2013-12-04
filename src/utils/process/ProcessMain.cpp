@@ -287,7 +287,9 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, bo
 
 		bool	left_arm = (tg_LX.track_count == 1) && (tg_LY.track_count == 1);
 		bool	right_arm = (tg_RX.track_count == 1) && (tg_RY.track_count == 1);
-		bool	incident = (tg_F2X.track_count == 1) && (tg_F2Y.track_count == 1);
+		bool	incident =
+		    (tg_F1X.track_count == 1) && (tg_F1Y.track_count == 1) &&
+		    (tg_F2X.track_count == 1) && (tg_F2Y.track_count == 1);
 
 		if (left_arm)
 		{
