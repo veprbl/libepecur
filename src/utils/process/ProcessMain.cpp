@@ -175,10 +175,18 @@ double	calc_theta(track3d_t track)
 	return acos(cos_theta);
 }
 
+double	calc_phi(track3d_t track)
+{
+	return atan2(
+		ublas::inner_prod(track.b, ublas::unit_vector<double>(3, 1)),
+		ublas::inner_prod(track.b, ublas::unit_vector<double>(3, 2))
+		);
+}
+
 void	Process( TTree *events, process_result_t *result, intersection_set_t *s, boost::scoped_ptr<TTree> &events_new )
 {
 	int32_t	event_cause;
-	double	theta_l, theta_r;
+	double	theta_l, theta_r, phi_l, phi_r;
 	track_group_t	tg_F1X, tg_F1Y, tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
 	track_group_t	tg_F1X_new, tg_F1Y_new, tg_F2X_new, tg_F2Y_new, tg_LX_new, tg_LY_new, tg_RX_new, tg_RY_new;
 
@@ -215,6 +223,8 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, bo
 
 	events_new->Branch("theta_l", NULL, "theta_l/D")->SetAddress(&theta_l);
 	events_new->Branch("theta_r", NULL, "theta_r/D")->SetAddress(&theta_r);
+	events_new->Branch("phi_l", NULL, "phi_l/D")->SetAddress(&phi_l);
+	events_new->Branch("phi_r", NULL, "phi_r/D")->SetAddress(&phi_r);
 
 	tg_F1X.c0_br = events->GetBranch("t1X_c0");
 	tg_F1X.c1_br = events->GetBranch("t1X_c1");
@@ -295,19 +305,23 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, bo
 		{
 			t_L = make_track<cham_group_t::drift_left>(i, tg_LX, tg_LY);
 			theta_l = calc_theta(t_L);
+			phi_l = calc_phi(t_L);
 		}
 		else
 		{
 			theta_l = NAN;
+			phi_l = NAN;
 		}
 		if (right_arm)
 		{
 			t_R = make_track<cham_group_t::drift_right>(i, tg_RX, tg_RY);
 			theta_r = calc_theta(t_R);
+			phi_r = calc_phi(t_R);
 		}
 		else
 		{
 			theta_r = NAN;
+			phi_r = NAN;
 		}
 
 		if (left_arm && right_arm && incident)
