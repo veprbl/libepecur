@@ -459,6 +459,8 @@ bool	read_record( const char* &pos, const char* window_end, bool is_last_window,
 		}
 	}
 
+	hook.handle_timestamp(rec.time);
+
 	switch(rec.type)
 	{
 	case REC_TYPE_CYCLE:

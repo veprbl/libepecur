@@ -24,6 +24,11 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 		&event_info.event_cause,
 		"event_cause/i"
 		);
+	event_tree.Branch(
+		"timestamp",
+		&event_info.timestamp,
+		"timestamp/i"
+		);
 
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
@@ -196,6 +201,11 @@ void	TreeExportHook::write_drift_event(
 		st_gr.wire_pos_br->SetAddress(wire_pos.data());
 		st_gr.time_br->SetAddress(time.data());
 	}
+}
+
+void	TreeExportHook::handle_timestamp( int32_t timestamp )
+{
+	event_info.timestamp = timestamp;
 }
 
 void	TreeExportHook::handle_trig_info(

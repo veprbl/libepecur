@@ -15,6 +15,7 @@ using boost::unordered_map;
 struct event_info_t
 {
 	uint32_t	event_cause;
+	uint32_t	timestamp;
 };
 
 struct track_group_t
@@ -60,6 +61,7 @@ public:
 	TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c );
 	~TreeExportHook();
 	const char*	store_name( string name );
+	virtual void	handle_timestamp( int32_t timestamp ) override;
 	virtual void	handle_trig_info(
 		uint8_t devices_mask,
 		uint16_t event_cause,
