@@ -15,6 +15,7 @@ void	drift_calib();
 void	drift_calib_curve();
 void	drift_chisq();
 void	drift_effectivity();
+void	drift_effectivity_over_time();
 void	track_intersections();
 void	track_plane_section();
 
@@ -93,6 +94,8 @@ int	main(void)
 	drift_chisq();
 	out.mkdir("drift_effectivity")->cd();
 	drift_effectivity();
+	out.mkdir("drift_effectivity_over_time")->cd();
+	drift_effectivity_over_time();
 	out.mkdir("track_intersections")->cd();
 	track_intersections();
 	out.mkdir("track_plane_section")->cd();
