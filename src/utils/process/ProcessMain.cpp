@@ -117,7 +117,7 @@ track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 	ublas::unit_vector<double> xl(3, 2);
 	a = o + ublas::prod(A, xk) * tg_Y.c0[0] + ublas::prod(A, xl) * tg_X.c0[0];
 
-	return track3d_t{a, b};
+	return track3d_t({a, b});
 }
 
 void	find_intersection_points(
@@ -365,7 +365,7 @@ void	Process( TTree *events, process_result_t *result, intersection_set_t *s, bo
 			find_intersection_points(t_F2, t_L, &s->i_f2l, &s->i_lf2);
 			find_intersection_points(t_F2, t_R, &s->i_f2r, &s->i_rf2);
 
-			result->push_back(event_t{event_cause, t_F2, t_L, t_R, s->i_lr, s->i_rl});
+			result->push_back(event_t({event_cause, t_F2, t_L, t_R, s->i_lr, s->i_rl}));
 
 			plane3d_t	plane;
 			plane.a = ublas::vector<double>(3);
