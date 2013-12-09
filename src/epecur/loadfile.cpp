@@ -190,7 +190,11 @@ void	handle_trig_normal(
 	hook.handle_trig_info(devices_mask, event_cause, gate_time);
 }
 
-void	handle_trig_end_cycle( const char* &pos, const char* max_pos )
+void	handle_trig_end_cycle(
+	const char* &pos,
+	const char* max_pos,
+	LoadHook &hook
+	)
 {
 	typedef	uint32_t counter_value_t;
 
@@ -228,6 +232,8 @@ void	handle_trig_end_cycle( const char* &pos, const char* max_pos )
 	{
 		cerr << "no freq" << endl;
 	}
+
+	hook.handle_trig_end_cycle();
 
 	skip_magic_data(pos, max_pos);
 }
@@ -268,7 +274,7 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook 
 		case DEV_TYPE_TRIG:
 			if (flags & END_OF_CYCLE_FLAG)
 			{
-				handle_trig_end_cycle(pos, max_pos);
+				handle_trig_end_cycle(pos, max_pos, hook);
 			}
 			else
 			{
