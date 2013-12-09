@@ -7,6 +7,7 @@
 
 #include <TApplication.h>
 #include <TFile.h>
+#include <TSystem.h>
 #include <TTree.h>
 
 #include <epecur/geometry.hpp>
@@ -132,7 +133,8 @@ int	main( int argc, char* argv[] )
 
 	info->Scan("key:value", "", "colsize=30");
 
-	string file_commit_id = get_info_hash(info)["GIT_COMMIT_ID"];
+	map<string, string>	info_hash = get_info_hash(info);
+	string file_commit_id = info_hash["GIT_COMMIT_ID"];
 	if (file_commit_id != GIT_COMMIT_ID)
 	{
 		cerr << endl
@@ -145,6 +147,15 @@ int	main( int argc, char* argv[] )
 		     << GIT_COMMIT_ID
 		     << endl;
 	}
+	string original_filename =
+	    gSystem->BaseName(info_hash["INPUT_FILE"].c_str());
+	cerr << "original_filename\t" << original_filename << endl;
+
+	double	central_momentum = NAN;
+	if (original_filename == "23041046.dat")
+	{
+		central_momentum = 1000;
+	}
 
 	TFile	output_file(output_filepath.c_str(), "RECREATE");
 	boost::scoped_ptr<TTree>	events_new;
@@ -152,7 +163,7 @@ int	main( int argc, char* argv[] )
 	add_info_value(info_new.get(), "PROCESS_GIT_COMMIT_ID", GIT_COMMIT_ID);
 	intersection_set_t	s;
 
-	Process(events, &vis_result, &s, events_new);
+	Process(events, geom, central_momentum, &vis_result, &s, events_new);
 
 	events_new->AutoSave();
 	info_new->AutoSave();

@@ -9,6 +9,8 @@
 #include <TTree.h>
 #include <TBranch.h>
 
+#include <epecur/geometry.hpp>
+
 using namespace boost::numeric;
 
 struct intersection_t
@@ -36,6 +38,6 @@ struct intersection_set_t
 	TBranch	*br_lr, *br_rl, *br_f2r, *br_f2l, *br_rf2, *br_lf2;
 };
 
-void	Process( TTree *events, process_result_t *result, intersection_set_t *s, boost::scoped_ptr<TTree> &events_new );
+void	Process( TTree *events, Geometry &geom, double central_momentum, process_result_t *result, intersection_set_t *s, boost::scoped_ptr<TTree> &events_new );
 
 #endif
