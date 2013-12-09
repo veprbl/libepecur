@@ -51,6 +51,7 @@ static void	make_plot( const char* i )
 void	drift_effectivity_over_time()
 {
 	events = (TTree*)f.Get("events");
+	events->SetEntryList((TEntryList*)f.Get("elist"));
 
 	c.Divide(4, 2);
 

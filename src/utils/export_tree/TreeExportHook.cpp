@@ -17,8 +17,14 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 		  "recognized tracks for prop chambers"
 		  "and triggered drift wires"
 		  ),
-	  target_info_tree("target_info", "")
+	  target_info_tree("target_info", ""),
+	  event_list("elist", "drift effectivity cut (for broken HV)", &event_tree),
+	  event_id(0),
+	  cycle_first_event_id(0),
+	  cycle_all_count(0),
+	  cycle_hit_count(0)
 {
+	event_tree.SetEntryList(&event_list);
 	event_tree.Branch(
 		"event_cause",
 		&event_info.event_cause,
@@ -208,6 +214,41 @@ void	TreeExportHook::handle_timestamp( int32_t timestamp )
 	event_info.timestamp = timestamp;
 }
 
+void	TreeExportHook::handle_trig_end_cycle()
+{
+	bool	all_ok = true;
+
+	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
+	{
+		group_id_t	group_id = gr_tup.first;
+		device_type_t	device_type = geom.group_device_type[group_id];
+
+		if (device_type == DEV_TYPE_DRIFT)
+		{
+			for(device_axis_t axis = DEV_AXIS_X; axis != DEV_AXIS_END; axis++)
+			{
+				float	effectivity = cycle_hit_count[group_id][axis] / (float)cycle_all_count;
+
+				if (effectivity < 0.2)
+				{
+					all_ok = false;
+				}
+			}
+		}
+	}
+	if (all_ok)
+	{
+		for(int64_t j = cycle_first_event_id; j < event_id; j++)
+		{
+			event_list.Enter(j, &event_tree);
+		}
+	}
+
+	cycle_first_event_id = event_id;
+	cycle_all_count = 0;
+	cycle_hit_count.clear();
+}
+
 void	TreeExportHook::handle_trig_info(
 	uint8_t devices_mask,
 	uint16_t event_cause,
@@ -221,10 +262,28 @@ void	TreeExportHook::handle_event_end()
 {
 	TrackRecognitionHook::handle_event_end();
 
+	cycle_all_count++;
+
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
 		device_type_t	device_type = geom.group_device_type[group_id];
+
+		if (device_type == DEV_TYPE_DRIFT)
+		{
+			for(device_axis_t axis = DEV_AXIS_X; axis != DEV_AXIS_END; axis++)
+			{
+				vector<track_info_t>	&tracks = last_tracks[group_id][axis];
+				BOOST_FOREACH(track_info_t &track, tracks)
+				{
+					if (track.used_chambers.size() == 4)
+					{
+						cycle_hit_count[group_id][axis]++;
+						break;
+					}
+				}
+			}
+		}
 
 		BOOST_FOREACH(auto axis_tup, gr_tup.second)
 		{
@@ -242,6 +301,7 @@ void	TreeExportHook::handle_event_end()
 	}
 
 	event_tree.Fill();
+	event_id++;
 }
 
 void	TreeExportHook::handle_slow_target_info(

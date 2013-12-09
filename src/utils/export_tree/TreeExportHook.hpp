@@ -3,6 +3,7 @@
 
 #include <map>
 
+#include <TEntryList.h>
 #include <TTree.h>
 
 #include <epecur/types.hpp>
@@ -42,6 +43,12 @@ private:
 	unordered_map< group_id_t, map<device_axis_t, track_group_t> >	stored_track;
 	unordered_map< group_id_t, map<device_axis_t, map<chamber_id_t, drift_group_t> > >	stored_drift;
 
+	TEntryList	event_list;
+	uint64_t	event_id;
+	uint64_t	cycle_first_event_id;
+	uint64_t	cycle_all_count;
+	unordered_map< group_id_t, map<device_axis_t, uint64_t> >	cycle_hit_count;
+
 	vector<char*>	names;
 
 	void	init_track_group(
@@ -63,6 +70,7 @@ public:
 	~TreeExportHook();
 	const char*	store_name( string name );
 	virtual void	handle_timestamp( int32_t timestamp ) override;
+	virtual void	handle_trig_end_cycle() override;
 	virtual void	handle_trig_info(
 		uint8_t devices_mask,
 		uint16_t event_cause,
