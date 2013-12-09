@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/veprbl/libepecur.png?branch=master)](https://travis-ci.org/veprbl/libepecur)
+
 Intro
 =====
 
