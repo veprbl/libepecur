@@ -4,6 +4,7 @@
 #include <TCanvas.h>
 #include <TH1F.h>
 #include <TString.h>
+#include <TSystem.h>
 #include <TText.h>
 #include <TTree.h>
 
@@ -13,7 +14,7 @@ using std::string;
 
 static TCanvas	c1;
 static TCanvas	c2;
-static TFile	f("26061082.root", "READ");
+static TFile	f(gSystem->Getenv("EPECUR_ROOTFILE"), "READ");
 static TTree	*events;
 
 TH1F*	makehist( string id, int ndf )

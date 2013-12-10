@@ -5,12 +5,13 @@
 #include <TCanvas.h>
 #include <TH1F.h>
 #include <TSpectrum.h>
+#include <TSystem.h>
 #include <TTree.h>
 
 using std::string;
 
 static TCanvas	c;
-static TFile	f("26061082-pass2.root", "READ");
+static TFile	f(gSystem->Getenv("EPECUR_ROOTFILE2"), "READ");
 static int		pad_id = 0;
 static TTree	*events;
 

@@ -3,12 +3,13 @@
 #include <TFile.h>
 #include <TCanvas.h>
 #include <TH1F.h>
+#include <TSystem.h>
 #include <TTree.h>
 
 using std::string;
 
 static TCanvas	c;
-static TFile	f("26061082.root", "READ");
+static TFile	f(gSystem->Getenv("EPECUR_ROOTFILE"), "READ");
 static TTree	*events;
 static int	pad_id;
 static int	max_time, min_time, time_bins;

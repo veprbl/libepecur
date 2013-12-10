@@ -6,12 +6,13 @@
 #include <TFitResult.h>
 #include <TH1F.h>
 #include <TH2F.h>
+#include <TSystem.h>
 #include <TTree.h>
 
 using std::string;
 
 static TCanvas	c1, c2;
-static TFile	f("26061082-pass2.root", "READ");
+static TFile	f(gSystem->Getenv("EPECUR_ROOTFILE2"), "READ");
 static TTree	*events;
 static const double	ANGLE_MAX = 2.0;
 static const int	ANGLE_BINS = 25;

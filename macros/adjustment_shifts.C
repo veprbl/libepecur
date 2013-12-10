@@ -1,9 +1,10 @@
 #include <TFile.h>
+#include <TSystem.h>
 #include <TTree.h>
 #include <TCanvas.h>
 
 static TCanvas	c;
-static TFile	f("26061082-pass2.root", "READ");
+static TFile	f(gSystem->Getenv("EPECUR_ROOTFILE2"), "READ");
 static int		pad_id = 0;
 static TTree	*events;
 

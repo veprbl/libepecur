@@ -1,10 +1,11 @@
 #include <TFile.h>
 #include <TCanvas.h>
 #include <TH1F.h>
+#include <TSystem.h>
 #include <TTree.h>
 
 static TCanvas	calib_curve_canvas;
-static TFile	f("26061082.root", "READ");
+static TFile	f(gSystem->Getenv("EPECUR_ROOTFILE"), "READ");
 static TTree	*drift_calib;
 
 void	drift_calib_curve()
