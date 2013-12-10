@@ -11,13 +11,6 @@ find_package( ROOT )
 
 set( EPECUR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/ )
 
-option(USE_CLANG "build application with clang" OFF)
-if (USE_CLANG)
-	set(CMAKE_C_COMPILER "/usr/bin/clang")
-	set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
-	add_definitions("-stdlib=libstdc++")
-endif()
-
 add_definitions("-std=c++0x")
 add_definitions("-Wall -pedantic")
 
