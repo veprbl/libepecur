@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <string>
+#include <iostream>
 
 #include <TClass.h>
 #include <TCanvas.h>
@@ -7,6 +8,8 @@
 #include <TSystem.h>
 #include <TFile.h>
 #include <TH1.h>
+
+#include "utils.C"
 
 using std::string;
 
@@ -79,8 +82,31 @@ void SaveAllAs(TDirectory *dir, TCanvas &default_canvas, const string &path)
 	}
 }
 
+bool	is_valid_file_pair()
+{
+	bool	result;
+	const char *val1 = NULL;
+	{
+		TFile    f(gSystem->Getenv("EPECUR_ROOTFILE"), "READ");
+		val1 = strdup(get_info((TTree*)f.Get("info"), "INPUT_FILE"));
+	}
+	{
+		TFile    f(gSystem->Getenv("EPECUR_ROOTFILE2"), "READ");
+		result =
+		    strcmp(get_info((TTree*)f.Get("info"), "INPUT_FILE"), val1) == 0;
+	}
+	free((void*)val1);
+	return result;
+}
+
 int	main(void)
 {
+	if (!is_valid_file_pair())
+	{
+		std::cerr << "Error: ROOT files were derrived from different data files" << std::endl;
+		return EXIT_FAILURE;
+	}
+
 	TCanvas	c;
 	TFile	out("out.root", "RECREATE");
 

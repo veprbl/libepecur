@@ -7,10 +7,10 @@
 
 using std::string;
 
-char	key[MAX_VALUE_LEN];
-char	value[MAX_VALUE_LEN];
+static char	key[MAX_VALUE_LEN];
+static char	value[MAX_VALUE_LEN];
 
-char	*get_info( TTree *info, string lookup_key )
+static char	*get_info( TTree *info, string lookup_key )
 {
 	info->GetBranch("key")->SetAddress(key);
 	info->GetBranch("value")->SetAddress(value);
@@ -27,7 +27,7 @@ char	*get_info( TTree *info, string lookup_key )
 	return NULL;
 }
 
-TString	get_info_str( TTree *info )
+static TString	get_info_str( TTree *info )
 {
 	TString	info_str;
 
