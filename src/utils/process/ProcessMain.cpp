@@ -186,7 +186,7 @@ double	calc_phi(track3d_t track)
 void	Process( TTree *events, Geometry &geom, double central_momentum, process_result_t *result, intersection_set_t *s, boost::scoped_ptr<TTree> &events_new )
 {
 	int32_t	event_cause;
-	double	theta_l, theta_r, phi_l, phi_r, incident_momentum;
+	double	theta_l, theta_r, phi_l, phi_r, beam_momentum;
 	track_group_t	tg_F1X, tg_F1Y, tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
 	track_group_t	tg_F1X_new, tg_F1Y_new, tg_F2X_new, tg_F2Y_new, tg_LX_new, tg_LY_new, tg_RX_new, tg_RY_new;
 	const double	F1_length = geom.normal_pos[1][DEV_AXIS_X].back();
@@ -226,8 +226,8 @@ void	Process( TTree *events, Geometry &geom, double central_momentum, process_re
 	events_new->Branch("theta_r", NULL, "theta_r/D")->SetAddress(&theta_r);
 	events_new->Branch("phi_l", NULL, "phi_l/D")->SetAddress(&phi_l);
 	events_new->Branch("phi_r", NULL, "phi_r/D")->SetAddress(&phi_r);
-	events_new->Branch("incident_momentum", NULL, "incident_momentum/D")
-	    ->SetAddress(&incident_momentum);
+	events_new->Branch("beam_momentum", NULL, "beam_momentum/D")
+	    ->SetAddress(&beam_momentum);
 
 	tg_F1X.c0_br = events->GetBranch("t1X_c0");
 	tg_F1X.c1_br = events->GetBranch("t1X_c1");
@@ -366,7 +366,7 @@ void	Process( TTree *events, Geometry &geom, double central_momentum, process_re
 
 			double	F1_x = tg_F1X.c0[0] + F1_length * tg_F1X.c1[0];
 			const double	DISPERSION = (1.0 / 55) * 0.01; // 55 mm/%
-			incident_momentum = (1 + F1_x * DISPERSION) * central_momentum;
+			beam_momentum = (1 + F1_x * DISPERSION) * central_momentum;
 
 			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
 			find_intersection_points(t_F2, t_L, &s->i_f2l, &s->i_lf2);
