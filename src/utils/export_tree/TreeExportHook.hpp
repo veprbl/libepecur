@@ -23,7 +23,8 @@ struct track_group_t
 	uint32_t	track_count;
 	vector<double>	c0, c1, chisq, prev_chisq;
 	vector<uint32_t>	hits_count;
-	TBranch		*c0_br, *c1_br, *chisq_br, *prev_chisq_br, *hits_count_br;
+	vector<double>	*c0_ptr, *c1_ptr, *chisq_ptr, *prev_chisq_ptr;
+	vector<uint32_t>	*hits_count_ptr;
 };
 
 struct drift_group_t

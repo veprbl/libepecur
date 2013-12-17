@@ -76,35 +76,41 @@ void	TreeExportHook::init_track_group(
 	track_group_t	&st_gr = stored_track[group_id][axis];
 	group_name = "t" + group_name + "_";
 
+	st_gr.c0_ptr = &st_gr.c0;
+	st_gr.c1_ptr = &st_gr.c1;
+	st_gr.hits_count_ptr = &st_gr.hits_count;
+	st_gr.chisq_ptr = &st_gr.chisq;
+	st_gr.prev_chisq_ptr = &st_gr.prev_chisq;
+
 	event_tree.Branch(
 		store_name(group_name + "track_count"),
 		&st_gr.track_count,
 		store_name(group_name + "track_count/i")
 		);
-	st_gr.c0_br = event_tree.Branch(
+	event_tree.Branch(
 		store_name(group_name + "c0"),
-		(void*)nullptr,
-		store_name(group_name + "c0[" + group_name + "track_count]/D")
+		"vector<double>",
+		&st_gr.c0_ptr
 		);
-	st_gr.c1_br = event_tree.Branch(
+	event_tree.Branch(
 		store_name(group_name + "c1"),
-		(void*)nullptr,
-		store_name(group_name + "c1[" + group_name + "track_count]/D")
+		"vector<double>",
+		&st_gr.c1_ptr
 		);
-	st_gr.hits_count_br = event_tree.Branch(
+	event_tree.Branch(
 		store_name(group_name + "hits_count"),
-		(void*)nullptr,
-		store_name(group_name + "hits_count[" + group_name + "track_count]/I")
+		"vector<Int_t>",
+		&st_gr.hits_count_ptr
 		);
-	st_gr.chisq_br = event_tree.Branch(
+	event_tree.Branch(
 		store_name(group_name + "chisq"),
-		(void*)nullptr,
-		store_name(group_name + "chisq[" + group_name + "track_count]/D")
+		"vector<double>",
+		&st_gr.chisq_ptr
 		);
-	st_gr.prev_chisq_br = event_tree.Branch(
+	event_tree.Branch(
 		store_name(group_name + "prev_chisq"),
-		(void*)nullptr,
-		store_name(group_name + "prev_chisq[" + group_name + "track_count]/D")
+		"vector<double>",
+		&st_gr.prev_chisq_ptr
 		);
 }
 
@@ -174,12 +180,6 @@ void	TreeExportHook::write_track_event(
 		st_gr.chisq.push_back(track.chisq);
 		st_gr.prev_chisq.push_back(track.prev_chisq);
 	}
-
-	st_gr.c0_br->SetAddress(st_gr.c0.data());
-	st_gr.c1_br->SetAddress(st_gr.c1.data());
-	st_gr.hits_count_br->SetAddress(st_gr.hits_count.data());
-	st_gr.chisq_br->SetAddress(st_gr.chisq.data());
-	st_gr.prev_chisq_br->SetAddress(st_gr.prev_chisq.data());
 }
 
 void	TreeExportHook::write_drift_event(

@@ -32,27 +32,9 @@ struct plane3d_t
 	ublas::vector<double>	a, norm;
 };
 
-void    get_entry_vectors( track_group_t &tg, int entry )
-{
-	tg.c0.resize(tg.track_count);
-	tg.c1.resize(tg.track_count);
-	tg.hits_count.resize(tg.track_count);
-
-	tg.c0_br->SetAddress(tg.c0.data());
-	tg.c1_br->SetAddress(tg.c1.data());
-	tg.hits_count_br->SetAddress(tg.hits_count.data());
-
-	tg.c0_br->GetEntry(entry);
-	tg.c1_br->GetEntry(entry);
-	tg.hits_count_br->GetEntry(entry);
-}
-
 template<cham_group_t cham_group>
 track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 {
-	get_entry_vectors(tg_X, event_id);
-	get_entry_vectors(tg_Y, event_id);
-
 	static ublas::matrix<double> m1(3, 3), m2(3, 3), A(3, 3);
 
 	m1(0, 0) = 1; m1(1, 0) = 0;  m1(2, 0) = 0;
@@ -201,6 +183,62 @@ void	Process( TTree *events, Geometry &geom, double central_momentum, process_re
 	events->GetBranch("t4X_track_count")->SetAddress(&tg_RX.track_count);
 	events->GetBranch("t4Y_track_count")->SetAddress(&tg_RY.track_count);
 
+	tg_F1X.c0_ptr = &tg_F1X.c0;
+	tg_F1X.c1_ptr = &tg_F1X.c1;
+	tg_F1X.hits_count_ptr = &tg_F1X.hits_count;
+	tg_F1Y.c0_ptr = &tg_F1Y.c0;
+	tg_F1Y.c1_ptr = &tg_F1Y.c1;
+	tg_F1Y.hits_count_ptr = &tg_F1Y.hits_count;
+
+	tg_F2X.c0_ptr = &tg_F2X.c0;
+	tg_F2X.c1_ptr = &tg_F2X.c1;
+	tg_F2X.hits_count_ptr = &tg_F2X.hits_count;
+	tg_F2Y.c0_ptr = &tg_F2Y.c0;
+	tg_F2Y.c1_ptr = &tg_F2Y.c1;
+	tg_F2Y.hits_count_ptr = &tg_F2Y.hits_count;
+
+	tg_LX.c0_ptr = &tg_LX.c0;
+	tg_LX.c1_ptr = &tg_LX.c1;
+	tg_LX.hits_count_ptr = &tg_LX.hits_count;
+	tg_LY.c0_ptr = &tg_LY.c0;
+	tg_LY.c1_ptr = &tg_LY.c1;
+	tg_LY.hits_count_ptr = &tg_LY.hits_count;
+
+	tg_RX.c0_ptr = &tg_RX.c0;
+	tg_RX.c1_ptr = &tg_RX.c1;
+	tg_RX.hits_count_ptr = &tg_RX.hits_count;
+	tg_RY.c0_ptr = &tg_RY.c0;
+	tg_RY.c1_ptr = &tg_RY.c1;
+	tg_RY.hits_count_ptr = &tg_RY.hits_count;
+
+	events->SetBranchAddress("t1X_c0", &tg_F1X.c0_ptr);
+	events->SetBranchAddress("t1X_c1", &tg_F1X.c1_ptr);
+	events->SetBranchAddress("t1X_hits_count", &tg_F1X.hits_count_ptr);
+	events->SetBranchAddress("t1Y_c0", &tg_F1Y.c0_ptr);
+	events->SetBranchAddress("t1Y_c1", &tg_F1Y.c1_ptr);
+	events->SetBranchAddress("t1Y_hits_count", &tg_F1Y.hits_count_ptr);
+
+	events->SetBranchAddress("t2X_c0", &tg_F2X.c0_ptr);
+	events->SetBranchAddress("t2X_c1", &tg_F2X.c1_ptr);
+	events->SetBranchAddress("t2X_hits_count", &tg_F2X.hits_count_ptr);
+	events->SetBranchAddress("t2Y_c0", &tg_F2Y.c0_ptr);
+	events->SetBranchAddress("t2Y_c1", &tg_F2Y.c1_ptr);
+	events->SetBranchAddress("t2Y_hits_count", &tg_F2Y.hits_count_ptr);
+
+	events->SetBranchAddress("t3X_c0", &tg_LX.c0_ptr);
+	events->SetBranchAddress("t3X_c1", &tg_LX.c1_ptr);
+	events->SetBranchAddress("t3X_hits_count", &tg_LX.hits_count_ptr);
+	events->SetBranchAddress("t3Y_c0", &tg_LY.c0_ptr);
+	events->SetBranchAddress("t3Y_c1", &tg_LY.c1_ptr);
+	events->SetBranchAddress("t3Y_hits_count", &tg_LY.hits_count_ptr);
+
+	events->SetBranchAddress("t4X_c0", &tg_RX.c0_ptr);
+	events->SetBranchAddress("t4X_c1", &tg_RX.c1_ptr);
+	events->SetBranchAddress("t4X_hits_count", &tg_RX.hits_count_ptr);
+	events->SetBranchAddress("t4Y_c0", &tg_RY.c0_ptr);
+	events->SetBranchAddress("t4Y_c1", &tg_RY.c1_ptr);
+	events->SetBranchAddress("t4Y_hits_count", &tg_RY.hits_count_ptr);
+
 	// select branches to work with
 	events->SetBranchStatus("*", 0);
 	events->SetBranchStatus("event_cause", 1);
@@ -231,74 +269,10 @@ void	Process( TTree *events, Geometry &geom, double central_momentum, process_re
 	events_new->Branch("incident_momentum", NULL, "incident_momentum/D")
 	    ->SetAddress(&incident_momentum);
 
-	tg_F1X.c0_br = events->GetBranch("t1X_c0");
-	tg_F1X.c1_br = events->GetBranch("t1X_c1");
-	tg_F1X.hits_count_br = events->GetBranch("t1X_hits_count");
-	tg_F1Y.c0_br = events->GetBranch("t1Y_c0");
-	tg_F1Y.c1_br = events->GetBranch("t1Y_c1");
-	tg_F1Y.hits_count_br = events->GetBranch("t1Y_hits_count");
-
-	tg_F2X.c0_br = events->GetBranch("t2X_c0");
-	tg_F2X.c1_br = events->GetBranch("t2X_c1");
-	tg_F2X.hits_count_br = events->GetBranch("t2X_hits_count");
-	tg_F2Y.c0_br = events->GetBranch("t2Y_c0");
-	tg_F2Y.c1_br = events->GetBranch("t2Y_c1");
-	tg_F2Y.hits_count_br = events->GetBranch("t2Y_hits_count");
-
-	tg_LX.c0_br = events->GetBranch("t3X_c0");
-	tg_LX.c1_br = events->GetBranch("t3X_c1");
-	tg_LX.hits_count_br = events->GetBranch("t3X_hits_count");
-	tg_LY.c0_br = events->GetBranch("t3Y_c0");
-	tg_LY.c1_br = events->GetBranch("t3Y_c1");
-	tg_LY.hits_count_br = events->GetBranch("t3Y_hits_count");
-
-	tg_RX.c0_br = events->GetBranch("t4X_c0");
-	tg_RX.c1_br = events->GetBranch("t4X_c1");
-	tg_RX.hits_count_br = events->GetBranch("t4X_hits_count");
-	tg_RY.c0_br = events->GetBranch("t4Y_c0");
-	tg_RY.c1_br = events->GetBranch("t4Y_c1");
-	tg_RY.hits_count_br = events->GetBranch("t4Y_hits_count");
-
-	tg_F1X_new.c0_br = events_new->GetBranch("t1X_c0");
-	tg_F1X_new.c1_br = events_new->GetBranch("t1X_c1");
-	tg_F1X_new.hits_count_br = events_new->GetBranch("t1X_hits_count");
-	tg_F1Y_new.c0_br = events_new->GetBranch("t1Y_c0");
-	tg_F1Y_new.c1_br = events_new->GetBranch("t1Y_c1");
-	tg_F1Y_new.hits_count_br = events_new->GetBranch("t1Y_hits_count");
-
-	tg_F2X_new.c0_br = events_new->GetBranch("t2X_c0");
-	tg_F2X_new.c1_br = events_new->GetBranch("t2X_c1");
-	tg_F2X_new.hits_count_br = events_new->GetBranch("t2X_hits_count");
-	tg_F2Y_new.c0_br = events_new->GetBranch("t2Y_c0");
-	tg_F2Y_new.c1_br = events_new->GetBranch("t2Y_c1");
-	tg_F2Y_new.hits_count_br = events_new->GetBranch("t2Y_hits_count");
-
-	tg_LX_new.c0_br = events_new->GetBranch("t3X_c0");
-	tg_LX_new.c1_br = events_new->GetBranch("t3X_c1");
-	tg_LX_new.hits_count_br = events_new->GetBranch("t3X_hits_count");
-	tg_LY_new.c0_br = events_new->GetBranch("t3Y_c0");
-	tg_LY_new.c1_br = events_new->GetBranch("t3Y_c1");
-	tg_LY_new.hits_count_br = events_new->GetBranch("t3Y_hits_count");
-
-	tg_RX_new.c0_br = events_new->GetBranch("t4X_c0");
-	tg_RX_new.c1_br = events_new->GetBranch("t4X_c1");
-	tg_RX_new.hits_count_br = events_new->GetBranch("t4X_hits_count");
-	tg_RY_new.c0_br = events_new->GetBranch("t4Y_c0");
-	tg_RY_new.c1_br = events_new->GetBranch("t4Y_c1");
-	tg_RY_new.hits_count_br = events_new->GetBranch("t4Y_hits_count");
-
 	for(int i = 0; i < events->GetEntries(); i++)
 	{
 		track3d_t	t_L, t_R, t_F2;
-		events->GetBranch("event_cause")->GetEntry(i);
-		events->GetBranch("t1X_track_count")->GetEntry(i);
-		events->GetBranch("t1Y_track_count")->GetEntry(i);
-		events->GetBranch("t2X_track_count")->GetEntry(i);
-		events->GetBranch("t2Y_track_count")->GetEntry(i);
-		events->GetBranch("t3X_track_count")->GetEntry(i);
-		events->GetBranch("t3Y_track_count")->GetEntry(i);
-		events->GetBranch("t4X_track_count")->GetEntry(i);
-		events->GetBranch("t4Y_track_count")->GetEntry(i);
+		events->GetEntry(i);
 
 		bool	left_arm = (tg_LX.track_count == 1) && (tg_LY.track_count == 1);
 		bool	right_arm = (tg_RX.track_count == 1) && (tg_RY.track_count == 1);
@@ -331,40 +305,7 @@ void	Process( TTree *events, Geometry &geom, double central_momentum, process_re
 
 		if (left_arm && right_arm && incident)
 		{
-			tg_F1X_new.c0_br->SetAddress(tg_F1X.c0.data());
-			tg_F1X_new.c1_br->SetAddress(tg_F1X.c1.data());
-			tg_F1X_new.hits_count_br->SetAddress(tg_F1X.hits_count.data());
-			tg_F1Y_new.c0_br->SetAddress(tg_F1Y.c0.data());
-			tg_F1Y_new.c1_br->SetAddress(tg_F1Y.c1.data());
-			tg_F1Y_new.hits_count_br->SetAddress(tg_F1Y.hits_count.data());
-
-			tg_F2X_new.c0_br->SetAddress(tg_F2X.c0.data());
-			tg_F2X_new.c1_br->SetAddress(tg_F2X.c1.data());
-			tg_F2X_new.hits_count_br->SetAddress(tg_F2X.hits_count.data());
-			tg_F2Y_new.c0_br->SetAddress(tg_F2Y.c0.data());
-			tg_F2Y_new.c1_br->SetAddress(tg_F2Y.c1.data());
-			tg_F2Y_new.hits_count_br->SetAddress(tg_F2Y.hits_count.data());
-
-			tg_LX_new.c0_br->SetAddress(tg_LX.c0.data());
-			tg_LX_new.c1_br->SetAddress(tg_LX.c1.data());
-			tg_LX_new.hits_count_br->SetAddress(tg_LX.hits_count.data());
-			tg_LY_new.c0_br->SetAddress(tg_LY.c0.data());
-			tg_LY_new.c1_br->SetAddress(tg_LY.c1.data());
-			tg_LY_new.hits_count_br->SetAddress(tg_LY.hits_count.data());
-
-			tg_RX_new.c0_br->SetAddress(tg_RX.c0.data());
-			tg_RX_new.c1_br->SetAddress(tg_RX.c1.data());
-			tg_RX_new.hits_count_br->SetAddress(tg_RX.hits_count.data());
-			tg_RY_new.c0_br->SetAddress(tg_RY.c0.data());
-			tg_RY_new.c1_br->SetAddress(tg_RY.c1.data());
-			tg_RY_new.hits_count_br->SetAddress(tg_RY.hits_count.data());
-
 			t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y);
-
-			// make_track does that for F2,L,R, but for F1 we don't use it
-			// so we'll have to do it manually
-			get_entry_vectors(tg_F1X, i);
-			get_entry_vectors(tg_F1Y, i);
 
 			double	F1_x = tg_F1X.c0[0] + F1_length * tg_F1X.c1[0];
 			const double	DISPERSION = (1.0 / 55) * 0.01; // 55 mm/%
