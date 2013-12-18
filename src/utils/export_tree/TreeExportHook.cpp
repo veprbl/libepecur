@@ -99,7 +99,7 @@ void	TreeExportHook::init_track_group(
 		);
 	event_tree.Branch(
 		store_name(group_name + "hits_count"),
-		"vector<Int_t>",
+		"vector<unsigned int>",
 		&st_gr.hits_count_ptr
 		);
 	event_tree.Branch(
