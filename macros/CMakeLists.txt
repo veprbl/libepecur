@@ -1,6 +1,5 @@
-set( MACROS_SRCS
+set( LIB_EPECUR_MACROS_SRCS
 
-	make_plots.cpp
 	adjustment_shifts.C
 	drift_calib.C
 	drift_calib_curve.C
@@ -14,14 +13,20 @@ set( MACROS_SRCS
 
 include_directories ( ${ROOT_INCLUDE_DIR} ${EPECUR_INCLUDE_DIRS} ${ROOT_HELPER_DIR} )
 
+add_library(
+	libepecur-macros
+	${LIB_EPECUR_MACROS_SRCS}
+	)
+
 add_executable (
 	make_plots
-	${MACROS_SRCS}
+	make_plots.cpp
 	)
 
 target_link_libraries (
 	make_plots
 	${ROOT_LIBRARIES}
+	libepecur-macros
 	)
 
 install(TARGETS make_plots
