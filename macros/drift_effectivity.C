@@ -12,18 +12,14 @@
 using std::string;
 
 static TCanvas	c1, c2;
-static TFile	f(gSystem->Getenv("EPECUR_ROOTFILE2"), "READ");
-static TTree	*events;
 static const double	ANGLE_MAX = 2.0;
 static const int	ANGLE_BINS = 25;
 static const double	X_MIN = -200;
 static const double	X_MAX = 120;
 static const int	X_BINS = 50;
 
-void	drift_effectivity()
+TH1F*	make_drift_effectivity_hist(TTree *events)
 {
-	events = (TTree*)f.Get("events");
-
 	TH2F *four_hit_theta_x = new TH2F(
 		"four_hit_theta_x", "",
 		ANGLE_BINS, 0, ANGLE_MAX,
@@ -94,6 +90,18 @@ void	drift_effectivity()
 	u_t->GetXaxis()->SetTitle("\\Theta, rad");
 	u_t->GetYaxis()->SetTitle("Effectivity, 1");
 	u_t->Draw();
+
+	return u_t;
+}
+
+void	drift_effectivity()
+{
+	TDirectory	*backup = gDirectory;
+	TFile	f(gSystem->Getenv("EPECUR_ROOTFILE2"), "READ");
+	TTree	*events = (TTree*)f.Get("events");
+	backup->cd();
+
+	make_drift_effectivity_hist(events);
 
 	c1.Show();
 	c2.Show();
