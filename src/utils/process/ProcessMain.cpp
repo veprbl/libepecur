@@ -165,7 +165,7 @@ double	calc_phi(track3d_t track)
 		);
 }
 
-TTree*	Process( TTree *events, Geometry &geom, double central_momentum, process_result_t *result, intersection_set_t *s )
+TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersection_set_t *s )
 {
 	TTree	*events_new;
 	int32_t	event_cause;
@@ -315,8 +315,6 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, process_
 			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
 			find_intersection_points(t_F2, t_L, &s->i_f2l, &s->i_lf2);
 			find_intersection_points(t_F2, t_R, &s->i_f2r, &s->i_rf2);
-
-			result->push_back(event_t({event_cause, t_F2, t_L, t_R, s->i_lr, s->i_rl}));
 
 			const double	TARGET_START = -130; // mm
 			double	z = (s->i_f2l.x + s->i_lf2.x) / 2 - TARGET_START; // mm

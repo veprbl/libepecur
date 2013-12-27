@@ -2,7 +2,6 @@ set( PROCESS_SRCS
 
 	ProcessApp.cpp
 	ProcessMain.cpp
-	ProcessVisualizer.cpp
 
 )
 

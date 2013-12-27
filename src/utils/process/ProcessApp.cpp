@@ -5,7 +5,6 @@
 
 #include <boost/program_options.hpp>
 
-#include <TApplication.h>
 #include <TFile.h>
 #include <TSystem.h>
 #include <TTree.h>
@@ -15,7 +14,6 @@
 
 #include "ProcessApp.hpp"
 #include "ProcessMain.hpp"
-#include "ProcessVisualizer.hpp"
 
 namespace po = boost::program_options;
 
@@ -112,7 +110,6 @@ int	main( int argc, char* argv[] )
 {
 	ParseCommandLine(argc, argv);
 
-	TApplication	app("Event visualizer", &argc, argv);
 	ifstream	file(geometry_filepath.c_str(), ios::in);
 
 	if (!file.is_open())
@@ -163,16 +160,12 @@ int	main( int argc, char* argv[] )
 	add_info_value(info_new, "PROCESS_GIT_COMMIT_ID", GIT_COMMIT_ID);
 	intersection_set_t	s;
 
-	events_new = Process(events, geom, central_momentum, &vis_result, &s);
+	events_new = Process(events, geom, central_momentum, &s);
 
 	events_new->AutoSave();
 	info_new->AutoSave();
 	input_file.Close();
 	output_file.Close();
-
-	ProcessVisualize();
-
-	while(1) { app.Run(); };
 
 	return 0;
 }
