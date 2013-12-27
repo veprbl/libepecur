@@ -10,6 +10,7 @@ find_package( BoostEndian )
 find_package( ROOT )
 
 set( EPECUR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/ )
+set( EPECUR_MACROS_INCLUDE_DIRS ${CMAKE_SOURCE_DIR} )
 
 add_definitions("-std=c++0x")
 add_definitions("-Wall -pedantic")

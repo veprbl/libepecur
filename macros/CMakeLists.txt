@@ -18,6 +18,11 @@ add_library(
 	${LIB_EPECUR_MACROS_SRCS}
 	)
 
+target_link_libraries (
+	libepecur-macros
+	${ROOT_LIBRARIES}
+	)
+
 add_executable (
 	make_plots
 	make_plots.cpp
