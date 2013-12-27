@@ -8,7 +8,6 @@ set( LIB_EPECUR_MACROS_SRCS
 	drift_effectivity_over_time.C
 	target_info.C
 	track_intersections.C
-	track_plane_section.C
 	)
 
 include_directories ( ${ROOT_INCLUDE_DIR} ${EPECUR_INCLUDE_DIRS} ${ROOT_HELPER_DIR} )

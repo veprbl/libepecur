@@ -27,11 +27,6 @@ enum cham_group_t {prop_2nd, drift_left, drift_right};
 double  Psi_L = 1.0447;
 double  Psi_R = -1.0209;
 
-struct plane3d_t
-{
-	ublas::vector<double>	a, norm;
-};
-
 template<cham_group_t cham_group>
 track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
 {
@@ -138,15 +133,6 @@ void	find_intersection_points(
 
 	i1->x = iv1(0); i1->y = iv1(1); i1->z = iv1(2);
 	i2->x = iv2(0); i2->y = iv2(1); i2->z = iv2(2);
-}
-
-ublas::vector<double>	intersect_with_plane(
-	const track3d_t &t, const plane3d_t &p
-	)
-{
-	double	d = ublas::inner_prod(t.b, p.norm);
-	double	x = ublas::inner_prod(p.a - t.a, p.norm) / d;
-	return t.a + t.b * x;
 }
 
 double	calc_theta(track3d_t track)
@@ -269,9 +255,6 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersec
 	s->br_rf2 = events_new->Branch("RF2", &s->i_rf2, "RF2_x/D:RF2_y/D:RF2_z/D");
 	s->br_lf2 = events_new->Branch("LF2", &s->i_lf2, "LF2_x/D:LF2_y/D:LF2_z/D");
 
-	events_new->Branch("LP", NULL, "LP_x/D:LP_y/D:LP_z/D");
-	events_new->Branch("RP", NULL, "RP_x/D:RP_y/D:RP_z/D");
-
 	events_new->Branch("theta_l", NULL, "theta_l/D")->SetAddress(&theta_l);
 	events_new->Branch("theta_r", NULL, "theta_r/D")->SetAddress(&theta_r);
 	events_new->Branch("phi_l", NULL, "phi_l/D")->SetAddress(&phi_l);
@@ -341,27 +324,11 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersec
 		if (left_arm && right_arm)
 		{
 			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
-
-			plane3d_t	plane;
-			plane.a = ublas::vector<double>(3);
-			plane.a(0) = 0.0;    plane.a(1) = 0.0;    plane.a(2) = 0.0;
-			plane.norm = ublas::vector<double>(3);
-			plane.norm(0) = 0.0; plane.norm(1) = 1.0; plane.norm(2) = 0.0;
-
-			ublas::vector<double>	lp = intersect_with_plane(t_L, plane);
-			ublas::vector<double>	rp = intersect_with_plane(t_R, plane);
-
-			events_new->GetBranch("LP")->SetAddress(&lp.data()[0]);
-			events_new->GetBranch("RP")->SetAddress(&rp.data()[0]);
 		}
 		else
 		{
 			s->i_lr.x = NAN; s->i_lr.y = NAN; s->i_lr.z = NAN;
 			s->i_rl.x = NAN; s->i_rl.y = NAN; s->i_rl.z = NAN;
-
-			static intersection_t	nan({NAN, NAN, NAN});
-			events_new->GetBranch("LP")->SetAddress(&nan);
-			events_new->GetBranch("RP")->SetAddress(&nan);
 		}
 
 		events_new->Fill();

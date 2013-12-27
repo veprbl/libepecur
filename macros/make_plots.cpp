@@ -21,7 +21,6 @@ void	drift_effectivity();
 void	drift_effectivity_over_time();
 void	target_info();
 void	track_intersections();
-void	track_plane_section();
 
 bool	checkoption(char *hoptions, const char *option)
 {
@@ -127,8 +126,6 @@ int	main(void)
 	target_info();
 	out.mkdir("track_intersections")->cd();
 	track_intersections();
-	out.mkdir("track_plane_section")->cd();
-	track_plane_section();
 
 	SaveAllAs(&out, c, "./");
 	out.Write();
