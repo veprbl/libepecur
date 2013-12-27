@@ -354,6 +354,15 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersec
 			events_new->GetBranch("LP")->SetAddress(&lp.data()[0]);
 			events_new->GetBranch("RP")->SetAddress(&rp.data()[0]);
 		}
+		else
+		{
+			s->i_lr.x = NAN; s->i_lr.y = NAN; s->i_lr.z = NAN;
+			s->i_rl.x = NAN; s->i_rl.y = NAN; s->i_rl.z = NAN;
+
+			static intersection_t	nan({NAN, NAN, NAN});
+			events_new->GetBranch("LP")->SetAddress(&nan);
+			events_new->GetBranch("RP")->SetAddress(&nan);
+		}
 
 		events_new->Fill();
 	}
