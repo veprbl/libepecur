@@ -165,8 +165,9 @@ double	calc_phi(track3d_t track)
 		);
 }
 
-void	Process( TTree *events, Geometry &geom, double central_momentum, process_result_t *result, intersection_set_t *s, boost::scoped_ptr<TTree> &events_new )
+TTree*	Process( TTree *events, Geometry &geom, double central_momentum, process_result_t *result, intersection_set_t *s )
 {
+	TTree	*events_new;
 	int32_t	event_cause;
 	double	theta_l, theta_r, phi_l, phi_r, beam_momentum, incident_momentum;
 	track_group_t	tg_F1X, tg_F1Y, tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
@@ -248,7 +249,7 @@ void	Process( TTree *events, Geometry &geom, double central_momentum, process_re
 	events->SetBranchStatus("*_c1", 1);
 	// clone tree headers
 	// this also copies branches addresses
-	events_new.reset(events->CloneTree(0));
+	events_new = events->CloneTree(0);
 
 	s->br_lr = events_new->Branch("LR", &s->i_lr, "LR_x/D:LR_y/D:LR_z/D");
 	s->br_rl = events_new->Branch("RL", &s->i_rl, "RL_x/D:RL_y/D:RL_z/D");
@@ -339,4 +340,6 @@ void	Process( TTree *events, Geometry &geom, double central_momentum, process_re
 			events_new->Fill();
 		}
 	}
+
+	return events_new;
 }

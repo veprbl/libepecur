@@ -4,7 +4,6 @@
 #include <vector>
 
 #include <boost/numeric/ublas/matrix.hpp>
-#include <boost/smart_ptr/scoped_ptr.hpp>
 
 #include <TTree.h>
 #include <TBranch.h>
@@ -38,6 +37,6 @@ struct intersection_set_t
 	TBranch	*br_lr, *br_rl, *br_f2r, *br_f2l, *br_rf2, *br_lf2;
 };
 
-void	Process( TTree *events, Geometry &geom, double central_momentum, process_result_t *result, intersection_set_t *s, boost::scoped_ptr<TTree> &events_new );
+TTree*	Process( TTree *events, Geometry &geom, double central_momentum, process_result_t *result, intersection_set_t *s );
 
 #endif

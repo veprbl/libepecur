@@ -158,12 +158,12 @@ int	main( int argc, char* argv[] )
 	}
 
 	TFile	output_file(output_filepath.c_str(), "RECREATE");
-	boost::scoped_ptr<TTree>	events_new;
-	boost::scoped_ptr<TTree>	info_new(info->CloneTree());
-	add_info_value(info_new.get(), "PROCESS_GIT_COMMIT_ID", GIT_COMMIT_ID);
+	TTree	*events_new;
+	TTree	*info_new = info->CloneTree();
+	add_info_value(info_new, "PROCESS_GIT_COMMIT_ID", GIT_COMMIT_ID);
 	intersection_set_t	s;
 
-	Process(events, geom, central_momentum, &vis_result, &s, events_new);
+	events_new = Process(events, geom, central_momentum, &vis_result, &s);
 
 	events_new->AutoSave();
 	info_new->AutoSave();
