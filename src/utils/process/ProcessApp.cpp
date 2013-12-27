@@ -12,6 +12,7 @@
 #include <epecur/geometry.hpp>
 #include <epecur/git-rev-export.hpp>
 
+#include "Process2ndPass.hpp"
 #include "ProcessApp.hpp"
 #include "ProcessMain.hpp"
 
@@ -156,13 +157,17 @@ int	main( int argc, char* argv[] )
 
 	TFile	output_file(output_filepath.c_str(), "RECREATE");
 	TTree	*events_new;
+	TTree	*efficiency_tree;
 	TTree	*info_new = info->CloneTree();
 	add_info_value(info_new, "PROCESS_GIT_COMMIT_ID", GIT_COMMIT_ID);
 	intersection_set_t	s;
 
 	events_new = Process(events, geom, central_momentum, &s);
 
+	efficiency_tree = Process2ndPass(events_new);
+
 	events_new->AutoSave();
+	efficiency_tree->AutoSave();
 	info_new->AutoSave();
 	input_file.Close();
 	output_file.Close();
