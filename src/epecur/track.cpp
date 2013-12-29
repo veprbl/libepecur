@@ -232,8 +232,8 @@ vector<track_info_t>	recognize_all_tracks( vector< vector<wire_pos_t>* > data, v
 				// for drift chamber point consists of the left and right side
 				// so we need to remove both
 				deletion_pos &= ~1;
-				chamber_data->erase(chamber_data->begin() + deletion_pos);
-				chamber_data->erase(chamber_data->begin() + deletion_pos);
+				chamber_data->erase(chamber_data->begin() + deletion_pos,
+				                    chamber_data->begin() + deletion_pos + 2);
 			}
 
 			chamber_id++;
