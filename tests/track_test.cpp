@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 
 		combination_id++;
 	}
-	while(next(x, count));
+	while(next_combination(x, count));
 
 	BOOST_CHECK_EQUAL(combination_id, num_combinations);
 }

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-bool	next( vector<wire_pos_ptr_t> &wire_pos_ptr, const vector<int> &wire_count )
+bool	next_combination( vector<wire_pos_ptr_t> &wire_pos_ptr, const vector<int> &wire_count )
 /*
  * iterates over all possible wire_pos_ptr combinations
  * if next combination is not avaliable returns false
@@ -178,7 +178,7 @@ track_info_t	recognize_track( const vector< vector<wire_pos_t>* > &data, const v
 			}
 		}
 	}
-	while(next(wire_pos_ptr, wire_count));
+	while(next_combination(wire_pos_ptr, wire_count));
 
 	return track_info_t({
 			best_c0, best_c1, best_sumsq, prev_best_sumsq, best_wires_pos, best_wire_pos_ptr
