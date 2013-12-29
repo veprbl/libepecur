@@ -11,7 +11,11 @@ BOOST_AUTO_TEST_SUITE( track_test )
 BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 {
 	const int	CHAMBERS_COUNT = 4;
-	const int	count[CHAMBERS_COUNT] = { 3, 3, 3, 1 };
+	vector<int>	count(CHAMBERS_COUNT);
+	count[0] = 3;
+	count[1] = 3;
+	count[2] = 3;
+	count[3] = 1;
 	vector<wire_pos_ptr_t>	x(CHAMBERS_COUNT);
 	int		num_combinations = 1, combination_id = 0;
 
@@ -41,7 +45,7 @@ BOOST_AUTO_TEST_CASE( check_proper_iteration_func )
 
 		combination_id++;
 	}
-	while(next(x, count, CHAMBERS_COUNT ));
+	while(next(x, count));
 
 	BOOST_CHECK_EQUAL(combination_id, num_combinations);
 }
