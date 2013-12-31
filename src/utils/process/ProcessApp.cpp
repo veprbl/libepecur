@@ -23,6 +23,7 @@ using namespace std;
 string geometry_filepath;
 string input_filepath;
 string output_filepath;
+double central_momentum;
 
 void	ParseCommandLine( int argc, char* argv[] )
 {
@@ -35,6 +36,7 @@ void	ParseCommandLine( int argc, char* argv[] )
 		("help,h", "produce this output")
 		("geometry-file,g", po::value<string>(), "specify geometry description file")
 		("output-file,o", po::value<string>(), "output filepath")
+		("central-momentum,m", po::value<double>(), "central momentum")
 		;
 	cmdline_options.add(visible);
 
@@ -66,6 +68,17 @@ void	ParseCommandLine( int argc, char* argv[] )
 	input_filepath = vm["input-file"].as< vector<string> >()[0];
 	output_filepath = vm["output-file"].as<string>();
 	geometry_filepath = vm["geometry-file"].as<string>();
+
+	if (vm.count("central-momentum"))
+	{
+		central_momentum = vm["central-momentum"].as<double>();
+	}
+	else
+	{
+		cerr << "Please specify central momentum option" << endl;
+		cerr << visible << endl;
+		exit(1);
+	}
 
 	if (output_filepath == input_filepath)
 	{
@@ -148,12 +161,6 @@ int	main( int argc, char* argv[] )
 	string original_filename =
 	    gSystem->BaseName(info_hash["INPUT_FILE"].c_str());
 	cerr << "original_filename\t" << original_filename << endl;
-
-	double	central_momentum = NAN;
-	if (original_filename == "23041046.dat")
-	{
-		central_momentum = 1000;
-	}
 
 	TFile	output_file(output_filepath.c_str(), "RECREATE");
 	TTree	*events_new;
