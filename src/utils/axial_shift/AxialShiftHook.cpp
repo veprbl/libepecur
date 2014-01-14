@@ -13,7 +13,7 @@
 #include "AxialShiftHook.hpp"
 
 AxialShiftHook::AxialShiftHook( Geometry &g, unordered_map< chamber_id_t, TH1I* > &shift_hist )
-  : TrackRecognitionHook(g), shift_hist(shift_hist)
+  : TrackRecognitionHook(g), shift_hist(shift_hist), track_count(0)
 {
 	// nothing
 }
