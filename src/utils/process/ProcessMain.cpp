@@ -168,7 +168,6 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersec
 	double	theta_l, theta_r, phi_l, phi_r;
 	double	beam_momentum, incident_momentum_l, incident_momentum_r;
 	track_group_t	tg_F1X, tg_F1Y, tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
-	track_group_t	tg_F1X_new, tg_F1Y_new, tg_F2X_new, tg_F2Y_new, tg_LX_new, tg_LY_new, tg_RX_new, tg_RY_new;
 	const double	F1_length = geom.normal_pos[1][DEV_AXIS_X].back();
 
 	events->GetBranch("event_cause")->SetAddress(&event_cause);
