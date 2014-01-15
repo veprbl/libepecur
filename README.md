@@ -146,6 +146,33 @@ If you see export_tree showing errors like this
 
 this might be because of insufficient disk space.
 
+process
+-------
+
+Does the second pass of the analysis. Takes the ROOT file produced by
+*export_tree* and the geometry file and produces another ROOT file with
+additional information about selected events.
+
+New leaves include:
+
+* *theta\_l*, *theta\_r* - scattering angle for the particles that went to the left and right arm correspondingly
+* *phi\_l*, *phi\_r*
+* *beam\_moemntum* - beam momentum calculated from position in the first focus
+* *incident\_momentum\_l*, *incident\_momentum\_r* - mometum of the particle in its scattering point (correction for passage through matter is applied)
+
+**Note:** If there are no particle in the arm then appropriate *\_l* or *\_r* leaves are filled with NAN's.
+
+Following leaves contain track intersection points
+
+* *LR\_x*, *LR\_y*, *LR\_z*
+* *RL\_x*, *RL\_y*, *RL\_z*
+* *F2R\_x*, *F2R\_y*, *F2R\_z*
+* *F2L\_x*, *F2L\_y*, *F2L\_z*
+* *RF2\_x*, *RF2\_y*, *RF2\_z*
+* *LF2\_x*, *LF2\_y*, *LF2\_z*
+
+*LR* means nearest point to the track from the *R*ight arm lying on the track from *L*eft arm.
+
 Credits
 =======
 
