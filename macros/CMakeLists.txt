@@ -13,12 +13,12 @@ set( LIB_EPECUR_MACROS_SRCS
 include_directories ( ${ROOT_INCLUDE_DIR} ${EPECUR_INCLUDE_DIRS} ${ROOT_HELPER_DIR} )
 
 add_library(
-	libepecur-macros
+	epecur-macros
 	${LIB_EPECUR_MACROS_SRCS}
 	)
 
 target_link_libraries (
-	libepecur-macros
+	epecur-macros
 	${ROOT_LIBRARIES}
 	)
 
@@ -30,7 +30,7 @@ add_executable (
 target_link_libraries (
 	make_plots
 	${ROOT_LIBRARIES}
-	libepecur-macros
+	epecur-macros
 	)
 
 install(TARGETS make_plots

@@ -19,7 +19,7 @@ target_link_libraries (
 	${Boost_LIBRARIES}
 	${ROOT_LIBRARIES}
 	epecur
-	libepecur-macros
+	epecur-macros
 	)
 
 install(TARGETS process
