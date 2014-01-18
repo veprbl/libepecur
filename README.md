@@ -28,20 +28,6 @@ In order to compile this software you will need cmake, boost-devel, root and git
     cmake .. -DCMAKE_BUILD_TYPE=Release
     make
 
-Workaround for RHEL6-based systems
-----------------------------------
-
-There is a problem with compiling libepecur on
-Scientific Linux/Cent OS/RHEL 6.x. If you see something like that:
-
-    make[2]: *** No rule to make target `/usr/lib64/lib64/libboost_iostreams-mt.so.5', needed by `axial_shift'.  Stop.
-    make[1]: *** [src/utils/axial_shift/CMakeFiles/axial_shift.dir/all] Error 2
-    make: *** [all] Error 2
-
-Then this is a [known bug](http://stackoverflow.com/questions/9948375/cmake-find-package-succeeds-but-returns-wrong-path). For workaround please add
-<code>-DBoost_NO_BOOST_CMAKE=ON</code>
-to your cmake invocation command.
-
 Utilities
 =========
 
