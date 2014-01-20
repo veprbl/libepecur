@@ -16,10 +16,8 @@ momentum and some angle. Branching of N(1685) to inelastic events is predicted
 to be high, so we expect resonance to manifest itself clear enough in the
 dependency of output on incident momentum.
 
-Building
-========
-
-*This software is useless without the data files. Why would you want to build it?*
+Quick start
+===========
 
 In order to compile this software you will need cmake, boost-devel, root and git.
 
@@ -27,6 +25,27 @@ In order to compile this software you will need cmake, boost-devel, root and git
     cd build
     cmake .. -DCMAKE_BUILD_TYPE=Release
     make
+
+For the next step you will need some RAW data files. We assume that the NFS
+storage is mounted at /data1.
+
+    ./export_tree /data1/data_apr10/26041082.dat -g ../contrib/geom_apr10.c -o 26061082.root
+    ./process 26061082.root -g ../contrib/geom_apr10.c -o 26061082-pass2.root
+
+This will produce two files. First one just contains RAW data and reconstructed
+2d tracks projection and more suits for instrumental analysis. The second one
+will contain more meaningful in terms of physics subset of first file with the
+3d tracks in the global frame.
+
+Now you can start ROOT and do some nice plots. For example, following session
+will show an angular correlation:
+
+    root [1] TFile f("26061082-pass2.root")
+    root [2] TH2F h("h", "", 100, 0.0, 2.0, 100, 0, 2.0)
+    root [3] events->Draw("theta_l:theta_r >> h", "", "zcol")
+    Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+    (Long64_t)8527111
+    root [4]
 
 Utilities
 =========
