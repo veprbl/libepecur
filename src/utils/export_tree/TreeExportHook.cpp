@@ -225,8 +225,9 @@ void	TreeExportHook::handle_trig_end_cycle()
 
 		if (device_type == DEV_TYPE_DRIFT)
 		{
-			for(device_axis_t axis = DEV_AXIS_X; axis != DEV_AXIS_END; axis++)
+			for(int i = 0; i != DEV_AXIS_END; i++)
 			{
+				device_axis_t	axis = static_cast<device_axis_t>(i);
 				float	effectivity = cycle_hit_count[group_id][axis] / (float)cycle_all_count;
 
 				if (effectivity < 0.2)
@@ -271,8 +272,9 @@ void	TreeExportHook::handle_event_end()
 
 		if (device_type == DEV_TYPE_DRIFT)
 		{
-			for(device_axis_t axis = DEV_AXIS_X; axis != DEV_AXIS_END; axis++)
+			for(int i = 0; i != DEV_AXIS_END; i++)
 			{
+				device_axis_t	axis = static_cast<device_axis_t>(i);
 				vector<track_info_t>	&tracks = last_tracks[group_id][axis];
 				BOOST_FOREACH(track_info_t &track, tracks)
 				{

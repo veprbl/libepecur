@@ -27,7 +27,7 @@ typedef uint16_t	device_id_t;
 
 enum device_axis_t
 {
-	DEV_AXIS_X,
+	DEV_AXIS_X = 0,
 	DEV_AXIS_Y,
 	DEV_AXIS_END
 };
