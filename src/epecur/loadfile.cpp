@@ -228,10 +228,6 @@ void	handle_trig_end_cycle(
 	{
 		auto	freq = float(counter_values[0x404E]) / counter_values[0x414E] / 10;
 	}
-	else
-	{
-		cerr << "no freq" << endl;
-	}
 
 	hook.handle_trig_end_cycle();
 
