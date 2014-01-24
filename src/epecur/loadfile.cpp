@@ -203,7 +203,7 @@ void	handle_trig_end_cycle(
 
 	auto	cycle_id = read_magic_integer<int16_t>(pos, 2);
 
-	pos += 3;
+	pos += 4;
 
 	while(1)
 	{
