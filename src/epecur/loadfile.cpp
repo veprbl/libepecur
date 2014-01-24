@@ -204,6 +204,8 @@ void	handle_trig_end_cycle(
 	map<uint16_t, counter_value_t>	counter_values;
 
 	auto	cycle_id = read_magic_integer<int16_t>(pos, 2, HIBIT_NO_ERR);
+	// Following should be only applied to old files
+	cycle_id = ((cycle_id & 0xFC0) >> 6) | ((cycle_id & 0x3F) << 6);
 
 	pos += 4;
 
