@@ -238,6 +238,39 @@ void	handle_trig_end_cycle(
 	skip_magic_data(pos, max_pos);
 }
 
+/*! This is only needed because just skip_magic_data won't be able to
+  deal with this */
+void	handle_hodo_end_cycle(
+	const char* &pos,
+	const char* max_pos
+	)
+{
+	uint16_t LAST_COUNTER_ID = 0x7F7E;
+
+	while(1)
+	{
+		if (pos > max_pos)
+		{
+			throw "Expected ending counter, found end of stream";
+		}
+
+		ulittle16_t     counter_id;
+
+		mem_read(pos, counter_id);
+
+		// Actual read would be like:
+		// auto value = read_magic_integer<counter_value_t>(pos, 4);
+		pos += 4;
+
+		if (counter_id == LAST_COUNTER_ID)
+		{
+			break;
+		}
+	}
+
+	skip_magic_data(pos, max_pos);
+}
+
 bool	is_valid_device_id(device_type_t dev_type, device_id_t dev_id)
 {
 	switch(dev_type)
@@ -306,6 +339,16 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook 
 			}
 			break;
 		case DEV_TYPE_HODO:
+
+			if (flags & END_OF_CYCLE_FLAG)
+			{
+				handle_hodo_end_cycle(pos, max_pos);
+			}
+			else
+			{
+				skip_magic_data(pos, max_pos);
+			}
+			break;
 		case DEV_TYPE_CAMAC:
 		default:
 
