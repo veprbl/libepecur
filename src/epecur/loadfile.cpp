@@ -51,8 +51,10 @@ BOOST_STATIC_ASSERT(sizeof(record_header_t) == 20);
 
 const uint	END_OF_CYCLE_FLAG(0x80000000);
 
+const bool	HIBIT_NO_ERR = false;
+
 template< class T >
-T	read_magic_integer( const char* &pos, uint bytes )
+T	read_magic_integer( const char* &pos, uint bytes, bool hibit_error = true )
 {
 	char	c;
 	T	result = 0;
@@ -63,7 +65,7 @@ T	read_magic_integer( const char* &pos, uint bytes )
 	{
 		c = *(pos++);
 
-		if(c & 0xC0)
+		if(hibit_error && (c & 0xC0))
 		{
 			throw "Non-zero 7-8th bits in magic integer";
 		}
@@ -201,7 +203,7 @@ void	handle_trig_end_cycle(
 	counter_value_t	LAST_COUNTER_ID = 0x7F4F;
 	map<uint16_t, counter_value_t>	counter_values;
 
-	auto	cycle_id = read_magic_integer<int16_t>(pos, 2);
+	auto	cycle_id = read_magic_integer<int16_t>(pos, 2, HIBIT_NO_ERR);
 
 	pos += 4;
 
