@@ -238,6 +238,25 @@ void	handle_trig_end_cycle(
 	skip_magic_data(pos, max_pos);
 }
 
+bool	is_valid_device_id(device_type_t dev_type, device_id_t dev_id)
+{
+	switch(dev_type)
+	{
+	case DEV_TYPE_PROP:
+		return (dev_id >= 1) && (dev_id <= 100);
+	case DEV_TYPE_DRIFT:
+		return (dev_id >= 101) && (dev_id <= 200);
+	case DEV_TYPE_HODO:
+		return dev_id == 500;
+	case DEV_TYPE_TRIG:
+		return dev_id == 600;
+	case DEV_TYPE_CAMAC:
+		return dev_id == 700;
+	default:
+		return false;
+	}
+}
+
 void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook &hook )
 {
 	ubig16_t	stream_header;
@@ -258,6 +277,11 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook 
 				(stream_header & 0x7000) >> 12
 				);
 		dev_id = ((stream_header & 0x0F00) >> 1) | (stream_header & 0x007F);
+
+		if (!is_valid_device_id(dev_type, dev_id))
+		{
+			throw "Invalid device id!";
+		}
 
 		switch(dev_type)
 		{
