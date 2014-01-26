@@ -3,7 +3,6 @@
 
 #include <map>
 
-#include <TEntryList.h>
 #include <TTree.h>
 
 #include <epecur/types.hpp>
@@ -34,16 +33,22 @@ struct drift_group_t
 	TBranch		*wire_pos_br, *time_br;
 };
 
+struct effectivity_group_t
+{
+	double		effectivity;
+	TBranch         *effectivity_br;
+};
+
 class TreeExportHook : public TrackRecognitionHook
 {
 private:
 
-	TTree	event_tree, target_info_tree;
+	TTree	event_tree, target_info_tree, cycle_effectivity_tree;
 	event_info_t	event_info;
 	unordered_map< group_id_t, map<device_axis_t, track_group_t> >	stored_track;
 	unordered_map< group_id_t, map<device_axis_t, map<chamber_id_t, drift_group_t> > >	stored_drift;
+	unordered_map< group_id_t, map<device_axis_t, effectivity_group_t> >	stored_effectivity;
 
-	TEntryList	event_list;
 	uint64_t	event_id;
 	uint64_t	cycle_first_event_id;
 	uint64_t	cycle_all_count;

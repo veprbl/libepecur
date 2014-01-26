@@ -18,13 +18,16 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 		  "and triggered drift wires"
 		  ),
 	  target_info_tree("target_info", ""),
-	  event_list("elist", "drift effectivity cut (for broken HV)", &event_tree),
+	  cycle_effectivity_tree(
+		  "cycle_effectivity",
+		  ""
+		  ),
 	  event_id(0),
 	  cycle_first_event_id(0),
 	  cycle_all_count(0),
 	  cycle_hit_count(0)
 {
-	event_tree.SetEntryList(&event_list);
+	event_tree.AddFriend("cycle_effectivity");
 	event_tree.Branch(
 		"event_cause",
 		&event_info.event_cause,
@@ -56,6 +59,13 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 			if (device_type == DEV_TYPE_DRIFT)
 			{
 				init_drift_group(group_name, group_id, axis);
+
+				effectivity_group_t	&st_gr = stored_effectivity[group_id][axis];
+				st_gr.effectivity_br = cycle_effectivity_tree.Branch(
+					store_name(group_name + "_effectivity"),
+					&st_gr.effectivity,
+					store_name(group_name + "_effectivity/D")
+					);
 			}
 		}
 	}
@@ -228,21 +238,14 @@ void	TreeExportHook::handle_trig_end_cycle()
 			for(int i = 0; i != DEV_AXIS_END; i++)
 			{
 				device_axis_t	axis = static_cast<device_axis_t>(i);
-				float	effectivity = cycle_hit_count[group_id][axis] / (float)cycle_all_count;
-
-				if (effectivity < 0.2)
-				{
-					all_ok = false;
-				}
+				effectivity_group_t	&st_gr = stored_effectivity[group_id][axis];
+				st_gr.effectivity = cycle_hit_count[group_id][axis] / (float)cycle_all_count;
 			}
 		}
 	}
-	if (all_ok)
+	for(int64_t j = cycle_first_event_id; j < event_id; j++)
 	{
-		for(int64_t j = cycle_first_event_id; j < event_id; j++)
-		{
-			event_list.Enter(j, &event_tree);
-		}
+		cycle_effectivity_tree.Fill();
 	}
 
 	cycle_first_event_id = event_id;
