@@ -18,7 +18,7 @@ static const double	X_MIN = -200;
 static const double	X_MAX = 120;
 static const int	X_BINS = 50;
 
-TH1F*	make_drift_effectivity_hist(TTree *events)
+TH1F*	make_drift_efficiency_hist(TTree *events)
 {
 	TH2F *four_hit_theta_x = new TH2F(
 		"four_hit_theta_x", "",
@@ -73,7 +73,7 @@ TH1F*	make_drift_effectivity_hist(TTree *events)
 	events->Draw("RL_x:theta_l >> any_theta_x", cut);
 	events->Draw("RL_x:theta_l >> four_hit_theta_x", Form("(t3X_hits_count[0] == 4) && %s", cut));
 	TH2F *u_tx = new TH2F(
-		"effectivity_theta_x", "",
+		"efficiency_theta_x", "",
 		ANGLE_BINS, 0, ANGLE_MAX,
 		X_BINS, X_MIN, X_MAX
 		);
@@ -87,7 +87,7 @@ TH1F*	make_drift_effectivity_hist(TTree *events)
 	events->Draw("theta_l >> any_theta", cut);
 	events->Draw("theta_l >> four_hit_theta", Form("(t3X_hits_count[0] == 4) && %s", cut));
 	TH1F *u_t = new TH1F(
-		"effectivity_theta", "",
+		"efficiency_theta", "",
 		ANGLE_BINS, 0, ANGLE_MAX
 		);
 	u_t->Divide(four_hit_theta, any_theta);
@@ -98,14 +98,14 @@ TH1F*	make_drift_effectivity_hist(TTree *events)
 	return u_t;
 }
 
-void	drift_effectivity()
+void	drift_efficiency()
 {
 	TDirectory	*backup = gDirectory;
 	TFile	f(gSystem->Getenv("EPECUR_ROOTFILE2"), "READ");
 	TTree	*events = (TTree*)f.Get("events");
 	backup->cd();
 
-	make_drift_effectivity_hist(events);
+	make_drift_efficiency_hist(events);
 
 	c1.Show();
 	c2.Show();

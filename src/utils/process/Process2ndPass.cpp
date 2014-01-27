@@ -3,7 +3,7 @@
 #include <TH1F.h>
 #include <TTree.h>
 
-#include "macros/drift_effectivity.h"
+#include "macros/drift_efficiency.h"
 
 #include "Process2ndPass.hpp"
 
@@ -25,7 +25,7 @@ TTree*	Process2ndPass(TTree *events_new)
 
 	events_new->ResetBranchAddresses();
 
-	TH1F	*h = make_drift_effectivity_hist(events_new);
+	TH1F	*h = make_drift_efficiency_hist(events_new);
 
 	efficiency_tree->Branch("efficiency_l", NULL, "efficiency_l/D")->SetAddress(&efficiency_l);
 	efficiency_tree->Branch("efficiency_r", NULL, "efficiency_r/D")->SetAddress(&efficiency_r);

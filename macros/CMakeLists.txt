@@ -4,8 +4,8 @@ set( LIB_EPECUR_MACROS_SRCS
 	drift_calib.C
 	drift_calib_curve.C
 	drift_chisq.C
-	drift_effectivity.C
-	drift_effectivity_over_time.C
+	drift_efficiency.C
+	drift_efficiency_over_time.C
 	target_info.C
 	track_intersections.C
 	)

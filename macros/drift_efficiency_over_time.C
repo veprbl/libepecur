@@ -48,7 +48,7 @@ static void	make_plot( const char* i )
 	eff_distrib->Draw();
 }
 
-void	drift_effectivity_over_time()
+void	drift_efficiency_over_time()
 {
 	events = (TTree*)f.Get("events");
 	events->SetEntryList((TEntryList*)f.Get("elist"));

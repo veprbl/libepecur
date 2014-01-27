@@ -4,6 +4,6 @@
 #include <TH1F.h>
 #include <TTree.h>
 
-TH1F*   make_drift_effectivity_hist(TTree *events);
+TH1F*   make_drift_efficiency_hist(TTree *events);
 
 #endif

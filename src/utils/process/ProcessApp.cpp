@@ -175,11 +175,11 @@ int	main( int argc, char* argv[] )
 
 		efficiency_tree = Process2ndPass(events_new);
 
-		TTree   *cycle_effectivity_tree = (TTree*)input_file.FindObjectAny("cycle_effectivity");
-		cycle_effectivity_tree->SetBranchStatus("*", 1);
-		TTree	*cycle_effectivity_tree_new = cycle_effectivity_tree->CloneTree();
-		cycle_effectivity_tree_new->AutoSave();
-		events_new->AddFriend("cycle_effectivity");
+		TTree   *cycle_efficiency_tree = (TTree*)input_file.FindObjectAny("cycle_efficiency");
+		cycle_efficiency_tree->SetBranchStatus("*", 1);
+		TTree	*cycle_efficiency_tree_new = cycle_efficiency_tree->CloneTree();
+		cycle_efficiency_tree_new->AutoSave();
+		events_new->AddFriend("cycle_efficiency");
 
 		events_new->AutoSave();
 		efficiency_tree->AutoSave();

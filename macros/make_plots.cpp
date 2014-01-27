@@ -17,8 +17,8 @@ void	adjustment_shifts();
 void	drift_calib();
 void	drift_calib_curve();
 void	drift_chisq();
-void	drift_effectivity();
-void	drift_effectivity_over_time();
+void	drift_efficiency();
+void	drift_efficiency_over_time();
 void	target_info();
 void	track_intersections();
 
@@ -118,10 +118,10 @@ int	main(void)
 	drift_calib_curve();
 	out.mkdir("drift_chisq")->cd();
 	drift_chisq();
-	out.mkdir("drift_effectivity")->cd();
-	drift_effectivity();
-	out.mkdir("drift_effectivity_over_time")->cd();
-	drift_effectivity_over_time();
+	out.mkdir("drift_efficiency")->cd();
+	drift_efficiency();
+	out.mkdir("drift_efficiency_over_time")->cd();
+	drift_efficiency_over_time();
 	out.mkdir("target_info")->cd();
 	target_info();
 	out.mkdir("track_intersections")->cd();
