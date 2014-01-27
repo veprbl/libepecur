@@ -50,6 +50,7 @@ BOOST_STATIC_ASSERT(sizeof(slow_target_record_t) == 192);
 BOOST_STATIC_ASSERT(sizeof(record_header_t) == 20);
 
 const uint	END_OF_CYCLE_FLAG(0x80000000);
+const int32_t	JUN10_TIMESTAMP = 1275350400;
 
 const bool	HIBIT_NO_ERR = false;
 
@@ -195,6 +196,7 @@ void	handle_trig_normal(
 void	handle_trig_end_cycle(
 	const char* &pos,
 	const char* max_pos,
+	int32_t timestamp,
 	LoadHook &hook
 	)
 {
@@ -204,10 +206,16 @@ void	handle_trig_end_cycle(
 	map<uint16_t, counter_value_t>	counter_values;
 
 	auto	cycle_id = read_magic_integer<int16_t>(pos, 2, HIBIT_NO_ERR);
-	// Following should be only applied to old files
-	cycle_id = ((cycle_id & 0xFC0) >> 6) | ((cycle_id & 0x3F) << 6);
 
-	pos += 4;
+	if (timestamp < JUN10_TIMESTAMP)
+	{
+		cycle_id = ((cycle_id & 0xFC0) >> 6) | ((cycle_id & 0x3F) << 6);
+		pos += 4;
+	}
+	else
+	{
+		pos += 3;
+	}
 
 	while(1)
 	{
@@ -242,10 +250,20 @@ void	handle_trig_end_cycle(
   deal with this */
 void	handle_hodo_end_cycle(
 	const char* &pos,
-	const char* max_pos
+	const char* max_pos,
+	int32_t	timestamp
 	)
 {
 	uint16_t LAST_COUNTER_ID = 0x7F7E;
+
+	if (timestamp < JUN10_TIMESTAMP)
+	{
+		pos += 12;
+	}
+	else
+	{
+		pos += 2;
+	}
 
 	while(1)
 	{
@@ -290,7 +308,7 @@ bool	is_valid_device_id(device_type_t dev_type, device_id_t dev_id)
 	}
 }
 
-void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook &hook )
+void	read_event( const char* &pos, const char* max_pos, int32_t flags, int32_t timestamp, LoadHook &hook )
 {
 	ubig16_t	stream_header;
 	device_id_t	dev_id;
@@ -331,7 +349,7 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook 
 		case DEV_TYPE_TRIG:
 			if (flags & END_OF_CYCLE_FLAG)
 			{
-				handle_trig_end_cycle(pos, max_pos, hook);
+				handle_trig_end_cycle(pos, max_pos, timestamp, hook);
 			}
 			else
 			{
@@ -342,7 +360,7 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook 
 
 			if (flags & END_OF_CYCLE_FLAG)
 			{
-				handle_hodo_end_cycle(pos, max_pos);
+				handle_hodo_end_cycle(pos, max_pos, timestamp);
 			}
 			else
 			{
@@ -361,7 +379,7 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, LoadHook 
 	hook.handle_event_end();
 }
 
-void	read_cycle( const char* &pos, const char *max_pos, LoadHook &hook )
+void	read_cycle( const char* &pos, const char *max_pos, int32_t timestamp, LoadHook &hook )
 {
 	event_header_t	event;
 
@@ -369,7 +387,7 @@ void	read_cycle( const char* &pos, const char *max_pos, LoadHook &hook )
 	{
 		mem_read(pos, event);
 
-		read_event(pos, pos + event.length - sizeof(event), event.flags, hook);
+		read_event(pos, pos + event.length - sizeof(event), event.flags, timestamp, hook);
 	}
 }
 
@@ -540,7 +558,7 @@ bool	read_record( const char* &pos, const char* window_end, bool is_last_window,
 
 		try
 		{
-			read_cycle(pos, record_end, hook);
+			read_cycle(pos, record_end, rec.time, hook);
 		}
 		catch (char const* e)
 		{
