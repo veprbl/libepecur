@@ -60,10 +60,9 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 			{
 				init_drift_group(group_name, group_id, axis);
 
-				efficiency_group_t	&st_gr = stored_efficiency[group_id][axis];
-				st_gr.efficiency_br = cycle_efficiency_tree.Branch(
+				cycle_efficiency_tree.Branch(
 					store_name(group_name + "_cycle_efficiency"),
-					&st_gr.efficiency,
+					&cycle_efficiency[group_id][axis],
 					store_name(group_name + "_cycle_efficiency/D")
 					);
 			}
@@ -238,8 +237,8 @@ void	TreeExportHook::handle_trig_end_cycle()
 			for(int i = 0; i != DEV_AXIS_END; i++)
 			{
 				device_axis_t	axis = static_cast<device_axis_t>(i);
-				efficiency_group_t	&st_gr = stored_efficiency[group_id][axis];
-				st_gr.efficiency = cycle_hit_count[group_id][axis] / (float)cycle_all_count;
+				cycle_efficiency[group_id][axis] =
+					cycle_hit_count[group_id][axis] / (float)cycle_all_count;
 			}
 		}
 	}

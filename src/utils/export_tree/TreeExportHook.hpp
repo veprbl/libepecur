@@ -33,12 +33,6 @@ struct drift_group_t
 	TBranch		*wire_pos_br, *time_br;
 };
 
-struct efficiency_group_t
-{
-	double		efficiency;
-	TBranch         *efficiency_br;
-};
-
 class TreeExportHook : public TrackRecognitionHook
 {
 private:
@@ -47,7 +41,7 @@ private:
 	event_info_t	event_info;
 	unordered_map< group_id_t, map<device_axis_t, track_group_t> >	stored_track;
 	unordered_map< group_id_t, map<device_axis_t, map<chamber_id_t, drift_group_t> > >	stored_drift;
-	unordered_map< group_id_t, map<device_axis_t, efficiency_group_t> >	stored_efficiency;
+	unordered_map< group_id_t, map<device_axis_t, double> >	cycle_efficiency;
 
 	uint64_t	event_id;
 	uint64_t	cycle_first_event_id;
