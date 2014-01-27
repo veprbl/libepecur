@@ -62,9 +62,9 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 
 				efficiency_group_t	&st_gr = stored_efficiency[group_id][axis];
 				st_gr.efficiency_br = cycle_efficiency_tree.Branch(
-					store_name(group_name + "_efficiency"),
+					store_name(group_name + "_cycle_efficiency"),
 					&st_gr.efficiency,
-					store_name(group_name + "_efficiency/D")
+					store_name(group_name + "_cycle_efficiency/D")
 					);
 			}
 		}
