@@ -225,8 +225,6 @@ void	TreeExportHook::handle_timestamp( int32_t timestamp )
 
 void	TreeExportHook::handle_trig_end_cycle()
 {
-	bool	all_ok = true;
-
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
