@@ -42,6 +42,7 @@ private:
 	unordered_map< group_id_t, map<device_axis_t, track_group_t> >	stored_track;
 	unordered_map< group_id_t, map<device_axis_t, map<chamber_id_t, drift_group_t> > >	stored_drift;
 	unordered_map< group_id_t, map<device_axis_t, double> >	cycle_efficiency;
+	double	min_cycle_efficiency;
 
 	uint64_t	event_id;
 	uint64_t	cycle_first_event_id;

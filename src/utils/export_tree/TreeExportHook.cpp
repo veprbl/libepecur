@@ -74,6 +74,11 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 		NULL,
 		"R[8]/D:V[7]/D:H[8]/D:manual/I:time/I"
 		);
+	cycle_efficiency_tree.Branch(
+		"min_cycle_efficiency",
+		&min_cycle_efficiency,
+		"min_cycle_efficiency/D"
+		);
 }
 
 TreeExportHook::~TreeExportHook()
@@ -225,6 +230,8 @@ void	TreeExportHook::handle_timestamp( int32_t timestamp )
 
 void	TreeExportHook::handle_trig_end_cycle()
 {
+	min_cycle_efficiency = -1;
+
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
@@ -235,8 +242,13 @@ void	TreeExportHook::handle_trig_end_cycle()
 			for(int i = 0; i != DEV_AXIS_END; i++)
 			{
 				device_axis_t	axis = static_cast<device_axis_t>(i);
-				cycle_efficiency[group_id][axis] =
+				double cycle_efficiency_value =
 					cycle_hit_count[group_id][axis] / (float)cycle_all_count;
+				cycle_efficiency[group_id][axis] = cycle_efficiency_value;
+				if ((min_cycle_efficiency > 0) || (cycle_efficiency_value < min_cycle_efficiency))
+				{
+					min_cycle_efficiency = cycle_efficiency_value;
+				}
 			}
 		}
 	}
