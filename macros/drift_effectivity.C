@@ -48,6 +48,10 @@ TH1F*	make_drift_effectivity_hist(TTree *events)
 	TF2	*xygaus = new TF2("xygaus", "xygaus");
 	TFitResultPtr fit = beam_profile->Fit(xygaus, "S"); // S - return fit result 
 	const double *params = fit->GetParams();
+	if (!params)
+	{
+		throw "Error determining beam profile parameters.";
+	}
 	const char	*cut = Form(
 		"(abs(RL_z - (%f)) < %f) && "
 		"(abs(RL_y - (%f)) < %f) && "

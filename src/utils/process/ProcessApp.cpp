@@ -162,28 +162,38 @@ int	main( int argc, char* argv[] )
 	    gSystem->BaseName(info_hash["INPUT_FILE"].c_str());
 	cerr << "original_filename\t" << original_filename << endl;
 
-	TFile	output_file(output_filepath.c_str(), "RECREATE");
-	TTree	*events_new;
-	TTree	*efficiency_tree;
-	TTree	*info_new = info->CloneTree();
-	add_info_value(info_new, "PROCESS_GIT_COMMIT_ID", GIT_COMMIT_ID);
-	intersection_set_t	s;
+	try
+	{
+		TFile	output_file(output_filepath.c_str(), "RECREATE");
+		TTree	*events_new;
+		TTree	*efficiency_tree;
+		TTree	*info_new = info->CloneTree();
+		add_info_value(info_new, "PROCESS_GIT_COMMIT_ID", GIT_COMMIT_ID);
+		intersection_set_t	s;
 
-	events_new = Process(events, geom, central_momentum, &s);
+		events_new = Process(events, geom, central_momentum, &s);
 
-	efficiency_tree = Process2ndPass(events_new);
+		efficiency_tree = Process2ndPass(events_new);
 
-	TTree   *cycle_effectivity_tree = (TTree*)input_file.FindObjectAny("cycle_effectivity");
-	cycle_effectivity_tree->SetBranchStatus("*", 1);
-	TTree	*cycle_effectivity_tree_new = cycle_effectivity_tree->CloneTree();
-	cycle_effectivity_tree_new->AutoSave();
-	events_new->AddFriend("cycle_effectivity");
+		TTree   *cycle_effectivity_tree = (TTree*)input_file.FindObjectAny("cycle_effectivity");
+		cycle_effectivity_tree->SetBranchStatus("*", 1);
+		TTree	*cycle_effectivity_tree_new = cycle_effectivity_tree->CloneTree();
+		cycle_effectivity_tree_new->AutoSave();
+		events_new->AddFriend("cycle_effectivity");
 
-	events_new->AutoSave();
-	efficiency_tree->AutoSave();
-	info_new->AutoSave();
+		events_new->AutoSave();
+		efficiency_tree->AutoSave();
+		info_new->AutoSave();
+		output_file.Close();
+	}
+	catch(const char *e)
+	{
+		cerr << "Exception: " << e << endl;
+		cerr << "Removing output file \"" << output_filepath << "\"." << endl;
+		gSystem->Unlink(output_filepath.c_str());
+		return EXIT_FAILURE;
+	}
 	input_file.Close();
-	output_file.Close();
 
 	return 0;
 }
