@@ -28,7 +28,7 @@ double  Psi_L = 1.0447;
 double  Psi_R = -1.0209;
 
 template<cham_group_t cham_group>
-track3d_t make_track( int event_id, track_group_t &tg_X, track_group_t &tg_Y )
+track3d_t make_track( int event_id, TrackGroup &tg_X, TrackGroup &tg_Y )
 {
 	static ublas::matrix<double> m1(3, 3), m2(3, 3), A(3, 3);
 
@@ -167,7 +167,7 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersec
 	int32_t	event_cause;
 	double	theta_l, theta_r, phi_l, phi_r;
 	double	beam_momentum, incident_momentum_l, incident_momentum_r;
-	track_group_t	tg_F1X, tg_F1Y, tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
+	TrackGroup	tg_F1X, tg_F1Y, tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
 	const double	F1_length = geom.normal_pos[1][DEV_AXIS_X].back();
 
 	events->GetBranch("event_cause")->SetAddress(&event_cause);
@@ -179,34 +179,6 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersec
 	events->GetBranch("t3Y_track_count")->SetAddress(&tg_LY.track_count);
 	events->GetBranch("t4X_track_count")->SetAddress(&tg_RX.track_count);
 	events->GetBranch("t4Y_track_count")->SetAddress(&tg_RY.track_count);
-
-	tg_F1X.c0_ptr = &tg_F1X.c0;
-	tg_F1X.c1_ptr = &tg_F1X.c1;
-	tg_F1X.hits_count_ptr = &tg_F1X.hits_count;
-	tg_F1Y.c0_ptr = &tg_F1Y.c0;
-	tg_F1Y.c1_ptr = &tg_F1Y.c1;
-	tg_F1Y.hits_count_ptr = &tg_F1Y.hits_count;
-
-	tg_F2X.c0_ptr = &tg_F2X.c0;
-	tg_F2X.c1_ptr = &tg_F2X.c1;
-	tg_F2X.hits_count_ptr = &tg_F2X.hits_count;
-	tg_F2Y.c0_ptr = &tg_F2Y.c0;
-	tg_F2Y.c1_ptr = &tg_F2Y.c1;
-	tg_F2Y.hits_count_ptr = &tg_F2Y.hits_count;
-
-	tg_LX.c0_ptr = &tg_LX.c0;
-	tg_LX.c1_ptr = &tg_LX.c1;
-	tg_LX.hits_count_ptr = &tg_LX.hits_count;
-	tg_LY.c0_ptr = &tg_LY.c0;
-	tg_LY.c1_ptr = &tg_LY.c1;
-	tg_LY.hits_count_ptr = &tg_LY.hits_count;
-
-	tg_RX.c0_ptr = &tg_RX.c0;
-	tg_RX.c1_ptr = &tg_RX.c1;
-	tg_RX.hits_count_ptr = &tg_RX.hits_count;
-	tg_RY.c0_ptr = &tg_RY.c0;
-	tg_RY.c1_ptr = &tg_RY.c1;
-	tg_RY.hits_count_ptr = &tg_RY.hits_count;
 
 	events->SetBranchAddress("t1X_c0", &tg_F1X.c0_ptr);
 	events->SetBranchAddress("t1X_c1", &tg_F1X.c1_ptr);

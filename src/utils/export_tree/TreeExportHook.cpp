@@ -93,14 +93,8 @@ void	TreeExportHook::init_track_group(
 	string group_name, group_id_t group_id, device_axis_t axis
 	)
 {
-	track_group_t	&st_gr = stored_track[group_id][axis];
+	TrackGroup	&st_gr = stored_track[group_id][axis];
 	group_name = "t" + group_name + "_";
-
-	st_gr.c0_ptr = &st_gr.c0;
-	st_gr.c1_ptr = &st_gr.c1;
-	st_gr.hits_count_ptr = &st_gr.hits_count;
-	st_gr.chisq_ptr = &st_gr.chisq;
-	st_gr.prev_chisq_ptr = &st_gr.prev_chisq;
 
 	event_tree.Branch(
 		store_name(group_name + "track_count"),
@@ -183,7 +177,7 @@ void	TreeExportHook::write_track_event(
 	)
 {
 	vector<track_info_t>	&tracks = last_tracks[group_id][axis];
-	track_group_t	&st_gr = stored_track[group_id][axis];
+	TrackGroup	&st_gr = stored_track[group_id][axis];
 
 	st_gr.track_count = tracks.size();
 	st_gr.c0.clear();
