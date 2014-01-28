@@ -239,7 +239,7 @@ void	TreeExportHook::handle_trig_end_cycle()
 				double cycle_efficiency_value =
 					cycle_hit_count[group_id][axis] / (float)cycle_all_count;
 				cycle_efficiency[group_id][axis] = cycle_efficiency_value;
-				if ((min_cycle_efficiency > 0) || (cycle_efficiency_value < min_cycle_efficiency))
+				if ((min_cycle_efficiency < 0) || (cycle_efficiency_value < min_cycle_efficiency))
 				{
 					min_cycle_efficiency = cycle_efficiency_value;
 				}
