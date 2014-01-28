@@ -42,7 +42,7 @@ void	TrackRecognitionHook::handle_prop_data( const wire_id_t* begin, const wire_
 
 	auto &chamber = last_event[chamber_id];
 	wire_id_t	prev_pos;
-	int	sequence_len = 1, max_sequence_len = 3;
+	unsigned int	sequence_len = 1, max_sequence_len = 3;
 
 	for(auto pos = begin; pos < end; pos++)
 	{

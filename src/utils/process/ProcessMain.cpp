@@ -226,16 +226,13 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersec
 	s->br_rf2 = events_new->Branch("RF2", &s->i_rf2, "RF2_x/D:RF2_y/D:RF2_z/D");
 	s->br_lf2 = events_new->Branch("LF2", &s->i_lf2, "LF2_x/D:LF2_y/D:LF2_z/D");
 
-	events_new->Branch("theta_l", NULL, "theta_l/D")->SetAddress(&theta_l);
-	events_new->Branch("theta_r", NULL, "theta_r/D")->SetAddress(&theta_r);
-	events_new->Branch("phi_l", NULL, "phi_l/D")->SetAddress(&phi_l);
-	events_new->Branch("phi_r", NULL, "phi_r/D")->SetAddress(&phi_r);
-	events_new->Branch("beam_momentum", NULL, "beam_momentum/D")
-	    ->SetAddress(&beam_momentum);
-	events_new->Branch("incident_momentum_l", NULL, "incident_momentum_l/D")
-	    ->SetAddress(&incident_momentum_l);
-	events_new->Branch("incident_momentum_r", NULL, "incident_momentum_r/D")
-	    ->SetAddress(&incident_momentum_r);
+	events_new->Branch("theta_l", &theta_l, "theta_l/D");
+	events_new->Branch("theta_r", &theta_r, "theta_r/D");
+	events_new->Branch("phi_l", &phi_l, "phi_l/D");
+	events_new->Branch("phi_r", &phi_r, "phi_r/D");
+	events_new->Branch("beam_momentum", &beam_momentum, "beam_momentum/D");
+	events_new->Branch("incident_momentum_l", &incident_momentum_l, "incident_momentum_l/D");
+	events_new->Branch("incident_momentum_r", &incident_momentum_r, "incident_momentum_r/D");
 
 	for(int i = 0; i < events->GetEntries(); i++)
 	{

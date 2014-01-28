@@ -27,8 +27,8 @@ TTree*	Process2ndPass(TTree *events_new)
 
 	TH1F	*h = make_drift_efficiency_hist(events_new);
 
-	efficiency_tree->Branch("efficiency_l", NULL, "efficiency_l/D")->SetAddress(&efficiency_l);
-	efficiency_tree->Branch("efficiency_r", NULL, "efficiency_r/D")->SetAddress(&efficiency_r);
+	efficiency_tree->Branch("efficiency_l", &efficiency_l, "efficiency_l/D");
+	efficiency_tree->Branch("efficiency_r", &efficiency_r, "efficiency_r/D");
 
 	events_new->GetBranch("theta_l")->SetAddress(&theta_l);
 	events_new->GetBranch("theta_r")->SetAddress(&theta_r);

@@ -71,7 +71,7 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 
 	target_info_tree.Branch(
 		"target_info",
-		NULL,
+		(void*)NULL,
 		"R[8]/D:V[7]/D:H[8]/D:manual/I:time/I"
 		);
 	cycle_efficiency_tree.Branch(
@@ -246,7 +246,7 @@ void	TreeExportHook::handle_trig_end_cycle()
 			}
 		}
 	}
-	for(int64_t j = cycle_first_event_id; j < event_id; j++)
+	for(uint64_t j = cycle_first_event_id; j < event_id; j++)
 	{
 		cycle_efficiency_tree.Fill();
 	}
