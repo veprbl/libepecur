@@ -96,9 +96,9 @@ void	TrackRecognitionHook::handle_drift_data(
 		return;
 	}
 
-	auto	&wire_pos = last_event_drift_wire_pos[chamber_id];
-	auto	&time = last_event_drift_time[chamber_id];
-	auto	&calib = (*calibration_curve)[chamber_id];
+	vector<wire_pos_t>	&wire_pos = last_event_drift_wire_pos[chamber_id];
+	vector<uint16_t>	&time = last_event_drift_time[chamber_id];
+	vector<double>		&calib = (*calibration_curve)[chamber_id];
 	auto	wit = wire_pos.begin();
 	auto	tit = time.begin();
 
