@@ -26,7 +26,10 @@ void	TrackRecognitionHook::handle_prop_data( const wire_id_t* begin, const wire_
 
 	if (last_event_finished)
 	{
-		last_event.clear();
+		BOOST_FOREACH(auto &tup, last_event)
+		{
+			tup.second.clear();
+		}
 
 		BOOST_FOREACH(auto gr_tup, last_tracks)
 		{
