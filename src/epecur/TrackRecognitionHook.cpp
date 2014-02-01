@@ -118,10 +118,12 @@ void	TrackRecognitionHook::handle_drift_data(
 		return;
 	}
 
+	auto	&ev = last_event[chamber_id];
+
 	while(wit != wire_pos.end())
 	{
-		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit + calib[*tit]));
-		last_event[chamber_id].push_back(DRIFT_DISTANCE*(*wit - calib[*tit]));
+		ev.push_back(DRIFT_DISTANCE*(*wit + calib[*tit]));
+		ev.push_back(DRIFT_DISTANCE*(*wit - calib[*tit]));
 		wit++;
 		tit++;
 	}
