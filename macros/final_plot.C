@@ -16,7 +16,7 @@ void	final_plot()
 	TH1F	*o = new TH1F(*or + *ol);
 	o->SetName("o");
 	TH1F	*n = new TH1F("n", "normalization", (1250-820)/1, 820, 1250);
-	c->Draw("normalization_momentum >> n", "(event_cause & 0x2) == 0x2");
+	c->Draw("beam_momentum >> n", "(event_cause & 0x2) == 0x2");
 	TH1F	*r = new TH1F("r", "result", (1250-820)/1, 820, 1250);
 	r->Divide(o, n);
 	r->Draw();
