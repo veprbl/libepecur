@@ -587,7 +587,7 @@ bool	read_record( const char* &pos, const char* window_end, bool is_last_window,
 
 	if (pos != record_end)
 	{
-		throw "Block read function didn't stopped at the end of a block";
+		throw "Block read function didn't stop at the end of a block";
 	}
 
 	return true;
