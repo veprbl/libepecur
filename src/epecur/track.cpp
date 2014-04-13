@@ -8,11 +8,11 @@
 
 using namespace std;
 
-bool	next_combination( vector<wire_pos_ptr_t> &wire_pos_ptr, const vector<int> &wire_count )
-/*
+/**
  * iterates over all possible wire_pos_ptr combinations
- * if next combination is not avaliable returns false
+ * if next combination is not available returns false
  */
+bool	next_combination( vector<wire_pos_ptr_t> &wire_pos_ptr, const vector<int> &wire_count )
 {
 	const int chambers_count = wire_count.size();
 	int	i = 0;
@@ -38,11 +38,12 @@ bool	next_combination( vector<wire_pos_ptr_t> &wire_pos_ptr, const vector<int> &
 	return true;
 }
 
-bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> &normal_pos, vector<uint> &used_chambers )
-/*
- * deletes every i-th record if data[i]->empty()
- * returns false if there is no enough non-empty chambers left
+/**
+ * Removes items from data that haven't got any wires left in them.
+ * @param data - data[i] is a pointer to list of wires for i-th chamber
+ * @return false if there is no enough non-empty chambers left
  */
+bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> &normal_pos, vector<uint> &used_chambers )
 {
 	uint	empty_chambers_count = 0;
 	auto	data_it = data.begin();
@@ -185,11 +186,11 @@ track_info_t	recognize_track( const vector< vector<wire_pos_t>* > &data, const v
 				});
 }
 
+/**
+ * @warning This function deletes wires that lie on the recognized track.
+ */
 template<track_type_t track_type>
 vector<track_info_t>	recognize_all_tracks( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq )
-/*
- * Warning: This function will delete recognized wires from your original vectors.
- */
 {
 	vector<uint>	used_chambers;
 	vector<track_info_t>	result;
@@ -224,6 +225,7 @@ vector<track_info_t>	recognize_all_tracks( vector< vector<wire_pos_t>* > data, v
 		{
 			wire_pos_ptr_t	deletion_pos = track.wire_pos_ptr[chamber_id];
 
+			// now delete wires that compose the recognized track
 			if (track_type == track_type_t::prop)
 			{
 				chamber_data->erase(chamber_data->begin() + deletion_pos);
