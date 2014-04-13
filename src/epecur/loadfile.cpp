@@ -52,7 +52,7 @@ BOOST_STATIC_ASSERT(sizeof(record_header_t) == 20);
 const uint	END_OF_CYCLE_FLAG(0x80000000);
 const int32_t	JUN10_TIMESTAMP = 1275350400;
 
-const bool	HIBIT_NO_ERR = false;
+const bool	IGNORE_HIGH_BIT = false;
 
 template< class T >
 T	read_magic_integer( const char* &pos, uint bytes, bool hibit_error = true )
@@ -205,7 +205,7 @@ void	handle_trig_end_cycle(
 	counter_value_t	LAST_COUNTER_ID = 0x7F4F;
 	map<uint16_t, counter_value_t>	counter_values;
 
-	auto	cycle_id = read_magic_integer<int16_t>(pos, 2, HIBIT_NO_ERR);
+	auto	cycle_id = read_magic_integer<int16_t>(pos, 2, IGNORE_HIGH_BIT);
 
 	if (timestamp < JUN10_TIMESTAMP)
 	{
