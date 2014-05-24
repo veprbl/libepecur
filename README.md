@@ -162,7 +162,7 @@ New leaves include:
 
 * *theta\_l*, *theta\_r* - scattering angle for the particles that went to the left and right arm correspondingly
 * *phi\_l*, *phi\_r*
-* *beam\_moemntum* - beam momentum calculated from position in the first focus
+* *beam\_momentum* - beam momentum calculated from position in the first focus
 * *incident\_momentum\_l*, *incident\_momentum\_r* - mometum of the particle in its scattering point (correction for passage through matter is applied)
 
 **Note:** If there are no particle in the arm then appropriate *\_l* or *\_r* leaves are filled with NAN's.
