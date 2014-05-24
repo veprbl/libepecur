@@ -164,13 +164,14 @@ double	calc_incident_momentum(double beam_momentum, intersection_t &i1, intersec
 TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersection_set_t *s )
 {
 	TTree	*events_new;
-	int32_t	event_cause;
+	uint32_t	event_cause, timestamp;
 	double	theta_l, theta_r, phi_l, phi_r;
 	double	beam_momentum, incident_momentum_l, incident_momentum_r;
 	TrackGroup	tg_F1X, tg_F1Y, tg_F2X, tg_F2Y, tg_LX, tg_LY, tg_RX, tg_RY;
 	const double	F1_length = geom.normal_pos[1][DEV_AXIS_X].back();
 
 	events->GetBranch("event_cause")->SetAddress(&event_cause);
+	events->GetBranch("timestamp")->SetAddress(&timestamp);
 	events->GetBranch("t1X_track_count")->SetAddress(&tg_F1X.track_count);
 	events->GetBranch("t1Y_track_count")->SetAddress(&tg_F1Y.track_count);
 	events->GetBranch("t2X_track_count")->SetAddress(&tg_F2X.track_count);
@@ -211,6 +212,7 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersec
 	// select branches to work with
 	events->SetBranchStatus("*", 0);
 	events->SetBranchStatus("event_cause", 1);
+	events->SetBranchStatus("timestamp", 1);
 	events->SetBranchStatus("*_track_count", 1);
 	events->SetBranchStatus("*_hits_count", 1);
 	events->SetBranchStatus("*_c0", 1);
