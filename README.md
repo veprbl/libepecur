@@ -160,10 +160,11 @@ additional information about selected events.
 
 New leaves include:
 
-* *theta\_l*, *theta\_r* - scattering angle for the particles that went to the left and right arm correspondingly
+* *theta\_l*, *theta\_r* - lab system frame scattering angle for the particles that went to the left and right arm correspondingly
 * *phi\_l*, *phi\_r*
 * *beam\_momentum* - beam momentum calculated from position in the first focus
 * *incident\_momentum\_l*, *incident\_momentum\_r* - mometum of the particle in its scattering point (correction for passage through matter is applied)
+* *efficiency\_l*, *efficiency\_r* - average efficiency value for tracks that have the same scattering angle.
 
 **Note:** If there are no particle in the arm then appropriate *\_l* or *\_r* leaves are filled with NAN's.
 
