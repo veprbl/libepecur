@@ -18,6 +18,7 @@
 #include "TreeExportApp.hpp"
 #include "TreeExportHook.hpp"
 #include "DriftCalibHook.hpp"
+#include "ThinOutHook.hpp"
 
 namespace po = boost::program_options;
 
@@ -27,6 +28,7 @@ string data_filepath;
 string geometry_filepath;
 string output_filepath;
 bool rough_drift;
+int thin_out_factor;
 
 void	ParseCommandLine( int argc, char* argv[] )
 {
@@ -40,6 +42,7 @@ void	ParseCommandLine( int argc, char* argv[] )
 		("geometry-file,g", po::value<string>(), "specify geometry description file")
 		("output-file,o", po::value<string>(), "specify output file")
 		("rough-drift", "disable using time information for drift tracks")
+		("thin-out", po::value<int>()->default_value(1), "take only each n'th event")
 		;
 	cmdline_options.add(visible);
 
@@ -72,6 +75,7 @@ void	ParseCommandLine( int argc, char* argv[] )
 	geometry_filepath = vm["geometry-file"].as<string>();
 	output_filepath = vm["output-file"].as<string>();
 	rough_drift = vm.count("rough-drift");
+	thin_out_factor = vm["thin-out"].as<int>();
 }
 
 void	fill_info( TTree &info )
@@ -92,6 +96,10 @@ void	fill_info( TTree &info )
 
 	strncpy(key, "GEOMETRY_FILE", MAX_VALUE_LEN);
 	strncpy(value, geometry_filepath.c_str(), MAX_VALUE_LEN);
+	info.Fill();
+
+	strncpy(key, "THIN_OUT_FACTOR", MAX_VALUE_LEN);
+	snprintf(value, MAX_VALUE_LEN, "%i", thin_out_factor);
 	info.Fill();
 }
 
@@ -128,7 +136,7 @@ int	main( int argc, char* argv[] )
 		calibration_curve = &calib_hook.calibration_curve;
 	}
 
-	TreeExportHook	hook(geom, calibration_curve);
+	ThinOutHook<TreeExportHook>	hook(geom, calibration_curve, thin_out_factor);
 
 	try
 	{
