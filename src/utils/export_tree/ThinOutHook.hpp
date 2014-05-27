@@ -26,7 +26,7 @@ public:
 		// Nothing
 	}
 
-	virtual void	handle_timestamp(int32_t timestamp)
+	virtual void	handle_timestamp(int32_t timestamp) override
 	{
 		if (passthrough) H::handle_timestamp(timestamp);
 	}
@@ -45,7 +45,7 @@ public:
 		if (passthrough) H::handle_drift_data(wire_id, time, dev_id);
 	}
 
-	virtual void	handle_trig_end_cycle()
+	virtual void	handle_trig_end_cycle() override
 	{
 		if (passthrough) H::handle_trig_end_cycle();
 	}
@@ -54,7 +54,7 @@ public:
 		uint8_t devices_mask,
 		uint16_t event_cause,
 		uint32_t gate_time
-		)
+		) override
 	{
 		if (passthrough) H::handle_trig_info(devices_mask, event_cause, gate_time);
 	}
