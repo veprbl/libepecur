@@ -44,6 +44,6 @@ TTree*	Process2ndPass(TTree *events_new)
 		efficiency_tree->Fill();
 	}
 
-    events_new->AddFriend("efficiency");
+	events_new->AddFriend("efficiency");
 	return efficiency_tree;
 }

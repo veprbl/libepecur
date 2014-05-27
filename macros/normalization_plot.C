@@ -8,7 +8,6 @@ static TCanvas c1, c2;
 void	normalization_plot()
 {
 	FILE *fp = fopen("../contrib/list_apr10",  "r");
-	//FILE *fp = fopen("/tmp/list_apr10",  "r");
 
 	char run_name[256];
 	int momentum;
@@ -70,7 +69,6 @@ void	normalization_plot()
 			cerr << "created " << mhist_name << endl;
 		}
 		TH1F *h = (TH1F*)gDirectory->Get(Form("norm%i", i));
-cerr << "get " <<  h << endl;
 		if (h)
 		{
 			hmap[momentum]->Add(h);
