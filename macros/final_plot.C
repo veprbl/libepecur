@@ -6,11 +6,11 @@ void	final_plot()
 	TChain	*c = new TChain("events");
 	c->Add(Form("%s/*.root", gSystem->Getenv("EPECUR_PROCESS_OUTDIR")));
 	TH1F	*or = new TH1F("or", "output", (1250-820)/1, 820, 1250);
-	c->Draw("incident_momentum_r >> or",
+	c->Draw("beam_momentum >> or",
 "((((event_cause & 0x1) == 0x1) && (F2R_x > -200) && (F2R_x < 120) && (RF2_x > -200) && (RF2_x < 120) && (theta_r > 0) && (theta_l != theta_l) && (efficiency_r > 0.7)) ? 1 : 0) / efficiency_r"
 		);
 	TH1F	*ol = new TH1F("ol", "output", (1250-820)/1, 820, 1250);
-	c->Draw("incident_momentum_l >> ol",
+	c->Draw("beam_momentum >> ol",
 "((((event_cause & 0x1) == 0x1) && (F2L_x > -200) && (F2L_x < 120) && (LF2_x > -200) && (LF2_x < 120) && (theta_l > 0) && (theta_r != theta_r) && (efficiency_l > 0.7)) ? 1 : 0) / efficiency_l"
 		);
 	TH1F	*o = new TH1F(*or + *ol);
