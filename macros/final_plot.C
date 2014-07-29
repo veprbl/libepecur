@@ -23,6 +23,9 @@ void	final_plot()
 		, "", entries
 		);
 	TH1F	*r = new TH1F("r", "result", (1250-820)/1, 820, 1250);
-	r->Divide(o, n);
-	r->Draw();
+	r->GetXaxis()->SetTitle("p_\\pi, [MeV/c]");
+	r->GetYaxis()->SetTitle("\\sigma, [1]");
+	r->Sumw2();
+	r->Divide(o, n, 1, 100);
+	r->Draw("E");
 }
