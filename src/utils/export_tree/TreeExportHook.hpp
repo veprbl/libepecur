@@ -24,9 +24,9 @@ public:
 
 	uint32_t	track_count;
 	vector<double>	c0, c1, chisq, prev_chisq;
-	vector<uint32_t>	hits_count;
+	vector<uint32_t>	hits_count, used_chambers_mask;
 	vector<double>	*c0_ptr, *c1_ptr, *chisq_ptr, *prev_chisq_ptr;
-	vector<uint32_t>	*hits_count_ptr;
+	vector<uint32_t>	*hits_count_ptr, *used_chambers_mask_ptr;
 
 	TrackGroup()
 		: c0_ptr(&c0)
@@ -34,6 +34,7 @@ public:
 		, chisq_ptr(&chisq)
 		, prev_chisq_ptr(&prev_chisq)
 		, hits_count_ptr(&hits_count)
+		, used_chambers_mask_ptr(&used_chambers_mask)
 	{
 		// Nothing
 	}
@@ -45,11 +46,13 @@ public:
 		chisq = o.chisq;
 		prev_chisq = o.prev_chisq;
 		hits_count = o.hits_count;
+		used_chambers_mask = o.used_chambers_mask;
 		c0_ptr = &c0;
 		c1_ptr = &c1;
 		chisq_ptr = &chisq;
 		prev_chisq_ptr = &prev_chisq;
 		hits_count_ptr = &hits_count;
+		used_chambers_mask_ptr = &used_chambers_mask;
 	}
 };
 

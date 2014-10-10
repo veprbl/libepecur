@@ -215,6 +215,7 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersec
 	events->SetBranchStatus("timestamp", 1);
 	events->SetBranchStatus("*_track_count", 1);
 	events->SetBranchStatus("*_hits_count", 1);
+	events->SetBranchStatus("*_used_chambers_mask", 1);
 	events->SetBranchStatus("*_c0", 1);
 	events->SetBranchStatus("*_c1", 1);
 	// clone tree headers

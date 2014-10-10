@@ -126,6 +126,11 @@ void	TreeExportHook::init_track_group(
 		"vector<double>",
 		&st_gr.prev_chisq_ptr
 		);
+	event_tree.Branch(
+		store_name(group_name + "used_chambers_mask"),
+		"vector<unsigned int>",
+		&st_gr.used_chambers_mask_ptr
+		);
 }
 
 void	TreeExportHook::init_drift_group(
@@ -185,6 +190,7 @@ void	TreeExportHook::write_track_event(
 	st_gr.hits_count.clear();
 	st_gr.chisq.clear();
 	st_gr.prev_chisq.clear();
+	st_gr.used_chambers_mask.clear();
 
 	BOOST_FOREACH(track_info_t &track, tracks)
 	{
@@ -193,6 +199,13 @@ void	TreeExportHook::write_track_event(
 		st_gr.hits_count.push_back(track.used_chambers.size());
 		st_gr.chisq.push_back(track.chisq);
 		st_gr.prev_chisq.push_back(track.prev_chisq);
+
+		uint32_t mask = 0;
+		BOOST_FOREACH(uint chamber_index, track.used_chambers)
+		{
+			mask |= (1 << chamber_index);
+		}
+		st_gr.used_chambers_mask.push_back(mask);
 	}
 }
 
