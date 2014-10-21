@@ -83,33 +83,20 @@ void	MomentumDistributionApp::ParseCommandLine()
 	geometry_filepath = vm["geometry-file"].as<string>();
 }
 
-void	MomentumDistributionApp::PlotResults( uint chambers[][WIRES_COUNT] )
+void	MomentumDistributionApp::PlotResults(EvSumHook &hook)
 {
 	main_canvas = new TCanvas("main_canvas", ApplicationName(), 200, 10, 1000, 500);
 	main_canvas->Connect("Closed()", "TApplication", this, "Terminate()");
 
-	int	rows_count = floor(sqrt(MAX_CHAMBER_ID));
-	int	cols_count = ceil(MAX_CHAMBER_ID / (float)rows_count);
-
-	main_canvas->Divide(rows_count, cols_count, 0, 0);
-
-	for(chamber_id_t chamber_id = 0; chamber_id < MAX_CHAMBER_ID; chamber_id++)
-	{
-		string	name = boost::lexical_cast<string>(chamber_id);
-		string	title = geometry_filepath + ":" + name + " " + GIT_COMMIT_ID;
-		TH1I*	hist = new TH1I(name.c_str(), title.c_str(), WIRES_COUNT, -WIRES_COUNT/2, WIRES_COUNT/2);
-
-		main_canvas->cd(chamber_id + 1);
-
-		for(int wire_id = 0; wire_id < WIRES_COUNT; wire_id++)
-		{
-			hist->Fill(wire_id - WIRES_COUNT/2, chambers[chamber_id][wire_id]);
-		}
-
-		hist->Draw();
-		th.push_back(hist);
-	}
-
+	main_canvas->Divide(4);
+	main_canvas->cd(1);
+	hook.h1.Draw();
+	main_canvas->cd(2);
+	hook.h2.Draw();
+	main_canvas->cd(3);
+	hook.h3.Draw();
+	main_canvas->cd(4);
+	hook.h4.Draw();
 	main_canvas->Show();
 }
 
@@ -123,11 +110,14 @@ void	MomentumDistributionApp::Init()
 	}
 
 	Geometry	geom(file);
-	EvSumHook	hook(geom);
+	EvSumHook	*hook = new EvSumHook(geom);
 
-	loadfile(data_filepath, hook);
+	loadfile("/data1/data_apr10/22041028.dat", *hook);
+	loadfile("/data1/data_apr10/22041029.dat", *hook);
+	loadfile("/data1/data_apr10/22041030.dat", *hook);
+	loadfile("/data1/data_apr10/22041031.dat", *hook);
 
-	PlotResults(hook.chambers);
+	PlotResults(*hook);
 }
 
 int	main( int argc, char* argv[] )

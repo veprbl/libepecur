@@ -19,7 +19,7 @@ public:
 	string	geometry_filepath;
 
 	void	Init();
-	void	PlotResults( uint chambers[][WIRES_COUNT] );
+	void	PlotResults(EvSumHook&);
 };
 
 #endif
