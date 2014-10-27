@@ -4,6 +4,7 @@
 #include <epecur/cxx11_compat.hpp>
 #include <epecur/geometry.hpp>
 #include <epecur/types.hpp>
+#include <epecur/StdDrift.hpp>
 
 template<typename H>
 class ThinOutHook : public H

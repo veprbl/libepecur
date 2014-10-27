@@ -6,6 +6,7 @@
 
 #include <epecur/cxx11_compat.hpp>
 #include <epecur/loadfile.hpp>
+#include <epecur/StdDrift.hpp>
 
 static const int	MAX_TIME_COUNTS = 384;
 

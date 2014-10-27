@@ -1,6 +1,10 @@
 #ifndef __MOMENTUMDISPERSIONAPP_HPP
 #define __MOMENTUMDISPERSIONAPP_HPP
 
+#include <TApplication.h>
+#include <TCanvas.h>
+#include <TH1I.h>
+
 #include "EvSumHook.hpp"
 
 class	MomentumDistributionApp: public TApplication

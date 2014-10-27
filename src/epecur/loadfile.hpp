@@ -2,6 +2,7 @@
 #define __LOADFILE_HPP
 
 #include <vector>
+#include <string>
 
 #include "types.hpp"
 

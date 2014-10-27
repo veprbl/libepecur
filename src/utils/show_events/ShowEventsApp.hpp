@@ -3,6 +3,12 @@
 
 #include <vector>
 
+#include <TApplication.h>
+#include <TButton.h>
+#include <TCanvas.h>
+#include <TPad.h>
+#include <TPaveText.h>
+
 #include "EvShowHook.hpp"
 
 class	ShowEventsApp: public TApplication

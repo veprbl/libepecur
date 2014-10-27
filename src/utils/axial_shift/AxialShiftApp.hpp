@@ -3,6 +3,12 @@
 
 #include <vector>
 
+#include <TApplication.h>
+#include <TCanvas.h>
+#include <TPad.h>
+#include <TPaveText.h>
+#include <TH1I.h>
+
 #include "AxialShiftHook.hpp"
 
 class	AxialShiftApp: public TApplication
