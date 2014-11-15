@@ -13,7 +13,6 @@ TrackRecognitionHook::TrackRecognitionHook(
 	StdDrift::calibration_curve_t *c
 	)
 	: StdDrift(g),
-	  last_event_finished(false),
 	  geom(g),
 	  calibration_curve(c)
 {
@@ -23,26 +22,6 @@ TrackRecognitionHook::TrackRecognitionHook(
 void	TrackRecognitionHook::handle_prop_data( const wire_id_t* begin, const wire_id_t* end, device_id_t dev_id )
 {
 	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
-
-	if (last_event_finished)
-	{
-		BOOST_FOREACH(auto &tup, last_event)
-		{
-			tup.second.clear();
-		}
-
-		BOOST_FOREACH(auto gr_tup, last_tracks)
-		{
-			BOOST_FOREACH(auto axis_tup, gr_tup.second)
-			{
-				axis_tup.second.clear();
-			}
-
-		}
-
-		last_event_finished = false;
-	}
-
 	auto &chamber = last_event[chamber_id];
 	wire_id_t	prev_pos;
 	unsigned int	sequence_len = 1, max_sequence_len = 3;
@@ -129,6 +108,24 @@ void	TrackRecognitionHook::handle_drift_data(
 	}
 }
 
+void	TrackRecognitionHook::handle_event_start()
+{
+	StdDrift::handle_event_start();
+
+	BOOST_FOREACH(auto &tup, last_event)
+	{
+		tup.second.clear();
+	}
+
+	BOOST_FOREACH(auto gr_tup, last_tracks)
+	{
+		BOOST_FOREACH(auto axis_tup, gr_tup.second)
+		{
+			axis_tup.second.clear();
+		}
+	}
+}
+
 void	TrackRecognitionHook::handle_event_end()
 {
 	vector< vector<wire_pos_t>* >	block;
@@ -168,7 +165,4 @@ void	TrackRecognitionHook::handle_event_end()
 			}
 		}
 	}
-
-	StdDrift::handle_event_end();
-	last_event_finished = true;
 }

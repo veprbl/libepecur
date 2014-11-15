@@ -18,10 +18,6 @@ using boost::unordered_map;
 
 class	TrackRecognitionHook: public StdDrift
 {
-private:
-
-	bool		last_event_finished;
-
 public:
 
 	Geometry	geom;
@@ -37,6 +33,7 @@ public:
 		std::vector<uint16_t> &time,
 		device_id_t dev_id
 		) override;
+	virtual void	handle_event_start() override;
 	virtual void	handle_event_end() override;
 };
 

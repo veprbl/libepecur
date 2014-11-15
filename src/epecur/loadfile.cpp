@@ -314,6 +314,8 @@ void	read_event( const char* &pos, const char* max_pos, int32_t flags, int32_t t
 	device_id_t	dev_id;
 	device_type_t	dev_type;
 
+	hook.handle_event_start();
+
 	while(pos < max_pos)
 	{
 		mem_read(pos, stream_header);

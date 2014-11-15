@@ -11,14 +11,6 @@ void	StdDrift::handle_drift_data(
 	device_id_t dev_id
 	)
 {
-	if (drift_cleanup)
-	{
-		last_event_drift_wire_pos.clear();
-		last_event_drift_time.clear();
-
-		drift_cleanup = false;
-	}
-
 	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
 	auto	&event_wire_pos = last_event_drift_wire_pos[chamber_id];
 	auto	&event_time = last_event_drift_time[chamber_id];
@@ -76,7 +68,8 @@ void	StdDrift::handle_drift_data(
 	BOOST_ASSERT(event_wire_pos.size() == event_time.size());
 }
 
-void	StdDrift::handle_event_end()
+void	StdDrift::handle_event_start()
 {
-	drift_cleanup = true;
+	last_event_drift_wire_pos.clear();
+	last_event_drift_time.clear();
 }

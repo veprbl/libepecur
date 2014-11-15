@@ -16,7 +16,6 @@ class	StdDrift: public LoadHook
 protected:
 
 	Geometry	geom;
-	bool	drift_cleanup;
 
 public:
 
@@ -25,7 +24,7 @@ public:
 	map< chamber_id_t, vector<wire_pos_t> >	last_event_drift_wire_pos;
 	map< chamber_id_t, vector<uint16_t> >	last_event_drift_time;
 
-	StdDrift(Geometry &g) : geom(g), drift_cleanup(false) {};
+	StdDrift(Geometry &g) : geom(g) {};
 	~StdDrift() {};
 
 	virtual void	handle_drift_data(
@@ -33,7 +32,7 @@ public:
 		std::vector<uint16_t> &time,
 		device_id_t dev_id
 		) override;
-	virtual void	handle_event_end() override;
+	virtual void	handle_event_start() override;
 };
 
 #endif
