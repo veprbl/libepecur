@@ -45,12 +45,12 @@ int color = 1;
 
 		TH1F	*or = new TH1F("or", "output", (1250-820), 820, 1250);
 		c.Draw("beam_momentum >> or",
-	"((((event_cause & 0x1) == 0x1) && (abs(t1X_c0+t1X_c1*540)<80) && ((t2X_c0+t2X_c1*990)**2 + (t2Y_c0+t2Y_c1*990)**2<25) && (F2R_x > -200) && (F2R_x < 120) && (RF2_x > -200) && (RF2_x < 120) && (theta_r > 0) && (theta_l != theta_l) && (efficiency_r > 0.7)) ? 1 : 0) / efficiency_r"
+	"((((event_cause & 0x1) == 0x1) && (abs(t1X_c0+t1X_c1*540)<80) && ((t2X_c0+t2X_c1*990)**2 + (t2Y_c0+t2Y_c1*990)**2<25) && (F2R_x > -200) && (F2R_x < 120) && (RF2_x > -200) && (RF2_x < 120) && (theta_r > 0) && (theta_l != theta_l) && (efficiency_r > 0.7) && (min_cycle_efficiency > 0.15) "/*&& (theta_r > 0.4) && (theta_r < 0.8) && (abs(phi_r+3.14/2)<0.6)*/") ? 1 : 0) / efficiency_r"
 			, "E1", entries
 			);
 		TH1F	*ol = new TH1F("ol", "output", (1250-820), 820, 1250);
 		c.Draw("beam_momentum >> ol",
-	"((((event_cause & 0x1) == 0x1) && (abs(t1X_c0+t1X_c1*540)<80) && ((t2X_c0+t2X_c1*990)**2 + (t2Y_c0+t2Y_c1*990)**2<25) && (F2L_x > -200) && (F2L_x < 120) && (LF2_x > -200) && (LF2_x < 120) && (theta_l > 0) && (theta_r != theta_r) && (efficiency_l > 0.7)) ? 1 : 0) / efficiency_l"
+	"((((event_cause & 0x1) == 0x1) && (abs(t1X_c0+t1X_c1*540)<80) && ((t2X_c0+t2X_c1*990)**2 + (t2Y_c0+t2Y_c1*990)**2<25) && (F2L_x > -200) && (F2L_x < 120) && (LF2_x > -200) && (LF2_x < 120) && (theta_l > 0) && (theta_r != theta_r) && (efficiency_l > 0.7) && (min_cycle_efficiency > 0.15) "/*&& (theta_l > 0.4) && (theta_l < 0.8) && (abs(phi_l-3.14/2)<0.6)*/") ? 1 : 0) / efficiency_l"
 			, "E1", entries
 			);
 /*		TH1F    *o = new TH1F("o", "output", (1250-820), 820, 1250);
@@ -58,7 +58,7 @@ int color = 1;
 		o->Add(ol);
 		o->SetName("o");*/
 		TH1F	*n = new TH1F("n", "normalization", (1250-820), 820, 1250);
-		c.Draw("beam_momentum >> n", "((event_cause & 0x2) == 0x2)  && (abs(t1X_c0+t1X_c1*540)<80) && ((t2X_c0+t2X_c1*990)**2 + (t2Y_c0+t2Y_c1*990)**2<25)"
+		c.Draw("beam_momentum >> n", "((event_cause & 0x2) == 0x2) && (abs(t1X_c0+t1X_c1*540)<80) && ((t2X_c0+t2X_c1*990)**2 + (t2Y_c0+t2Y_c1*990)**2<25) && (min_cycle_efficiency > 0.15)"
 			, "E1", entries
 			);
 
