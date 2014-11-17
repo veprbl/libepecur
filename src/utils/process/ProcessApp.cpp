@@ -158,6 +158,17 @@ int	main( int argc, char* argv[] )
 	TTree	*events = (TTree*)input_file.FindObjectAny("events");
 	TTree	*cycle_efficiency = (TTree*)input_file.FindObjectAny("cycle_efficiency");
 
+	// Now check that all branches in all tress have the same count of entries
+	Long_t prev_entries;
+	bool first = true;
+	bool result = true;
+	result &= is_same_size_tree(events, &prev_entries, &first);
+	result &= is_same_size_tree(cycle_efficiency, &prev_entries, &first);
+	if (!result)
+	{
+		throw "Unbalanced input tree";
+	}
+
 	if (!info)
 	{
 		throw "Missing info tree!";
@@ -207,7 +218,7 @@ int	main( int argc, char* argv[] )
 		result &= is_same_size_tree((TTree*)output_file.Get("events"), &prev_entries, &first);
 		if (!result)
 		{
-			throw "Unbalanced tree";
+			throw "Unbalanced output tree";
 		}
 
 		output_file.Close();
