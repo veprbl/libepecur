@@ -156,6 +156,7 @@ int	main( int argc, char* argv[] )
 
 	TTree	*info = (TTree*)input_file.FindObjectAny("info");
 	TTree	*events = (TTree*)input_file.FindObjectAny("events");
+	TTree	*cycle_efficiency = (TTree*)input_file.FindObjectAny("cycle_efficiency");
 
 	if (!info)
 	{
@@ -191,15 +192,9 @@ int	main( int argc, char* argv[] )
 		add_info_value(info_new, "PROCESS_GIT_COMMIT_ID", GIT_COMMIT_ID);
 		intersection_set_t	s;
 
-		events_new = Process(events, geom, central_momentum, &s);
+		events_new = Process(events, cycle_efficiency, geom, central_momentum, &s);
 
 		efficiency_tree = Process2ndPass(events_new);
-
-		TTree   *cycle_efficiency_tree = (TTree*)input_file.FindObjectAny("cycle_efficiency");
-		cycle_efficiency_tree->SetBranchStatus("*", 1);
-		TTree	*cycle_efficiency_tree_new = cycle_efficiency_tree->CloneTree();
-		cycle_efficiency_tree_new->AutoSave();
-		events_new->AddFriend("cycle_efficiency");
 
 		events_new->AutoSave();
 		efficiency_tree->AutoSave();
@@ -210,7 +205,6 @@ int	main( int argc, char* argv[] )
 		bool first = true;
 		bool result = true;
 		result &= is_same_size_tree((TTree*)output_file.Get("events"), &prev_entries, &first);
-		result &= is_same_size_tree((TTree*)output_file.Get("cycle_efficiency"), &prev_entries, &first);
 		if (!result)
 		{
 			throw "Unbalanced tree";

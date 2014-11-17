@@ -161,7 +161,7 @@ double	calc_incident_momentum(double beam_momentum, intersection_t &i1, intersec
 	return beam_momentum - dE_over_dx * lih2_density * (z/10);
 }
 
-TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersection_set_t *s )
+TTree*	Process( TTree *events, TTree *cycle_efficiency, Geometry &geom, double central_momentum, intersection_set_t *s )
 {
 	TTree	*events_new;
 	uint32_t	event_cause, timestamp;
@@ -222,6 +222,10 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersec
 	// this also copies branches addresses
 	events_new = events->CloneTree(0);
 
+	double min_cycle_efficiency;
+	cycle_efficiency->SetBranchAddress("min_cycle_efficiency", &min_cycle_efficiency);
+	events_new->Branch("min_cycle_efficiency", &min_cycle_efficiency, "min_cycle_efficiency/D");
+
 	s->br_lr = events_new->Branch("LR", &s->i_lr, "LR_x/D:LR_y/D:LR_z/D");
 	s->br_rl = events_new->Branch("RL", &s->i_rl, "RL_x/D:RL_y/D:RL_z/D");
 	s->br_f2r = events_new->Branch("F2R", &s->i_f2r, "F2R_x/D:F2R_y/D:F2R_z/D");
@@ -241,6 +245,7 @@ TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersec
 	{
 		track3d_t	t_L, t_R, t_F2;
 		events->GetEntry(i);
+		cycle_efficiency->GetEntry(i);
 
 		bool	left_arm = (tg_LX.track_count == 1) && (tg_LY.track_count == 1);
 		bool	right_arm = (tg_RX.track_count == 1) && (tg_RY.track_count == 1);

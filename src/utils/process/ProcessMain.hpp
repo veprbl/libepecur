@@ -28,6 +28,6 @@ struct intersection_set_t
 	TBranch	*br_lr, *br_rl, *br_f2r, *br_f2l, *br_rf2, *br_lf2;
 };
 
-TTree*	Process( TTree *events, Geometry &geom, double central_momentum, intersection_set_t *s );
+TTree*	Process( TTree *events, TTree *cycle_efficiency, Geometry &geom, double central_momentum, intersection_set_t *s );
 
 #endif
