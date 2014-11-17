@@ -120,6 +120,26 @@ void	add_info_value( TTree *info, string key, string value )
 	info->Fill();
 }
 
+bool	is_same_size_tree(TTree *tree, Long_t *prev_entries, bool *first)
+{
+	Long_t entries;
+
+	TObjArray *ar = tree->GetListOfBranches();
+	for(Long_t i = 0; i < ar->GetEntries(); i++)
+	{
+		TBranch *br = (TBranch*)(*ar)[i];
+		entries = br->GetEntries();
+
+		if ((!*first) && (entries != *prev_entries))
+		{
+			return false;
+		}
+		*prev_entries = entries;
+		*first = false;
+	}
+	return true;
+}
+
 int	main( int argc, char* argv[] )
 {
 	ParseCommandLine(argc, argv);
@@ -184,6 +204,18 @@ int	main( int argc, char* argv[] )
 		events_new->AutoSave();
 		efficiency_tree->AutoSave();
 		info_new->AutoSave();
+
+		// Now check that all branches in all tress have the same count of entries
+		Long_t prev_entries;
+		bool first = true;
+		bool result = true;
+		result &= is_same_size_tree((TTree*)output_file.Get("events"), &prev_entries, &first);
+		result &= is_same_size_tree((TTree*)output_file.Get("cycle_efficiency"), &prev_entries, &first);
+		if (!result)
+		{
+			throw "Unbalanced tree";
+		}
+
 		output_file.Close();
 	}
 	catch(const char *e)
