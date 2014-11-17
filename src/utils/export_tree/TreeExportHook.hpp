@@ -73,6 +73,7 @@ private:
 	unordered_map< group_id_t, map<device_axis_t, double> >	cycle_efficiency;
 	double	min_cycle_efficiency;
 
+	bool	cycle_end_event_flag;
 	uint64_t	event_id;
 	uint64_t	cycle_first_event_id;
 	uint64_t	cycle_all_count;
@@ -92,6 +93,7 @@ private:
 	void	write_drift_event(
 		group_id_t group_id, device_axis_t axis
 		);
+	void	write_cycle_efficiencies();
 
 public:
 
@@ -105,6 +107,7 @@ public:
 		uint16_t event_cause,
 		uint32_t gate_time
 		) override;
+	virtual void	handle_event_start() override;
 	virtual void	handle_event_end() override;
 	virtual void	handle_slow_target_info(
 		const slow_target_record_t *rec

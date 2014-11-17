@@ -1,4 +1,5 @@
 #include <cstring>
+#include <iostream>
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -83,6 +84,12 @@ TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
 
 TreeExportHook::~TreeExportHook()
 {
+	if (cycle_all_count != 0)
+	{
+		std::cerr << "Warning: Last cycle didn't end properly" << std::endl;
+		write_cycle_efficiencies();
+	}
+
 	BOOST_FOREACH(auto ptr, names)
 	{
 		delete[] ptr;
@@ -230,12 +237,10 @@ void	TreeExportHook::write_drift_event(
 	}
 }
 
-void	TreeExportHook::handle_timestamp( int32_t timestamp )
-{
-	event_info.timestamp = timestamp;
-}
-
-void	TreeExportHook::handle_trig_end_cycle()
+/**
+ * Write cycle efficiencies for each event of the last cycle.
+ */
+void	TreeExportHook::write_cycle_efficiencies()
 {
 	min_cycle_efficiency = -1;
 
@@ -269,6 +274,16 @@ void	TreeExportHook::handle_trig_end_cycle()
 	cycle_hit_count.clear();
 }
 
+void	TreeExportHook::handle_timestamp( int32_t timestamp )
+{
+	event_info.timestamp = timestamp;
+}
+
+void	TreeExportHook::handle_trig_end_cycle()
+{
+	cycle_end_event_flag = true;
+}
+
 void	TreeExportHook::handle_trig_info(
 	uint8_t devices_mask,
 	uint16_t event_cause,
@@ -276,6 +291,13 @@ void	TreeExportHook::handle_trig_info(
 	)
 {
 	event_info.event_cause = event_cause;
+}
+
+void	TreeExportHook::handle_event_start()
+{
+	TrackRecognitionHook::handle_event_start();
+
+	cycle_end_event_flag = false;
 }
 
 void	TreeExportHook::handle_event_end()
@@ -323,6 +345,11 @@ void	TreeExportHook::handle_event_end()
 
 	event_tree.Fill();
 	event_id++;
+
+	if (cycle_end_event_flag)
+	{
+		write_cycle_efficiencies();
+	}
 }
 
 void	TreeExportHook::handle_slow_target_info(
