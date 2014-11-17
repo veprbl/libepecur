@@ -216,6 +216,7 @@ int	main( int argc, char* argv[] )
 		bool first = true;
 		bool result = true;
 		result &= is_same_size_tree(events_new, &prev_entries, &first);
+		result &= is_same_size_tree(efficiency_tree, &prev_entries, &first);
 		if (!result)
 		{
 			throw "Unbalanced output tree";
