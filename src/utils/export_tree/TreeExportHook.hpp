@@ -105,7 +105,7 @@ public:
 		uint16_t event_cause,
 		uint32_t gate_time
 		) override;
-	virtual void	handle_event_end();
+	virtual void	handle_event_end() override;
 	virtual void	handle_slow_target_info(
 		const slow_target_record_t *rec
 		) override;
