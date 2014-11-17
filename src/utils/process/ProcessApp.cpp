@@ -215,7 +215,7 @@ int	main( int argc, char* argv[] )
 		Long_t prev_entries;
 		bool first = true;
 		bool result = true;
-		result &= is_same_size_tree((TTree*)output_file.Get("events"), &prev_entries, &first);
+		result &= is_same_size_tree(events_new, &prev_entries, &first);
 		if (!result)
 		{
 			throw "Unbalanced output tree";
