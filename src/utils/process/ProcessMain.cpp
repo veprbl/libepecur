@@ -236,6 +236,7 @@ TTree*	Process( TTree *events, TTree *cycle_efficiency, Geometry &geom, double c
 	TTree_UnfriendAll(events_new);
 
 	double min_cycle_efficiency;
+	cycle_efficiency->SetBranchStatus("min_cycle_efficiency", 1);
 	cycle_efficiency->SetBranchAddress("min_cycle_efficiency", &min_cycle_efficiency);
 	events_new->Branch("min_cycle_efficiency", &min_cycle_efficiency, "min_cycle_efficiency/D");
 
