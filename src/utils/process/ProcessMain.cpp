@@ -4,6 +4,8 @@
 #include <boost/numeric/ublas/lu.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
+#include <TList.h>
+
 #include "ProcessMain.hpp"
 #include "../export_tree/TreeExportHook.hpp"
 
@@ -161,6 +163,16 @@ double	calc_incident_momentum(double beam_momentum, intersection_t &i1, intersec
 	return beam_momentum - dE_over_dx * lih2_density * (z/10);
 }
 
+void	TTree_UnfriendAll(TTree *tree)
+{
+	TList *friends = tree->GetListOfFriends();
+
+	while(friends->GetSize() != 0)
+	{
+		friends->RemoveLast();
+	}
+}
+
 TTree*	Process( TTree *events, TTree *cycle_efficiency, Geometry &geom, double central_momentum, intersection_set_t *s )
 {
 	TTree	*events_new;
@@ -221,6 +233,7 @@ TTree*	Process( TTree *events, TTree *cycle_efficiency, Geometry &geom, double c
 	// clone tree headers
 	// this also copies branches addresses
 	events_new = events->CloneTree(0);
+	TTree_UnfriendAll(events_new);
 
 	double min_cycle_efficiency;
 	cycle_efficiency->SetBranchAddress("min_cycle_efficiency", &min_cycle_efficiency);
