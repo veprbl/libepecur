@@ -207,10 +207,6 @@ int	main( int argc, char* argv[] )
 
 		efficiency_tree = Process2ndPass(events_new);
 
-		events_new->AutoSave();
-		efficiency_tree->AutoSave();
-		info_new->AutoSave();
-
 		// Now check that all branches in all tress have the same count of entries
 		Long_t prev_entries;
 		bool first = true;
@@ -222,7 +218,7 @@ int	main( int argc, char* argv[] )
 			throw "Unbalanced output tree";
 		}
 
-		output_file.Close();
+		output_file.Write();
 	}
 	catch(const char *e)
 	{
@@ -231,7 +227,6 @@ int	main( int argc, char* argv[] )
 		gSystem->Unlink(output_filepath.c_str());
 		return EXIT_FAILURE;
 	}
-	input_file.Close();
 
 	return 0;
 }
