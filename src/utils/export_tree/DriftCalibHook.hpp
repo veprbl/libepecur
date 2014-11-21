@@ -1,9 +1,6 @@
 #ifndef __DRIFTCALIBHOOK_HPP
 #define __DRIFTCALIBHOOK_HPP
 
-#include <TTree.h>
-#include <TH1F.h>
-
 #include <epecur/cxx11_compat.hpp>
 #include <epecur/loadfile.hpp>
 #include <epecur/StdHits.hpp>
@@ -13,9 +10,6 @@ static const int	MAX_TIME_COUNTS = 384;
 class DriftCalibHook : public StdHits
 {
 private:
-
-	TTree	drift_calib;
-	TH1F	calib_curve;
 
 	unsigned int	generate_calibration_curve( chamber_id_t chamber_id );
 

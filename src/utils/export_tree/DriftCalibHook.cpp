@@ -11,13 +11,8 @@
 
 DriftCalibHook::DriftCalibHook( Geometry &g )
     : StdHits(g, NULL)
-    , drift_calib("drift_calib", "drift chambers calibration curves")
-    , calib_curve(
-        "calib_curve", "",
-        MAX_TIME_COUNTS, 0, MAX_TIME_COUNTS
-        )
 {
-	drift_calib.Branch("calib_curve", "TH1F", &calib_curve);
+	// Nothing
 }
 
 unsigned int	DriftCalibHook::generate_calibration_curve( chamber_id_t chamber_id )
@@ -38,7 +33,6 @@ unsigned int	DriftCalibHook::generate_calibration_curve( chamber_id_t chamber_id
 		integral += counts;
 		auto	value = integral / (float)overal_integral;
 		calib[time] = value;
-		calib_curve.Fill(time, value);
 		time++;
 	}
 
@@ -47,8 +41,6 @@ unsigned int	DriftCalibHook::generate_calibration_curve( chamber_id_t chamber_id
 
 void	DriftCalibHook::generate_calibration_curves()
 {
-	string	title;
-
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{
 		group_id_t	group_id = gr_tup.first;
@@ -64,33 +56,10 @@ void	DriftCalibHook::generate_calibration_curves()
 			device_axis_t	axis = axis_tup.first;
 			vector<chamber_id_t>	&chambers =
 				geom.group_chambers[group_id][axis];
-			int	chamber_num = 1;
 
 			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 			{
-				auto	num_events = generate_calibration_curve(chamber_id);
-
-				title = "d" +
-					boost::lexical_cast<string>(int(group_id)) +
-					((axis == DEV_AXIS_X) ? "X" : "Y") +
-					boost::lexical_cast<string>(int(chamber_num)) +
-					" num_events = " +
-					boost::lexical_cast<string>(num_events);
-
-				calib_curve.SetTitle(title.c_str());
-				calib_curve.SetLabelSize(0.04, "X");
-				calib_curve.SetLabelSize(0.04, "Y");
-				calib_curve.SetTitleSize(0.05, "X");
-				calib_curve.SetTitleSize(0.05, "Y");
-				calib_curve.SetTitleOffset(0.9, "X");
-				calib_curve.SetTitleOffset(0.9, "Y");
-				calib_curve.GetXaxis()->SetTitle("T, [Counts]");
-				calib_curve.GetYaxis()->SetTitle("x/(8.5 mm)");
-
-				drift_calib.Fill();
-				calib_curve.Reset();
-
-				chamber_num++;
+				generate_calibration_curve(chamber_id);
 			}
 		}
 	}
