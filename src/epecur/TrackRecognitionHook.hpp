@@ -26,13 +26,9 @@ public:
 	unordered_map< group_id_t, map< device_axis_t, vector<track_info_t> > >	last_tracks;
 
 	TrackRecognitionHook( Geometry &g, StdDrift::calibration_curve_t *c = NULL );
+	void	fill_drift_event();
 
 	virtual void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, device_id_t dev_id ) override;
-	virtual void	handle_drift_data(
-		std::vector<wire_id_t> &wire_id,
-		std::vector<uint16_t> &time,
-		device_id_t dev_id
-		) override;
 	virtual void	handle_event_start() override;
 	virtual void	handle_event_end() override;
 };
