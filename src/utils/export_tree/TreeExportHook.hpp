@@ -97,7 +97,7 @@ private:
 
 public:
 
-	TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c );
+	TreeExportHook( Geometry &g, StdHits::calibration_curve_t *c );
 	~TreeExportHook();
 	const char*	store_name( string name );
 	virtual void	handle_timestamp( int32_t timestamp ) override;

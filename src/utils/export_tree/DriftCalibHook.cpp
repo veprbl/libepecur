@@ -5,12 +5,12 @@
 
 #include <epecur/types.hpp>
 #include <epecur/track.hpp>
-#include <epecur/StdDrift.hpp>
+#include <epecur/StdHits.hpp>
 
 #include "DriftCalibHook.hpp"
 
 DriftCalibHook::DriftCalibHook( Geometry &g )
-    : StdDrift(g)
+    : StdHits(g, NULL)
     , drift_calib("drift_calib", "drift chambers calibration curves")
     , calib_curve(
         "calib_curve", "",
@@ -128,5 +128,5 @@ void	DriftCalibHook::handle_event_end()
 		}
 	}
 
-	StdDrift::handle_event_end();
+	StdHits::handle_event_end();
 }

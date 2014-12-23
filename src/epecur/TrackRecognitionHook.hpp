@@ -12,23 +12,19 @@
 
 #include <boost/unordered/unordered_map.hpp>
 
-#include "StdDrift.hpp"
+#include "StdHits.hpp"
 
 using boost::unordered_map;
 
-class	TrackRecognitionHook: public StdDrift
+class	TrackRecognitionHook: public StdHits
 {
 public:
 
 	Geometry	geom;
-	StdDrift::calibration_curve_t	*calibration_curve;
-	unordered_map< chamber_id_t, vector<wire_pos_t> >	last_event;
 	unordered_map< group_id_t, map< device_axis_t, vector<track_info_t> > >	last_tracks;
 
-	TrackRecognitionHook( Geometry &g, StdDrift::calibration_curve_t *c = NULL );
-	void	fill_drift_event();
+	TrackRecognitionHook(Geometry &g, StdHits::calibration_curve_t *c = NULL);
 
-	virtual void	handle_prop_data( const wire_id_t* begin, const wire_id_t* end, device_id_t dev_id ) override;
 	virtual void	handle_event_start() override;
 	virtual void	handle_event_end() override;
 };

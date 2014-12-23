@@ -4,7 +4,7 @@
 #include <epecur/cxx11_compat.hpp>
 #include <epecur/geometry.hpp>
 #include <epecur/types.hpp>
-#include <epecur/StdDrift.hpp>
+#include <epecur/StdHits.hpp>
 
 template<typename H>
 class ThinOutHook : public H
@@ -18,7 +18,7 @@ private:
 
 public:
 
-	ThinOutHook(Geometry &g, StdDrift::calibration_curve_t *c = NULL, int _thin_out_factor = 1)
+	ThinOutHook(Geometry &g, StdHits::calibration_curve_t *c = NULL, int _thin_out_factor = 1)
 	: H(g, c),
 	  thin_out_factor(_thin_out_factor),
 	  event_id(0),

@@ -117,7 +117,7 @@ int	main( int argc, char* argv[] )
 	Geometry	geom(file);
 	TFile		tree_file(output_filepath.c_str(), "RECREATE");
 	TTree		info("info", "information about this file");
-	StdDrift::calibration_curve_t	*calibration_curve = NULL;
+	StdHits::calibration_curve_t	*calibration_curve = NULL;
 
 	DriftCalibHook	calib_hook(geom);
 

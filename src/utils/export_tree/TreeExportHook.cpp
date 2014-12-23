@@ -11,7 +11,7 @@
 
 #include "TreeExportHook.hpp"
 
-TreeExportHook::TreeExportHook( Geometry &g, StdDrift::calibration_curve_t *c )
+TreeExportHook::TreeExportHook( Geometry &g, StdHits::calibration_curve_t *c )
 	: TrackRecognitionHook(g, c),
 	  event_tree(
 		  "events",

@@ -3,7 +3,7 @@ set( EPECUR_SRCS
 	geometry.cpp
 	loadfile.cpp
 	track.cpp
-	StdDrift.cpp
+	StdHits.cpp
 	TrackRecognitionHook.cpp
 	git-rev-export.cpp
 

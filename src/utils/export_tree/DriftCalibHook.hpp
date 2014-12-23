@@ -6,11 +6,11 @@
 
 #include <epecur/cxx11_compat.hpp>
 #include <epecur/loadfile.hpp>
-#include <epecur/StdDrift.hpp>
+#include <epecur/StdHits.hpp>
 
 static const int	MAX_TIME_COUNTS = 384;
 
-class DriftCalibHook : public StdDrift
+class DriftCalibHook : public StdHits
 {
 private:
 
@@ -22,7 +22,7 @@ private:
 public:
 
 	map< chamber_id_t, vector<unsigned int> >	time_distributions;
-	StdDrift::calibration_curve_t	calibration_curve;
+	StdHits::calibration_curve_t	calibration_curve;
 
 	DriftCalibHook( Geometry &g );
 	void	generate_calibration_curves();
