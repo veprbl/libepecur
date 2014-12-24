@@ -127,6 +127,4 @@ void	DriftCalibHook::handle_event_end()
 			}
 		}
 	}
-
-	StdHits::handle_event_end();
 }

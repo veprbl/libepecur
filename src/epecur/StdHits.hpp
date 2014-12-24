@@ -39,7 +39,6 @@ public:
 		device_id_t dev_id
 		) override;
 	virtual void	handle_event_start() override;
-	virtual void	handle_event_end() override;
 };
 
 #endif

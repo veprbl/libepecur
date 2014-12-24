@@ -49,11 +49,32 @@ void	StdHits::handle_drift_data(
 	device_id_t dev_id
 	)
 {
+	const double	DRIFT_DISTANCE = 17.0/2;
+
 	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
 	auto	&event_wire_pos = last_event_drift_wire_pos[chamber_id];
 	auto	&event_time = last_event_drift_time[chamber_id];
+	auto	&event = last_event[chamber_id];
+	vector<double>		*calib = NULL;
+	if (calibration_curve != NULL)
+	{
+		calib = &((*calibration_curve)[chamber_id]);
+	}
 
 	BOOST_ASSERT(wire_id_s.size() == time_s.size());
+
+	if ((calibration_curve != NULL) && calib->empty())
+	{
+		static bitset<256>	warnings_generated;
+		bool	generated = warnings_generated[chamber_id];
+		if (!generated)
+		{
+			cerr << "No calibration curve for chamber " << int(chamber_id)
+			     << ". Data is ignored." << endl;
+		}
+		warnings_generated.set(chamber_id);
+		return;
+	}
 
 	auto	time_it = time_s.begin();
 	wire_pos_t	prev_wire_pos = 0;
@@ -80,6 +101,15 @@ void	StdHits::handle_drift_data(
 			{
 				event_wire_pos.back() = wire_pos;
 				event_time.back() = time;
+				if (calib == NULL)
+				{
+					event.back() = wire_pos * DRIFT_DISTANCE;
+				}
+				else
+				{
+					*(event.end()-2) = (wire_pos + (*calib)[time]) * DRIFT_DISTANCE;
+					*(event.end()-1) = (wire_pos - (*calib)[time]) * DRIFT_DISTANCE;
+				}
 				prev_wire_pos = wire_pos;
 				prev_time = time;
 
@@ -96,6 +126,15 @@ void	StdHits::handle_drift_data(
 		{
 			event_wire_pos.push_back(wire_pos);
 			event_time.push_back(time);
+			if (calib == NULL)
+			{
+				event.push_back(wire_pos * DRIFT_DISTANCE);
+			}
+			else
+			{
+				event.push_back((wire_pos + (*calib)[time]) * DRIFT_DISTANCE);
+				event.push_back((wire_pos - (*calib)[time]) * DRIFT_DISTANCE);
+			}
 			prev_wire_pos = wire_pos;
 			prev_time = time;
 		}
@@ -114,55 +153,5 @@ void	StdHits::handle_event_start()
 	BOOST_FOREACH(auto &tup, last_event)
 	{
 		tup.second.clear();
-	}
-}
-
-void	StdHits::handle_event_end()
-{
-	const double	DRIFT_DISTANCE = 17.0/2;
-
-	BOOST_FOREACH(auto tup, last_event_drift_wire_pos)
-	{
-		chamber_id_t	chamber_id = tup.first;
-		vector<wire_pos_t>	&wire_pos = tup.second;
-		vector<uint16_t>	&time = last_event_drift_time[chamber_id];
-
-		// if calibration curve is not provided, just use wire_id's
-		if (calibration_curve == NULL)
-		{
-			last_event[chamber_id] = last_event_drift_wire_pos[chamber_id];
-			BOOST_FOREACH(wire_pos_t &pos, last_event[chamber_id])
-			{
-				pos *= DRIFT_DISTANCE;
-			}
-			return;
-		}
-
-		vector<double>		&calib = (*calibration_curve)[chamber_id];
-		auto	wit = wire_pos.begin();
-		auto	tit = time.begin();
-
-		if (calib.empty())
-		{
-			static bitset<256>	warnings_generated;
-			bool	generated = warnings_generated[chamber_id];
-			if (!generated)
-			{
-				cerr << "No calibration curve for chamber " << int(chamber_id)
-				     << ". Data is ignored." << endl;
-			}
-			warnings_generated.set(chamber_id);
-			return;
-		}
-
-		auto	&ev = last_event[chamber_id];
-
-		while(wit != wire_pos.end())
-		{
-			ev.push_back(DRIFT_DISTANCE*(*wit + calib[*tit]));
-			ev.push_back(DRIFT_DISTANCE*(*wit - calib[*tit]));
-			wit++;
-			tit++;
-		}
 	}
 }
