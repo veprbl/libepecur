@@ -160,15 +160,15 @@ void	TreeExportHook::init_drift_group(
 			&st_gr.num_wires,
 			store_name(group_name + "num_wires/i")
 			);
-		st_gr.wire_pos_br = event_tree.Branch(
+		event_tree.Branch(
 			store_name(group_name + "wire_pos"),
-			(void*)nullptr,
-			store_name(group_name + "wire_pos[" + group_name + "num_wires]/" WIRE_POS_ROOT_TYPE)
+			"vector<double>",
+			&st_gr.wire_pos_ptr
 			);
-		st_gr.time_br = event_tree.Branch(
+		event_tree.Branch(
 			store_name(group_name + "time"),
-			(void*)nullptr,
-			store_name(group_name + "time[" + group_name + "num_wires]/" DRIFT_TIME_ROOT_TYPE)
+			"vector<UShort_t>",
+			&st_gr.time_ptr
 			);
 
 		++i;
@@ -232,8 +232,8 @@ void	TreeExportHook::write_drift_event(
 			last_event_drift_time[chamber_id];
 
 		st_gr.num_wires = wire_pos.size();
-		st_gr.wire_pos_br->SetAddress(wire_pos.data());
-		st_gr.time_br->SetAddress(time.data());
+		st_gr.wire_pos_ptr = &wire_pos;
+		st_gr.time_ptr = &time;
 	}
 }
 
