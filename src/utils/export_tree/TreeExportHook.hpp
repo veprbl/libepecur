@@ -61,6 +61,7 @@ struct drift_group_t
 	uint32_t	num_wires;
 	vector<double>	*wire_pos_ptr;
 	vector<uint16_t>	*time_ptr;
+	vector<double>	*drift_offset_ptr;
 };
 
 class TreeExportHook : public TrackRecognitionHook

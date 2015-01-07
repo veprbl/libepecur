@@ -136,6 +136,7 @@ Branches:
 * *{prefix}\_num_wires* - size of the following array
 * *{prefix}\_wire_pos[]* - wire position
 * *{prefix}\_time[]* - drift time
+* *{prefix}\_drift\_offset[]* - absolute value of the hit offset relative to the wire position
 
 ### Troubleshooting
 

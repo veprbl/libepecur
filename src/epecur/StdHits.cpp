@@ -54,6 +54,7 @@ void	StdHits::handle_drift_data(
 	chamber_id_t	chamber_id = geom.get_device_chamber(dev_id);
 	auto	&event_wire_pos = last_event_drift_wire_pos[chamber_id];
 	auto	&event_time = last_event_drift_time[chamber_id];
+	auto	&drift_offset = last_event_drift_offset[chamber_id];
 	auto	&event = last_event[chamber_id];
 	vector<double>		*calib = NULL;
 	if (calibration_curve != NULL)
@@ -132,6 +133,7 @@ void	StdHits::handle_drift_data(
 			}
 			else
 			{
+				drift_offset.push_back((*calib)[time] * DRIFT_DISTANCE);
 				event.push_back((wire_pos + (*calib)[time]) * DRIFT_DISTANCE);
 				event.push_back((wire_pos - (*calib)[time]) * DRIFT_DISTANCE);
 			}
@@ -149,6 +151,7 @@ void	StdHits::handle_event_start()
 {
 	last_event_drift_wire_pos.clear();
 	last_event_drift_time.clear();
+	last_event_drift_offset.clear();
 
 	BOOST_FOREACH(auto &tup, last_event)
 	{

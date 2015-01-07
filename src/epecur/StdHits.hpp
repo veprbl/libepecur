@@ -27,6 +27,7 @@ public:
 	calibration_curve_t	*calibration_curve;
 	map< chamber_id_t, vector<wire_pos_t> >	last_event_drift_wire_pos;
 	map< chamber_id_t, vector<uint16_t> >	last_event_drift_time;
+	map< chamber_id_t, vector<wire_pos_t> >	last_event_drift_offset;
 	unordered_map< chamber_id_t, vector<wire_pos_t> >	last_event;
 
 	StdHits(Geometry &g, calibration_curve_t *c) : geom(g), calibration_curve(c) {};

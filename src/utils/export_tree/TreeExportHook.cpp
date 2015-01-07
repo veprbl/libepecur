@@ -170,6 +170,11 @@ void	TreeExportHook::init_drift_group(
 			"vector<UShort_t>",
 			&st_gr.time_ptr
 			);
+		event_tree.Branch(
+			store_name(group_name + "drift_offset"),
+			"vector<double>",
+			&st_gr.drift_offset_ptr
+			);
 
 		++i;
 	}
@@ -230,10 +235,13 @@ void	TreeExportHook::write_drift_event(
 			last_event_drift_wire_pos[chamber_id];
 		vector<uint16_t>        &time =
 			last_event_drift_time[chamber_id];
+		vector<wire_pos_t>	&drift_offset =
+			last_event_drift_offset[chamber_id];
 
 		st_gr.num_wires = wire_pos.size();
 		st_gr.wire_pos_ptr = &wire_pos;
 		st_gr.time_ptr = &time;
+		st_gr.drift_offset_ptr = &drift_offset;
 	}
 }
 
