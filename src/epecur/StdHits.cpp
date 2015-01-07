@@ -145,6 +145,7 @@ void	StdHits::handle_drift_data(
 	}
 
 	BOOST_ASSERT(event_wire_pos.size() == event_time.size());
+	BOOST_ASSERT(event_wire_pos.size() * ((calib == NULL) ? 1 : 2) == event.size());
 }
 
 void	StdHits::handle_event_start()

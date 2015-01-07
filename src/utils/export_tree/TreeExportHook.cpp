@@ -238,6 +238,9 @@ void	TreeExportHook::write_drift_event(
 		vector<wire_pos_t>	&drift_offset =
 			last_event_drift_offset[chamber_id];
 
+		BOOST_ASSERT(time.size() == wire_pos.size());
+		BOOST_ASSERT(drift_offset.size() == wire_pos.size());
+
 		st_gr.num_wires = wire_pos.size();
 		st_gr.wire_pos_ptr = &wire_pos;
 		st_gr.time_ptr = &time;
