@@ -9,7 +9,7 @@ before_script:
   - sudo apt-get install -qq libc6-dev-i386 root-system libmysql++-dev libboost1.49-dev libboost-filesystem1.49-dev libboost-iostreams1.49-dev libboost-program-options1.49-dev libboost-regex1.49-dev libboost-system1.49 libboost-test1.49-dev
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug
 script:
   - make
   - make test
