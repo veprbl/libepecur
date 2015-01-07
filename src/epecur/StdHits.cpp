@@ -78,67 +78,23 @@ void	StdHits::handle_drift_data(
 	}
 
 	auto	time_it = time_s.begin();
-	wire_pos_t	prev_wire_pos = 0;
-	uint16_t	prev_time = 0;
-
-	if (!event_wire_pos.empty())
-	{
-		prev_wire_pos = event_wire_pos.back();
-		prev_time = event_time.back();
-	}
 
 	BOOST_FOREACH(wire_id_t wire_id, wire_id_s)
 	{
 		wire_pos_t	wire_pos = geom.get_wire_pos(dev_id, wire_id);
 		uint16_t	time = (*time_it);
-		bool		append = true;
 
-		if ((!event_wire_pos.empty())
-		    && (abs(prev_wire_pos - wire_pos) == 2))
+		event_wire_pos.push_back(wire_pos);
+		event_time.push_back(time);
+		if (calib == NULL)
 		{
-			int16_t	timedelta = time - prev_time;
-
-			if ((timedelta >= -4) && (timedelta < 0))
-			{
-				event_wire_pos.back() = wire_pos;
-				event_time.back() = time;
-				if (calib == NULL)
-				{
-					event.back() = wire_pos * DRIFT_DISTANCE;
-				}
-				else
-				{
-					*(event.end()-2) = (wire_pos + (*calib)[time]) * DRIFT_DISTANCE;
-					*(event.end()-1) = (wire_pos - (*calib)[time]) * DRIFT_DISTANCE;
-				}
-				prev_wire_pos = wire_pos;
-				prev_time = time;
-
-				append = false;
-			}
-
-			if ((timedelta > 0) && (timedelta <= 4))
-			{
-				append = false;
-			}
+			event.push_back(wire_pos * DRIFT_DISTANCE);
 		}
-
-		if (append)
+		else
 		{
-			event_wire_pos.push_back(wire_pos);
-			event_time.push_back(time);
-			if (calib == NULL)
-			{
-				event.push_back(wire_pos * DRIFT_DISTANCE);
-			}
-			else
-			{
-				drift_offset.push_back((*calib)[time] * DRIFT_DISTANCE);
-				event.push_back((wire_pos + (*calib)[time]) * DRIFT_DISTANCE);
-				event.push_back((wire_pos - (*calib)[time]) * DRIFT_DISTANCE);
-			}
-			prev_wire_pos = wire_pos;
-			prev_time = time;
+			drift_offset.push_back((*calib)[time] * DRIFT_DISTANCE);
+			event.push_back((wire_pos + (*calib)[time]) * DRIFT_DISTANCE);
+			event.push_back((wire_pos - (*calib)[time]) * DRIFT_DISTANCE);
 		}
 
 		time_it++;
