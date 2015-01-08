@@ -30,6 +30,7 @@ void	mk_plot(int i, bool select_same_plane, bool time_domain, double angle, doub
 		bin_max = 8.5;
 	}
 	TH2F *h = new TH2F(hname, Form("angle = %.0f \\pm %.0f", angle, angle_bin_width / 2), bin_count, bin_min, bin_max, bin_count, bin_min, bin_max);
+	h->SetStats(kFALSE);
 	if (time_domain)
 	{
 		units = "counts";
