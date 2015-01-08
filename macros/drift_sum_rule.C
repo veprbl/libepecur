@@ -14,7 +14,6 @@ static TTree	*events;
 
 void	mk_plot(int i, bool select_same_plane, bool time_domain, double angle, double angle_bin_width)
 {
-	c.cd(i);
 	char *hname = Form("h%i", i);
 	double bin_count, bin_min, bin_max;
 	const char *var1, *var2, *units, *adjacent_selector;
@@ -91,6 +90,7 @@ void	drift_sum_rule()
 	const double STEP = 30.0/(N-1);
 	for(int i = 1; i <= N; i++)
 	{
+		c.cd(i);
 		mk_plot(i, false, false, angle, 0.5 * STEP);
 		angle += STEP;
 	}
