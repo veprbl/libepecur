@@ -19,6 +19,7 @@ void	drift_calib_curve();
 void	drift_chisq();
 void	drift_efficiency();
 void	drift_efficiency_over_time();
+void	drift_sum_rule();
 void	target_info();
 void	track_intersections();
 
@@ -122,6 +123,8 @@ int	main(void)
 	drift_efficiency();
 	out.mkdir("drift_efficiency_over_time")->cd();
 	drift_efficiency_over_time();
+	out.mkdir("drift_sum_rule")->cd();
+	drift_sum_rule();
 	out.mkdir("target_info")->cd();
 	target_info();
 	out.mkdir("track_intersections")->cd();

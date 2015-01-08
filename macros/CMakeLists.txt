@@ -6,6 +6,7 @@ set( LIB_EPECUR_MACROS_SRCS
 	drift_chisq.C
 	drift_efficiency.C
 	drift_efficiency_over_time.C
+	drift_sum_rule.C
 	target_info.C
 	track_intersections.C
 	)
