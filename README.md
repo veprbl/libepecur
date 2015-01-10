@@ -63,7 +63,7 @@ and wire_id's to physical chamber_id's and wire positions respectively.
 axial_shift
 -----------
 
-Recognizes track projections, plots signed differences of the track and it's point
+Reconstructs track projections, plots signed differences of the track and it's point
 coordinates. Mean values of these distributions are the shifts corrections for the
 position in the plane perpendicular to the optical axis. **axial\_shift** utility
 outputs shift values in text format ready to be pasted into a "geometry" file.
@@ -111,7 +111,7 @@ path to a geometry file and the programs source code revision id.
 Contains reconstructed track projections for proportional chambers and wire\_id's
 and drift time's for drift chambers.
 
-##### Recognized track projections
+##### Reconstructed track projections
 
 Branch name starts with chamber *{prefix}* which has form *t{group_id}{axis_id}*.
 For example: *t1X*, *t1Y*, *t2X*, *t2Y*.
