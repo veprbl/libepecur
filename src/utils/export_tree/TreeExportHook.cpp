@@ -12,7 +12,7 @@
 #include "TreeExportHook.hpp"
 
 TreeExportHook::TreeExportHook( Geometry &g, StdHits::calibration_curve_t *c )
-	: TrackRecognitionHook(g, c),
+	: TrackReconstructionHook(g, c),
 	  event_tree(
 		  "events",
 		  "recognized tracks for prop chambers"
@@ -306,14 +306,14 @@ void	TreeExportHook::handle_trig_info(
 
 void	TreeExportHook::handle_event_start()
 {
-	TrackRecognitionHook::handle_event_start();
+	TrackReconstructionHook::handle_event_start();
 
 	cycle_end_event_flag = false;
 }
 
 void	TreeExportHook::handle_event_end()
 {
-	TrackRecognitionHook::handle_event_end();
+	TrackReconstructionHook::handle_event_end();
 
 	cycle_all_count++;
 

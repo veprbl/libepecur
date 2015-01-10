@@ -6,13 +6,13 @@
 #include <TH1I.h>
 
 #include <epecur/types.hpp>
-#include <epecur/TrackRecognitionHook.hpp>
+#include <epecur/TrackReconstructionHook.hpp>
 
 #include <boost/unordered/unordered_map.hpp>
 
 using boost::unordered_map;
 
-class AxialShiftHook : public TrackRecognitionHook
+class AxialShiftHook : public TrackReconstructionHook
 {
 private:
 

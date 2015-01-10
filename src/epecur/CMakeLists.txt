@@ -4,7 +4,7 @@ set( EPECUR_SRCS
 	loadfile.cpp
 	track.cpp
 	StdHits.cpp
-	TrackRecognitionHook.cpp
+	TrackReconstructionHook.cpp
 	git-rev-export.cpp
 
 )

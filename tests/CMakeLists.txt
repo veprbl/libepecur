@@ -5,7 +5,7 @@ add_executable (
 	unit_tests_main.cpp
 	loadfile_test.cpp
 	StdHits_test.cpp
-	TrackRecognitionHook_test.cpp
+	TrackReconstructionHook_test.cpp
 	track_test.cpp
         )
 
@@ -33,6 +33,6 @@ add_test(
 )
 
 add_test(
-	NAME TrackRecognitionHook
-	COMMAND $<TARGET_FILE:unit_tests> --run_test=TrackRecognitionHook_test
+	NAME TrackReconstructionHook
+	COMMAND $<TARGET_FILE:unit_tests> --run_test=TrackReconstructionHook_test
 )

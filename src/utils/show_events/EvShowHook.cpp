@@ -8,7 +8,7 @@
 
 #include "EvShowHook.hpp"
 
-EvShowHook::EvShowHook( Geometry &g ) : TrackRecognitionHook(g), event_id(0)
+EvShowHook::EvShowHook( Geometry &g ) : TrackReconstructionHook(g), event_id(0)
 {
 	// nothing
 }
@@ -17,7 +17,7 @@ void	EvShowHook::handle_event_end()
 {
 	events[event_id] = last_event;
 
-	TrackRecognitionHook::handle_event_end();
+	TrackReconstructionHook::handle_event_end();
 
 	tracks[event_id] = last_tracks[1][DEV_AXIS_X];
 

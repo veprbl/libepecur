@@ -6,7 +6,7 @@
 #include <TTree.h>
 
 #include <epecur/types.hpp>
-#include <epecur/TrackRecognitionHook.hpp>
+#include <epecur/TrackReconstructionHook.hpp>
 
 #include <boost/unordered/unordered_map.hpp>
 
@@ -64,7 +64,7 @@ struct drift_group_t
 	vector<double>	*drift_offset_ptr;
 };
 
-class TreeExportHook : public TrackRecognitionHook
+class TreeExportHook : public TrackReconstructionHook
 {
 private:
 

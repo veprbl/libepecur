@@ -13,14 +13,14 @@
 #include "AxialShiftHook.hpp"
 
 AxialShiftHook::AxialShiftHook( Geometry &g, unordered_map< chamber_id_t, TH1I* > &shift_hist )
-  : TrackRecognitionHook(g), shift_hist(shift_hist), track_count(0)
+  : TrackReconstructionHook(g), shift_hist(shift_hist), track_count(0)
 {
 	// nothing
 }
 
 void	AxialShiftHook::handle_event_end()
 {
-	TrackRecognitionHook::handle_event_end();
+	TrackReconstructionHook::handle_event_end();
 
 	BOOST_FOREACH(auto gr_tup, geom.group_chambers)
 	{

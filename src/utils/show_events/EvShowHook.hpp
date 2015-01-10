@@ -1,7 +1,7 @@
 #ifndef __EVSHOWHOOK_HPP
 #define __EVSHOWHOOK_HPP
 
-#include <epecur/TrackRecognitionHook.hpp>
+#include <epecur/TrackReconstructionHook.hpp>
 
 #include <vector>
 #include <boost/unordered/unordered_map.hpp>
@@ -10,7 +10,7 @@ using boost::unordered_map;
 
 const uint	LOAD_EVENTS_COUNT = 10;
 
-class EvShowHook : public TrackRecognitionHook
+class EvShowHook : public TrackReconstructionHook
 {
 private:
 

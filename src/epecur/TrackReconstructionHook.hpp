@@ -16,14 +16,14 @@
 
 using boost::unordered_map;
 
-class	TrackRecognitionHook: public StdHits
+class	TrackReconstructionHook: public StdHits
 {
 public:
 
 	Geometry	geom;
 	unordered_map< group_id_t, map< device_axis_t, vector<track_info_t> > >	last_tracks;
 
-	TrackRecognitionHook(Geometry &g, StdHits::calibration_curve_t *c = NULL);
+	TrackReconstructionHook(Geometry &g, StdHits::calibration_curve_t *c = NULL);
 
 	virtual void	handle_event_start() override;
 	virtual void	handle_event_end() override;

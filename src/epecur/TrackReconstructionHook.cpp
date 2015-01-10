@@ -4,9 +4,9 @@
 #include <boost/assert.hpp>
 #include <boost/foreach.hpp>
 
-#include "TrackRecognitionHook.hpp"
+#include "TrackReconstructionHook.hpp"
 
-TrackRecognitionHook::TrackRecognitionHook(
+TrackReconstructionHook::TrackReconstructionHook(
 	Geometry &g,
 	StdHits::calibration_curve_t *c
 	)
@@ -16,7 +16,7 @@ TrackRecognitionHook::TrackRecognitionHook(
 	// nothing
 }
 
-void	TrackRecognitionHook::handle_event_start()
+void	TrackReconstructionHook::handle_event_start()
 {
 	StdHits::handle_event_start();
 
@@ -29,7 +29,7 @@ void	TrackRecognitionHook::handle_event_start()
 	}
 }
 
-void	TrackRecognitionHook::handle_event_end()
+void	TrackReconstructionHook::handle_event_end()
 {
 	StdHits::handle_event_end();
 

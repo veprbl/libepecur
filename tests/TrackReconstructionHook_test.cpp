@@ -6,11 +6,11 @@
 
 #include <epecur/types.hpp>
 #include <epecur/geometry.hpp>
-#include <epecur/TrackRecognitionHook.hpp>
+#include <epecur/TrackReconstructionHook.hpp>
 
 using namespace std;
 
-BOOST_AUTO_TEST_SUITE( TrackRecognitionHook_test )
+BOOST_AUTO_TEST_SUITE( TrackReconstructionHook_test )
 
 const string	test_geometry = 
 	"// F1*1.normal_pos = 0\n"
@@ -30,11 +30,11 @@ const string	test_geometry =
 	"{5, 1, 0}\n" // device_id = 5
 ;
 
-BOOST_AUTO_TEST_CASE( check_basic_track_recognition )
+BOOST_AUTO_TEST_CASE( check_basic_track_reconstruction )
 {
 	stringstream	test_geometry_stream(test_geometry, ios_base::in);
 	Geometry	geometry(test_geometry_stream);
-	TrackRecognitionHook	hook(geometry);
+	TrackReconstructionHook	hook(geometry);
 
 	vector<wire_id_t>	wires_f1x1;
 	wires_f1x1.push_back(1); wires_f1x1.push_back(50);
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE( check_big_chisq_tracks_filter )
 		// Set max_chisq for group
 		geometry.group_max_chisq[1] = param_tuple.first;
 
-		TrackRecognitionHook	hook(geometry);
+		TrackReconstructionHook	hook(geometry);
 
 		vector<wire_id_t>	wires_f1x1;
 		wires_f1x1.push_back(90);
