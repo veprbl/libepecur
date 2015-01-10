@@ -15,7 +15,7 @@ TreeExportHook::TreeExportHook( Geometry &g, StdHits::calibration_curve_t *c )
 	: TrackReconstructionHook(g, c),
 	  event_tree(
 		  "events",
-		  "recognized tracks for prop chambers"
+		  "reconstructd tracks for prop chambers"
 		  "and triggered drift wires"
 		  ),
 	  target_info_tree("target_info", ""),

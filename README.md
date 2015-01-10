@@ -77,7 +77,7 @@ Plots trigger count distributions per wires for all axes of all chambers.
 show_events
 -----------
 
-Visualizes triggered wires on a per-group basis, displays recognized track projections.
+Visualizes triggered wires on a per-group basis, displays reconstructd track projections.
 Used mostly for debugging.
 
 export_tree
@@ -86,7 +86,7 @@ export_tree
 **export\_tree** does the first pass of the analysis itself. This utility will
 read RAW file twice. First to make a drift\_time distribution so it can produce
 the calibration curve for drift chambers. Second will actually ask **libepecur**
-to recognize both proportional and drift chamber tracks using more accurate
+to reconstruct both proportional and drift chamber tracks using more accurate
 drift\_time-aware drift chamber points.
 
 It is possible to skip drift calibration curve generation using *--rough-drift*

@@ -77,7 +77,7 @@ bool	delete_empty_chambers( vector< vector<wire_pos_t>* > &data, vector<double> 
 	return true;
 }
 
-track_info_t	recognize_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos )
+track_info_t	reconstruct_track( const vector< vector<wire_pos_t>* > &data, const vector<double> &normal_pos )
 {
 	const chamber_id_t	chambers_count = data.size();
 	vector<wire_pos_ptr_t>	best_wire_pos_ptr(chambers_count);
@@ -187,10 +187,10 @@ track_info_t	recognize_track( const vector< vector<wire_pos_t>* > &data, const v
 }
 
 /**
- * @warning This function deletes wires that lie on the recognized track.
+ * @warning This function deletes wires that lie on the reconstructd track.
  */
 template<track_type_t track_type>
-vector<track_info_t>	recognize_all_tracks( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq )
+vector<track_info_t>	reconstruct_all_tracks( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq )
 {
 	vector<uint>	used_chambers;
 	vector<track_info_t>	result;
@@ -208,7 +208,7 @@ vector<track_info_t>	recognize_all_tracks( vector< vector<wire_pos_t>* > data, v
 
 	while(delete_empty_chambers(data, normal_pos, used_chambers))
 	{
-		track_info_t	track = recognize_track(data, normal_pos);
+		track_info_t	track = reconstruct_track(data, normal_pos);
 
 		track.used_chambers = used_chambers;
 
@@ -225,7 +225,7 @@ vector<track_info_t>	recognize_all_tracks( vector< vector<wire_pos_t>* > data, v
 		{
 			wire_pos_ptr_t	deletion_pos = track.wire_pos_ptr[chamber_id];
 
-			// now delete wires that compose the recognized track
+			// now delete wires that compose the reconstructd track
 			if (track_type == track_type_t::prop)
 			{
 				chamber_data->erase(chamber_data->begin() + deletion_pos);
@@ -246,5 +246,5 @@ vector<track_info_t>	recognize_all_tracks( vector< vector<wire_pos_t>* > data, v
 	return result;
 }
 
-template vector<track_info_t> recognize_all_tracks<track_type_t::prop>( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq );
-template vector<track_info_t> recognize_all_tracks<track_type_t::drift>( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq );
+template vector<track_info_t> reconstruct_all_tracks<track_type_t::prop>( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq );
+template vector<track_info_t> reconstruct_all_tracks<track_type_t::drift>( vector< vector<wire_pos_t>* > data, vector<double> normal_pos, double max_chisq );

@@ -58,11 +58,11 @@ void	TrackReconstructionHook::handle_event_end()
 			if ((device_type == DEV_TYPE_PROP) ||
 			    ((device_type == DEV_TYPE_DRIFT) && (calibration_curve == NULL)))
 			{
-				last_tracks[group_id][axis] = recognize_all_tracks<track_type_t::prop>(block, normal_pos, max_chisq);
+				last_tracks[group_id][axis] = reconstruct_all_tracks<track_type_t::prop>(block, normal_pos, max_chisq);
 			}
 			else if (device_type == DEV_TYPE_DRIFT)
 			{
-				last_tracks[group_id][axis] = recognize_all_tracks<track_type_t::drift>(block, normal_pos, max_chisq);
+				last_tracks[group_id][axis] = reconstruct_all_tracks<track_type_t::drift>(block, normal_pos, max_chisq);
 			}
 			else
 			{
