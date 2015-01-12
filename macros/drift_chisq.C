@@ -2,6 +2,8 @@
 
 #include <TFile.h>
 #include <TCanvas.h>
+#include <TF1.h>
+#include <TFitResult.h>
 #include <TH1F.h>
 #include <TString.h>
 #include <TSystem.h>
@@ -32,6 +34,12 @@ TH1F*	makehist( string id, int ndf )
 	float	max_x = (ndf == 2) ? 2.0 : 0.5;
 	TH1F	*hist = new TH1F(hist_name.Data(), cut, 1000, min_x, max_x);
 	events->Draw(Form("%s_chisq >> %s", id.c_str(), hist_name.Data()), cut);
+	if (hits_count > 3)
+	{
+		TF1 *func = new TF1("func", "[0]*exp([1]*x)+[2]");
+		TFitResultPtr fit = hist->Fit(func, "SQ", "", 0.0, 0.5); // S - return fit result, Q - quiet
+		std::cout << hist_name << "\tslope: " << fit->Parameter(1) << "\tadd const: " << fit->Parameter(2) << std::endl;
+	}
 	if (id[1] == '3')
 	{
 		title += "Left ";
