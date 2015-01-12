@@ -130,6 +130,7 @@ int	main( int argc, char* argv[] )
 		catch( const char *err )
 		{
 			cerr << err << endl;
+			return EXIT_FAILURE;
 		}
 
 		calib_hook.generate_calibration_curves();
@@ -145,11 +146,12 @@ int	main( int argc, char* argv[] )
 	catch( const char *err )
 	{
 		cerr << err << endl;
+		return EXIT_FAILURE;
 	}
 
 	fill_info(info);
 
 	tree_file.Write();
 
-	return 0;
+	return EXIT_SUCCESS;
 }
