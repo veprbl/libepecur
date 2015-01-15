@@ -11,6 +11,8 @@ class DriftCalibHook : public StdHits
 {
 private:
 
+	int	drift_calib_cut;
+
 	unsigned int	generate_calibration_curve( chamber_id_t chamber_id );
 
 public:
@@ -18,7 +20,7 @@ public:
 	map< chamber_id_t, vector<unsigned int> >	time_distributions;
 	StdHits::calibration_curve_t	calibration_curve;
 
-	DriftCalibHook( Geometry &g );
+	DriftCalibHook(Geometry &g, int drift_calib_cut);
 	void	generate_calibration_curves();
 	virtual void	handle_event_end() override;
 };

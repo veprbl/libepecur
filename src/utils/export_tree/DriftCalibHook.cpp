@@ -9,8 +9,9 @@
 
 #include "DriftCalibHook.hpp"
 
-DriftCalibHook::DriftCalibHook( Geometry &g )
+DriftCalibHook::DriftCalibHook(Geometry &g, int _drift_calib_cut)
     : StdHits(g, NULL)
+    , drift_calib_cut(_drift_calib_cut)
 {
 	// Nothing
 }
@@ -91,7 +92,10 @@ void	DriftCalibHook::handle_event_end()
 						calib.resize(MAX_TIME_COUNTS);
 					}
 
-					calib[time]++;
+					if ((drift_calib_cut < 0) || (time < drift_calib_cut))
+					{
+						calib[time]++;
+					}
 				}
 			}
 		}

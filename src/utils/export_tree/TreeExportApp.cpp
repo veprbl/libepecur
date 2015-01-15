@@ -29,6 +29,7 @@ string geometry_filepath;
 string output_filepath;
 bool rough_drift;
 int thin_out_factor;
+int drift_calib_cut;
 
 void	ParseCommandLine( int argc, char* argv[] )
 {
@@ -43,6 +44,7 @@ void	ParseCommandLine( int argc, char* argv[] )
 		("output-file,o", po::value<string>(), "specify output file")
 		("rough-drift", "disable using time information for drift tracks")
 		("thin-out", po::value<int>()->default_value(1), "take only each n'th event")
+		("drift-calib-cut", po::value<int>()->default_value(-1), "end calibration curve at this drift time count value")
 		;
 	cmdline_options.add(visible);
 
@@ -76,6 +78,7 @@ void	ParseCommandLine( int argc, char* argv[] )
 	output_filepath = vm["output-file"].as<string>();
 	rough_drift = vm.count("rough-drift");
 	thin_out_factor = vm["thin-out"].as<int>();
+	drift_calib_cut = vm["drift-calib-cut"].as<int>();
 }
 
 void	fill_info( TTree &info )
@@ -119,7 +122,7 @@ int	main( int argc, char* argv[] )
 	TTree		info("info", "information about this file");
 	StdHits::calibration_curve_t	*calibration_curve = NULL;
 
-	DriftCalibHook	calib_hook(geom);
+	DriftCalibHook	calib_hook(geom, drift_calib_cut);
 
 	if (!rough_drift)
 	{
