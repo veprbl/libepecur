@@ -3,6 +3,7 @@
 #include <TCanvas.h>
 #include <TFile.h>
 #include <TH2F.h>
+#include <TLine.h>
 #include <TMath.h>
 #include <TSystem.h>
 #include <TTree.h>
@@ -11,6 +12,22 @@ static const int N = 5;
 static TCanvas	c("c", "", 1600.0, 1600.0 / N);
 static TFile	f(gSystem->Getenv("EPECUR_ROOTFILE"), "READ");
 static TTree	*events;
+
+double	calc_AB(double alpha)
+{
+	return sin((90 - alpha) * TMath::DegToRad()) * 17.0;
+}
+
+double	calc_DE(double alpha)
+{
+	if (alpha < -30) return NAN;
+	return sin((alpha + 30) * TMath::DegToRad()) * 17.0;
+}
+
+double	calc_AC(double alpha)
+{
+	return sin((-alpha + 30) * TMath::DegToRad()) * 17.0;
+}
 
 void	mk_plot(int i, bool select_same_plane, bool time_domain, double angle, double angle_bin_width)
 {
@@ -79,6 +96,35 @@ void	mk_plot(int i, bool select_same_plane, bool time_domain, double angle, doub
 		"COL Z"
 		);
 
+	if (!time_domain)
+	{
+		if (select_same_plane)
+		{
+			// To be implemented
+		}
+		else
+		{
+			double AC, DE, dx;
+			TLine *line_DE, *line_AC;
+
+			DE = calc_DE(angle);
+			dx = 8.5 - DE/2;
+			line_DE = new TLine(DE/2+dx, DE/2-dx, DE/2-dx, DE/2+dx);
+			line_DE->Draw();
+
+			DE = calc_DE(-angle);
+			dx = DE/2;
+			line_DE = new TLine(DE/2+dx, DE/2-dx, DE/2-dx, DE/2+dx);
+			line_DE->Draw();
+
+			AC = calc_AC(angle);
+			dx = 8.5 - AC;
+			line_AC = new TLine(0, AC, dx, AC+dx);
+			line_AC->Draw();
+			line_AC = new TLine(AC, 0, AC+dx, dx);
+			line_AC->Draw();
+		}
+	}
 }
 
 void	drift_sum_rule()
