@@ -15,7 +15,7 @@ EvShowHook::EvShowHook( Geometry &g ) : TrackReconstructionHook(g), event_id(0)
 
 void	EvShowHook::handle_event_end()
 {
-	events[event_id] = last_event;
+	events[event_id] = std::move(last_event);
 
 	TrackReconstructionHook::handle_event_end();
 
