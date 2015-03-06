@@ -107,7 +107,13 @@ void	mk_plot(int i, const char *chamber, int plane_id, bool select_same_plane, b
 	{
 		if (select_same_plane)
 		{
-			// To be implemented
+			double AB, dx;
+			TLine *line_AB;
+
+			AB = calc_AB(angle);
+			dx = 8.5 - AB/2;
+			line_AB = new TLine(AB/2+dx, AB/2-dx, AB/2-dx, AB/2+dx);
+			line_AB->Draw();
 		}
 		else
 		{
