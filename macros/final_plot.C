@@ -60,16 +60,12 @@ void	final_plot()
 		Long64_t entries = c.GetEntries();
 		cout << "Entries: " << entries << endl;
 
-		char const *n_name = Form("n%i", momentum);
-		char const *o_r_name = Form("o%i_r", momentum);
-		char const *o_l_name = Form("o%i_l", momentum);
-
-		TH1F	*n = new TH1F(n_name, "normalization", (1250-820), 820, 1250);
-		c.Draw(Form("beam_momentum >> %s", n_name), "((event_cause & 0x2) == 0x2) && (abs(t1X_c0+t1X_c1*540)<80) && ((t2X_c0+t2X_c1*990)**2 + (t2Y_c0+t2Y_c1*990)**2<25) && (min_cycle_efficiency > 0.15)"
+		TH1F	*n = new TH1F(Form("n%i", momentum), "normalization", (1250-820), 820, 1250);
+		c.Draw(Form("beam_momentum >> %s", n->GetName()), "((event_cause & 0x2) == 0x2) && (abs(t1X_c0+t1X_c1*540)<80) && ((t2X_c0+t2X_c1*990)**2 + (t2Y_c0+t2Y_c1*990)**2<25) && (min_cycle_efficiency > 0.15)"
 			, "E1 GOFF", entries
 			);
-		TH1F	*o_r = new TH1F(o_r_name, "output right", (1250-820), 820, 1250);
-		c.Draw(Form("beam_momentum >> %s", o_r_name),
+		TH1F	*o_r = new TH1F(Form("o%i_r", momentum), "output right", (1250-820), 820, 1250);
+		c.Draw(Form("beam_momentum >> %s", o_r->GetName()),
 	"((((event_cause & 0x1) == 0x1) && (abs(t1X_c0+t1X_c1*540)<80) && ((t2X_c0+t2X_c1*990)**2 + (t2Y_c0+t2Y_c1*990)**2<25) && (F2R_x > -200) && (F2R_x < 120) && (RF2_x > -200) && (RF2_x < 120) && (theta_r > 0) && (theta_l != theta_l) && (efficiency_r > 0.7) && (min_cycle_efficiency > 0.15) "/*&& (theta_r > 0.4) && (theta_r < 0.8) && (abs(phi_r+3.14/2)<0.6)*/") ? 1 : 0) / efficiency_r"
 			, "E1 GOFF", entries
 			);
@@ -85,8 +81,8 @@ void	final_plot()
 		r_r->Draw("same");
 		c_r.Update();
 
-		TH1F	*o_l = new TH1F(o_l_name, "output left", (1250-820), 820, 1250);
-		c.Draw(Form("beam_momentum >> %s", o_l_name),
+		TH1F	*o_l = new TH1F(Form("o%i_l", momentum), "output left", (1250-820), 820, 1250);
+		c.Draw(Form("beam_momentum >> %s", o_l->GetName()),
 	"((((event_cause & 0x1) == 0x1) && (abs(t1X_c0+t1X_c1*540)<80) && ((t2X_c0+t2X_c1*990)**2 + (t2Y_c0+t2Y_c1*990)**2<25) && (F2L_x > -200) && (F2L_x < 120) && (LF2_x > -200) && (LF2_x < 120) && (theta_l > 0) && (theta_r != theta_r) && (efficiency_l > 0.7) && (min_cycle_efficiency > 0.15) "/*&& (theta_l > 0.4) && (theta_l < 0.8) && (abs(phi_l-3.14/2)<0.6)*/") ? 1 : 0) / efficiency_l"
 			, "E1 GOFF", entries
 			);
