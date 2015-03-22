@@ -116,7 +116,8 @@ TH1F*	make_drift_efficiency_hist(char arm, char axis, TTree *events)
 		);
 	u_t->Divide(four_hit_theta, any_theta);
 	u_t->GetXaxis()->SetTitle("\\Theta, rad");
-	u_t->GetYaxis()->SetTitle("Effectivity, 1");
+	u_t->GetYaxis()->SetTitle("Efficiency, 1");
+	u_t->GetYaxis()->SetRangeUser(0.0, 1.0);
 	u_t->Draw();
 
 	return u_t;
