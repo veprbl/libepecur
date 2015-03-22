@@ -11,37 +11,49 @@
 
 using std::string;
 
-static TCanvas	c1, c2;
+static TCanvas	c1, c2, c3;
 static const double	ANGLE_MAX = 2.0;
 static const int	ANGLE_BINS = 25;
 static const double	X_MIN = -200;
 static const double	X_MAX = 120;
 static const int	X_BINS = 50;
 
-TH1F*	make_drift_efficiency_hist(TTree *events)
+TH1F*	make_drift_efficiency_hist(char arm, char axis, TTree *events)
 {
+	if ((arm != 'l') && (arm != 'r'))
+	{
+		throw "make_drift_efficiency_hist: Invalid arm value";
+	}
+	if ((axis != 'X') && (axis != 'Y'))
+	{
+		throw "make_drift_efficiency_hist: Invalid axis value";
+	}
+	char arm_chamber = (arm == 'l') ? '3' : '4';
+	int canvas_cell = 1 + (int)(arm == 'l') + 2 * (int)(axis == 'X');
+
 	TH2F *four_hit_theta_x = new TH2F(
-		"four_hit_theta_x", "",
+		Form("%c%c_four_hit_theta_x", arm, axis), "",
 		ANGLE_BINS, 0, ANGLE_MAX,
 		X_BINS, X_MIN, X_MAX
 		);
 	four_hit_theta_x->SetOption("zcol");
 	TH2F *any_theta_x = new TH2F(
-		"any_theta_x", "",
+		Form("%c%c_any_theta_x", arm, axis), "",
 		ANGLE_BINS, 0, ANGLE_MAX,
 		X_BINS, X_MIN, X_MAX
 		);
 	any_theta_x->SetOption("zcol");
 
 	TH1F *four_hit_theta = new TH1F(
-		"four_hit_theta", "",
+		Form("%c%c_four_hit_theta", arm, axis), "",
 		ANGLE_BINS, 0, ANGLE_MAX
 		);
 	TH1F *any_theta = new TH1F(
-		"any_theta", "",
+		Form("%c%c_any_theta", arm, axis), "",
 		ANGLE_BINS, 0, ANGLE_MAX
 		);
 
+	c1.cd();
 	TH2F	*beam_profile = new TH2F("beam_profile", ";Z, [mm];Y, [mm]", 100, -20, 20, 100, -20, 20);
 	beam_profile->SetOption("zcol");
 	events->Draw("RL_y:RL_z >> beam_profile", "", "ZCOL");
@@ -69,11 +81,17 @@ TH1F*	make_drift_efficiency_hist(TTree *events)
 		X_MAX, X_MIN
 		);
 
-	c1.cd();
-	events->Draw("RL_x:theta_l >> any_theta_x", cut);
-	events->Draw("RL_x:theta_l >> four_hit_theta_x", Form("(t3X_hits_count[0] == 4) && %s", cut));
+	c2.cd(canvas_cell);
+	events->Draw(
+		Form("RL_x:theta_%c >> %s", arm, any_theta_x->GetName()),
+		cut
+		);
+	events->Draw(
+		Form("RL_x:theta_%c >> %s", arm, four_hit_theta_x->GetName()),
+		Form("(t%c%c_hits_count[0] == 4) && %s", arm_chamber, axis, cut)
+		);
 	TH2F *u_tx = new TH2F(
-		"efficiency_theta_x", "",
+		Form("%c%c_efficiency_theta_x", arm, axis), "",
 		ANGLE_BINS, 0, ANGLE_MAX,
 		X_BINS, X_MIN, X_MAX
 		);
@@ -83,11 +101,17 @@ TH1F*	make_drift_efficiency_hist(TTree *events)
 	u_tx->SetOption("zcol");
 	u_tx->Draw("zcol");
 
-	c2.cd();
-	events->Draw("theta_l >> any_theta", cut);
-	events->Draw("theta_l >> four_hit_theta", Form("(t3X_hits_count[0] == 4) && %s", cut));
+	c3.cd(canvas_cell);
+	events->Draw(
+		Form("theta_%c >> %s", arm, any_theta->GetName()),
+		cut
+		);
+	events->Draw(
+		Form("theta_%c >> %s", arm, four_hit_theta->GetName()),
+		Form("(t%c%c_hits_count[0] == 4) && %s", arm_chamber, axis, cut)
+		);
 	TH1F *u_t = new TH1F(
-		"efficiency_theta", "",
+		Form("%c%c_efficiency_theta", arm, axis), "",
 		ANGLE_BINS, 0, ANGLE_MAX
 		);
 	u_t->Divide(four_hit_theta, any_theta);
@@ -100,13 +124,24 @@ TH1F*	make_drift_efficiency_hist(TTree *events)
 
 void	drift_efficiency()
 {
-	TDirectory	*backup = gDirectory;
+	TDirectory	*rootdir = gDirectory;
 	TFile	f(gSystem->Getenv("EPECUR_ROOTFILE2"), "READ");
 	TTree	*events = (TTree*)f.Get("events");
-	backup->cd();
+	rootdir->cd();
 
-	make_drift_efficiency_hist(events);
+	c2.Divide(2, 2);
+	c3.Divide(2, 2);
+
+	rootdir->mkdir("lx")->cd();
+	make_drift_efficiency_hist('l', 'X', events);
+	rootdir->mkdir("ly")->cd();
+	make_drift_efficiency_hist('l', 'Y', events);
+	rootdir->mkdir("rx")->cd();
+	make_drift_efficiency_hist('r', 'X', events);
+	rootdir->mkdir("ry")->cd();
+	make_drift_efficiency_hist('r', 'Y', events);
 
 	c1.Show();
 	c2.Show();
+	c3.Show();
 }
