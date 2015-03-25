@@ -204,9 +204,9 @@ void plot_correlation()
 #endif
 
 	double beam_momentum, theta_l, theta_r;
-	events->GetBranch("beam_momentum")->SetAddress(&beam_momentum);
-	events->GetBranch("theta_l")->SetAddress(&theta_l);
-	events->GetBranch("theta_r")->SetAddress(&theta_r);
+	events->SetBranchAddress("beam_momentum", &beam_momentum);
+	events->SetBranchAddress("theta_l", &theta_l);
+	events->SetBranchAddress("theta_r", &theta_r);
 
 	TH2F *h1 = new TH2F("h1", run_name, 400, -30, 30, 400, 0.0, 180.0);
 	h1->SetXTitle("\\Theta_{cm,p,right} - \\Theta_{cm,pi,left}");
