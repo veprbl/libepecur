@@ -36,6 +36,7 @@ static void	make_plot( const char* i )
 	hist_name = Form("h%s_eff", i);
 	TH1F	*eff = new TH1F(hist_name, "", time_bins, min_time, max_time);
 	eff->Divide(hit, all);
+	eff->GetYaxis()->SetRangeUser(0.0, 1.0);
 	eff->Draw();
 
 	c.cd(++pad_id);
