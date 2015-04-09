@@ -28,6 +28,11 @@
 #include <TStyle.h>
 
 
+static double sqr(double x)
+{
+	return x*x;
+}
+
 void InclCrossSection::Begin(TTree * /*tree*/)
 {
 	// The Begin() function is called at the start of the query.
@@ -46,6 +51,15 @@ void InclCrossSection::SlaveBegin(TTree * /*tree*/)
 
 	TString option = GetOption();
 
+	fNorm = new TH1F("fNorm", "normalization", (1250-820), 820, 1250);
+	fNorm->Sumw2();
+	GetOutputList()->Add(fNorm);
+	fRawOutputLeft = new TH1F("fRawOutputLeft", "left", (1250-820), 820, 1250);
+	fRawOutputLeft->Sumw2();
+	GetOutputList()->Add(fRawOutputLeft);
+	fRawOutputRight = new TH1F("fRawOutputRight", "Right", (1250-820), 820, 1250);
+	fRawOutputRight->Sumw2();
+	GetOutputList()->Add(fRawOutputRight);
 }
 
 Bool_t InclCrossSection::Process(Long64_t entry)
@@ -68,6 +82,39 @@ Bool_t InclCrossSection::Process(Long64_t entry)
 	//
 	// The return value is currently not used.
 
+	GetEntry(entry);
+
+	if (
+		   (fabs((*t1X_c0)[0] + (*t1X_c1)[0] * 540) < 80)
+		&& (sqr((*t2X_c0)[0] + (*t2X_c1)[0] * 990) + sqr((*t2Y_c0)[0] + (*t2Y_c1)[0] * 990) < 25)
+		&& (min_cycle_efficiency > 0.15)
+		)
+	{
+		if ((event_cause & 0x2) == 0x2)
+		{
+			fNorm->Fill(beam_momentum);
+		}
+
+		if ((event_cause & 0x1) == 0x1)
+		{
+			if (
+				   (F2R_x > -200) && (F2R_x < 120) && (RF2_x > -200) && (RF2_x < 120)
+				&& (theta_r > 0) && (theta_l != theta_l)
+				&& (efficiency_r > 0.7)
+				)
+			{
+				fRawOutputRight->Fill(beam_momentum, 1.0 / efficiency_r);
+			}
+			if (
+				   (F2L_x > -200) && (F2L_x < 120) && (LF2_x > -200) && (LF2_x < 120)
+				&& (theta_l > 0) && (theta_r != theta_r)
+				&& (efficiency_l > 0.7)
+				)
+			{
+				fRawOutputLeft->Fill(beam_momentum, 1.0 / efficiency_l);
+			}
+		}
+	}
 
 	return kTRUE;
 }
@@ -86,4 +133,13 @@ void InclCrossSection::Terminate()
 	// a query. It always runs on the client, it can be used to present
 	// the results graphically or save the results to file.
 
+	fOutputLeft = new TH1F("fOutputLeft", "Output in the left arm", (1250-820), 820, 1250);
+	fOutputLeft->Sumw2();
+	fOutputLeft->Divide(fRawOutputLeft, fNorm, 1, 100);
+	GetOutputList()->Add(fOutputLeft);
+
+	fOutputRight = new TH1F("fOutputRight", "Output in the right arm", (1250-820), 820, 1250);
+	fOutputRight->Sumw2();
+	fOutputRight->Divide(fRawOutputRight, fNorm, 1, 100);
+	GetOutputList()->Add(fOutputRight);
 }
