@@ -1,5 +1,5 @@
-#define InclCrossSection_cxx
-// The class definition in InclCrossSection.h has been generated automatically
+#define InelCrossSection_cxx
+// The class definition in InelCrossSection.h has been generated automatically
 // by the ROOT utility TTree::MakeSelector(). This class is derived
 // from the ROOT class TSelector. For more information on the TSelector
 // framework see $ROOTSYS/README/README.SELECTOR or the ROOT User Manual.
@@ -18,12 +18,12 @@
 //
 // To use this file, try the following session on your Tree T:
 //
-// root> T->Process("InclCrossSection.C")
-// root> T->Process("InclCrossSection.C","some options")
-// root> T->Process("InclCrossSection.C+")
+// root> T->Process("InelCrossSection.C")
+// root> T->Process("InelCrossSection.C","some options")
+// root> T->Process("InelCrossSection.C+")
 //
 
-#include "InclCrossSection.h"
+#include "InelCrossSection.h"
 #include <TH2.h>
 #include <TStyle.h>
 
@@ -33,7 +33,7 @@ static double sqr(double x)
 	return x*x;
 }
 
-void InclCrossSection::Begin(TTree * /*tree*/)
+void InelCrossSection::Begin(TTree * /*tree*/)
 {
 	// The Begin() function is called at the start of the query.
 	// When running with PROOF Begin() is only called on the client.
@@ -43,7 +43,7 @@ void InclCrossSection::Begin(TTree * /*tree*/)
 
 }
 
-void InclCrossSection::SlaveBegin(TTree * /*tree*/)
+void InelCrossSection::SlaveBegin(TTree * /*tree*/)
 {
 	// The SlaveBegin() function is called after the Begin() function.
 	// When running with PROOF SlaveBegin() is called on each slave server.
@@ -62,12 +62,12 @@ void InclCrossSection::SlaveBegin(TTree * /*tree*/)
 	GetOutputList()->Add(fRawOutputRight);
 }
 
-Bool_t InclCrossSection::Process(Long64_t entry)
+Bool_t InelCrossSection::Process(Long64_t entry)
 {
 	// The Process() function is called for each entry in the tree (or possibly
 	// keyed object in the case of PROOF) to be processed. The entry argument
 	// specifies which entry in the currently loaded tree is to be processed.
-	// It can be passed to either InclCrossSection::GetEntry() or TBranch::GetEntry()
+	// It can be passed to either InelCrossSection::GetEntry() or TBranch::GetEntry()
 	// to read either all or the required parts of the data. When processing
 	// keyed objects with PROOF, the object is already loaded and is available
 	// via the fObject pointer.
@@ -119,7 +119,7 @@ Bool_t InclCrossSection::Process(Long64_t entry)
 	return kTRUE;
 }
 
-void InclCrossSection::SlaveTerminate()
+void InelCrossSection::SlaveTerminate()
 {
 	// The SlaveTerminate() function is called after all entries or objects
 	// have been processed. When running with PROOF SlaveTerminate() is called
@@ -127,7 +127,7 @@ void InclCrossSection::SlaveTerminate()
 
 }
 
-void InclCrossSection::Terminate()
+void InelCrossSection::Terminate()
 {
 	// The Terminate() function is the last function to be called during
 	// a query. It always runs on the client, it can be used to present

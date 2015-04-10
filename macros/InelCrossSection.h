@@ -5,8 +5,8 @@
 // found on file: /home/veprbl/pass2_full/27041098.root
 //////////////////////////////////////////////////////////
 
-#ifndef InclCrossSection_h
-#define InclCrossSection_h
+#ifndef InelCrossSection_h
+#define InelCrossSection_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -18,7 +18,7 @@
 #include "vector"
 #include "vector"
 
-class InclCrossSection : public TSelector
+class InelCrossSection : public TSelector
 {
 public :
 	TH1F *fNorm; //! Xsec normalization
@@ -163,7 +163,7 @@ public :
 	TBranch        *b_efficiency_l;   //!
 	TBranch        *b_efficiency_r;   //!
 
-	InclCrossSection(TTree * /*tree*/ =0)
+	InelCrossSection(TTree * /*tree*/ =0)
 		: fNorm(0)
 		, fRawOutputLeft(0)
 		, fRawOutputRight(0)
@@ -171,7 +171,7 @@ public :
 		, fOutputRight(0)
 		, fChain(0)
 	{ }
-	virtual ~InclCrossSection() { }
+	virtual ~InelCrossSection() { }
 	virtual Int_t   Version() const
 	{
 		return 2;
@@ -204,13 +204,13 @@ public :
 	virtual void    SlaveTerminate();
 	virtual void    Terminate();
 
-	ClassDef(InclCrossSection,0);
+	ClassDef(InelCrossSection,0);
 };
 
 #endif
 
-#ifdef InclCrossSection_cxx
-void InclCrossSection::Init(TTree *tree)
+#ifdef InelCrossSection_cxx
+void InelCrossSection::Init(TTree *tree)
 {
 	// The Init() function is called when the selector needs to initialize
 	// a new tree or chain. Typically here the branch addresses and branch
@@ -318,7 +318,7 @@ void InclCrossSection::Init(TTree *tree)
 	fChain->SetBranchAddress("efficiency_r", &efficiency_r, &b_efficiency_r);
 }
 
-Bool_t InclCrossSection::Notify()
+Bool_t InelCrossSection::Notify()
 {
 	// The Notify() function is called when a new file is opened. This
 	// can be either for a new TTree in a TChain or when when a new TTree
@@ -329,4 +329,4 @@ Bool_t InclCrossSection::Notify()
 	return kTRUE;
 }
 
-#endif // #ifdef InclCrossSection_cxx
+#endif // #ifdef InelCrossSection_cxx

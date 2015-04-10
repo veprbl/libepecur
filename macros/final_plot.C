@@ -58,7 +58,7 @@ void	final_plot()
 			c.Add(filename);
 		}
 
-		c.Process("InclCrossSection.C+");
+		c.Process("InelCrossSection.C+");
 
 		TH1F *r_r = (TH1F*)p->GetOutputList()->FindObject("fOutputRight");
 		r_r->GetXaxis()->SetTitle("p_\\pi, [MeV/c]");
