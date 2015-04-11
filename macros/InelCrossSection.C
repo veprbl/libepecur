@@ -51,13 +51,13 @@ void InelCrossSection::SlaveBegin(TTree * /*tree*/)
 
 	TString option = GetOption();
 
-	fNorm = new TH1F("fNorm", "normalization", (1250-820), 820, 1250);
+	fNorm = new TH1F("fNorm", "normalization", BIN_COUNT, BIN_MIN, BIN_MAX);
 	fNorm->Sumw2();
 	GetOutputList()->Add(fNorm);
-	fRawOutputLeft = new TH1F("fRawOutputLeft", "left", (1250-820), 820, 1250);
+	fRawOutputLeft = new TH1F("fRawOutputLeft", "left", BIN_COUNT, BIN_MIN, BIN_MAX);
 	fRawOutputLeft->Sumw2();
 	GetOutputList()->Add(fRawOutputLeft);
-	fRawOutputRight = new TH1F("fRawOutputRight", "Right", (1250-820), 820, 1250);
+	fRawOutputRight = new TH1F("fRawOutputRight", "Right", BIN_COUNT, BIN_MIN, BIN_MAX);
 	fRawOutputRight->Sumw2();
 	GetOutputList()->Add(fRawOutputRight);
 }
@@ -133,12 +133,12 @@ void InelCrossSection::Terminate()
 	// a query. It always runs on the client, it can be used to present
 	// the results graphically or save the results to file.
 
-	fOutputLeft = new TH1F("fOutputLeft", "Output in the left arm", (1250-820), 820, 1250);
+	fOutputLeft = new TH1F("fOutputLeft", "Output in the left arm", BIN_COUNT, BIN_MIN, BIN_MAX);
 	fOutputLeft->Sumw2();
 	fOutputLeft->Divide(fRawOutputLeft, fNorm, 1, 100);
 	GetOutputList()->Add(fOutputLeft);
 
-	fOutputRight = new TH1F("fOutputRight", "Output in the right arm", (1250-820), 820, 1250);
+	fOutputRight = new TH1F("fOutputRight", "Output in the right arm", BIN_COUNT, BIN_MIN, BIN_MAX);
 	fOutputRight->Sumw2();
 	fOutputRight->Divide(fRawOutputRight, fNorm, 1, 100);
 	GetOutputList()->Add(fOutputRight);
