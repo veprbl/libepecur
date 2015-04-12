@@ -37,8 +37,8 @@ void	final_plot()
 	}
 
 	double ymin, ymax;
-	ymin = 0.0032;
-	ymax = 0.0063;
+	ymin = FLT_MAX;
+	ymax = FLT_MIN;
 	int color = 1;
 
 	for(set<int>::iterator it = momentums.begin(); it != momentums.end(); it++)
@@ -64,20 +64,28 @@ void	final_plot()
 		r_r->GetXaxis()->SetTitle("p_\\pi, [MeV/c]");
 		r_r->GetYaxis()->SetTitle("\\sigma");
 		r_r->SetLineColor(color);
-		r_r->GetYaxis()->SetRangeUser(ymin, ymax);
 		c_r.cd();
 		r_r->Draw("same");
-		c_r.Update();
 
 
 		TH1F *r_l = (TH1F*)p->GetOutputList()->FindObject("fOutputLeft");
 		r_l->GetXaxis()->SetTitle("p_\\pi, [MeV/c]");
 		r_l->GetYaxis()->SetTitle("\\sigma");
 		r_l->SetLineColor(color);
-		r_l->GetYaxis()->SetRangeUser(ymin, ymax);
 		c_l.cd();
 		r_l->Draw("same");
+
+		static TH1F *r_r_first = r_r;
+		static TH1F *r_l_first = r_l;
+
+		ymin = std::min(r_r->GetMinimum(0.), ymin);
+		ymin = std::min(r_l->GetMinimum(0.), ymin);
+		ymax = std::max(r_r->GetMaximum(), ymax);
+		ymax = std::max(r_l->GetMaximum(), ymax);
+		r_l_first->GetYaxis()->SetRangeUser(0.98 * ymin, 1.02 * ymax);
+		r_r_first->GetYaxis()->SetRangeUser(0.98 * ymin, 1.02 * ymax);
 		c_l.Update();
+		c_r.Update();
 
 		next_color(color);
 	}
