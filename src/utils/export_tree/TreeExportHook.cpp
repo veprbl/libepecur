@@ -84,16 +84,23 @@ TreeExportHook::TreeExportHook( Geometry &g, StdHits::calibration_curve_t *c )
 
 TreeExportHook::~TreeExportHook()
 {
+	BOOST_FOREACH(auto ptr, names)
+	{
+		delete[] ptr;
+	}
+}
+
+void	TreeExportHook::Write()
+{
 	if (cycle_all_count != 0)
 	{
 		std::cerr << "Warning: Last cycle didn't end properly" << std::endl;
 		write_cycle_efficiencies();
 	}
 
-	BOOST_FOREACH(auto ptr, names)
-	{
-		delete[] ptr;
-	}
+	event_tree.Write();
+	target_info_tree.Write();
+	cycle_efficiency_tree.Write();
 }
 
 void	TreeExportHook::init_track_group(

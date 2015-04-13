@@ -154,7 +154,8 @@ int	main( int argc, char* argv[] )
 
 	fill_info(info);
 
-	tree_file.Write();
+	hook.Write();
+	info.Write();
 
 	return EXIT_SUCCESS;
 }

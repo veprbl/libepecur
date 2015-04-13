@@ -101,6 +101,7 @@ public:
 
 	TreeExportHook( Geometry &g, StdHits::calibration_curve_t *c );
 	~TreeExportHook();
+	void	Write();
 	const char*	store_name( string name );
 	virtual void	handle_timestamp( int32_t timestamp ) override;
 	virtual void	handle_trig_end_cycle() override;
