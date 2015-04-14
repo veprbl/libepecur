@@ -2,7 +2,6 @@ set( LIB_EPECUR_MACROS_SRCS
 
 	adjustment_shifts.C
 	drift_calib.C
-	drift_calib_curve.C
 	drift_chisq.C
 	drift_efficiency.C
 	drift_efficiency_over_time.C

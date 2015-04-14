@@ -15,7 +15,6 @@ using std::string;
 
 void	adjustment_shifts();
 void	drift_calib();
-void	drift_calib_curve();
 void	drift_chisq();
 void	drift_efficiency();
 void	drift_efficiency_over_time();
@@ -115,8 +114,6 @@ int	main(void)
 	adjustment_shifts();
 	out.mkdir("drift_calib")->cd();
 	drift_calib();
-	out.mkdir("drift_calib_curve")->cd();
-	drift_calib_curve();
 	out.mkdir("drift_chisq")->cd();
 	drift_chisq();
 	out.mkdir("drift_efficiency")->cd();
