@@ -21,6 +21,7 @@ void	next_color(int &color)
 }
 
 TCanvas c_l("c_l", "left"), c_r("c_r", "right");
+TCanvas c_ratio("c_ratio", "ratio");
 
 void	final_plot()
 {
@@ -86,6 +87,15 @@ void	final_plot()
 		r_r_first->GetYaxis()->SetRangeUser(0.98 * ymin, 1.02 * ymax);
 		c_l.Update();
 		c_r.Update();
+
+		TAxis *axis = r_r->GetXaxis();
+		TH1F *ratio = new TH1F("ratio", ";p_\\pi, [MeV/c];\\sigma_{\\text{right}} / \\sigma_{\\text{left}}", axis->GetNbins(), axis->GetXmin(), axis->GetXmax());
+		ratio->Divide(r_r, r_l);
+		ratio->GetYaxis()->SetRangeUser(0.8, 1.2);
+		ratio->SetLineColor(color);
+		c_ratio.cd();
+		ratio->Draw("same");
+		c_ratio.Update();
 
 		next_color(color);
 	}
