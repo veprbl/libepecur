@@ -83,9 +83,26 @@ void	DriftCalibHook::handle_event_end()
 
 			BOOST_FOREACH(chamber_id_t chamber_id, chambers)
 			{
+				vector<wire_pos_t> &wire_pos = last_event_drift_wire_pos[chamber_id];
+				auto it = wire_pos.begin();
+
 				BOOST_FOREACH(uint16_t time, last_event_drift_time[chamber_id])
 				{
 					auto	&calib = time_distributions[chamber_id];
+
+					// Here we are removing hits from the adjacent cells
+					bool fail = false;
+					for(auto it2 = wire_pos.begin(); it2 != it; it2++)
+					{
+						if (fabs(*it - *it2) <= 2.001)
+						{
+							fail = true;
+							break;
+						}
+					}
+					if (fail)
+						break;
+					it++;
 
 					if (calib.empty())
 					{
