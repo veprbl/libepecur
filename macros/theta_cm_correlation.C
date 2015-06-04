@@ -167,6 +167,7 @@ void plot_kinematics()
 			g_p_pi_lab->SetPoint(i, theta_lab * TMath::RadToDeg(), theta_pi_lab * TMath::RadToDeg());
 		}
 	}
+	g_pi_p_lab->RemovePoint(0);
 	TLegend *legend;
 	c1.cd(1);
 	g_pi_pi_theta_cm->GetXaxis()->SetLimits(0.0, 180.0);;
