@@ -146,20 +146,20 @@ void plot_kinematics()
 	g_pi_pi_theta_cm->GetHistogram()->SetMaximum(180.0);
 	g_pi_pi_theta_cm->Draw("AL");
 	g_pi_p_lab->Draw("SAME");
-	g_pi_pi_theta_cm->GetXaxis()->SetTitle("\\text{Pions's }\\Theta_{lab}");
+	g_pi_pi_theta_cm->GetXaxis()->SetTitle("\\Theta_{\\text{лаб}}\\text{ пиона}");
 	legend = new TLegend(0.15,0.7,0.45,0.9);
-	legend->AddEntry(g_pi_pi_theta_cm, "\\text{Pion's }\\Theta_{cm}", "l");
-	legend->AddEntry(g_pi_p_lab, "\\text{Proton's }\\Theta_{lab}", "l");
+	legend->AddEntry(g_pi_pi_theta_cm, "\\Theta_{\\text{ц.м.}}\\text{ пиона}", "l");
+	legend->AddEntry(g_pi_p_lab, "\\Theta_{\\text{лаб}}\\text{ протона}", "l");
 	legend->Draw();
 	c1.cd(2);
 	g_p_pi_theta_cm->GetXaxis()->SetLimits(0.0, 180.0);;
 	g_p_pi_theta_cm->GetHistogram()->SetMaximum(180.0);
 	g_p_pi_theta_cm->Draw("AL");
 	g_p_pi_lab->Draw("SAME");
-	g_p_pi_theta_cm->GetXaxis()->SetTitle("\\text{Proton's }\\Theta_{lab}");
+	g_p_pi_theta_cm->GetXaxis()->SetTitle("\\Theta_{\\text{лаб}}\\text{ протона}");
 	legend = new TLegend(0.6-0.05,0.7,0.9-0.05,0.9);
-	legend->AddEntry(g_p_pi_theta_cm, "\\text{Pions' }\\Theta_{cm}", "l");
-	legend->AddEntry(g_p_pi_lab, "\\text{Pion's }\\Theta_{lab}", "l");
+	legend->AddEntry(g_p_pi_theta_cm, "\\Theta_{\\text{ц.м.}}\\text{ пиона}", "l");
+	legend->AddEntry(g_p_pi_lab, "\\Theta_{\\text{лаб}}\\text{ пиона}", "l");
 	legend->Draw();
 	c1.SaveAs("elastic_kinematics.tex");
 }
@@ -183,8 +183,8 @@ void plot_correlation()
 	events->SetBranchAddress("theta_r", &theta_r);
 
 	TH2F *h1 = new TH2F("h1", run_name, 50, -30, 30, 50, 0.0, 180.0);
-	h1->SetXTitle("\\Theta_{cm,p,right} - \\Theta_{cm,pi,left}");
-	h1->SetYTitle("\\Theta_{cm,pi,left}");
+	h1->SetXTitle("\\Theta_{\\text{ц.м.;p;право}} - \\Theta_{\\text{ц.м.;}\\pi\\text{;лево}}");
+	h1->SetYTitle("\\Theta_{\\text{ц.м.;}\\pi\\text{;лево}}");
 	h1->SetStats(kFALSE);
 	// right <-> left exchange
 	TH2F *h2 = new TH2F("h2", run_name, 50, -30, 30, 50, 0.0, 180.0);
