@@ -7,6 +7,7 @@
 #include <TMath.h>
 #include <TSystem.h>
 #include <TTree.h>
+#include <TStyle.h>
 
 static const int N = 5;
 const int NUM_CHAMBERS = 4;
