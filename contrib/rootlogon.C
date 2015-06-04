@@ -28,24 +28,24 @@ babarStyle->SetStatColor(0);
 //babarStyle->SetFillColor(0);
 
 // set the paper & margin sizes
-babarStyle->SetPaperSize(20,26);
+babarStyle->SetPaperSize(15,15);
 babarStyle->SetPadTopMargin(0.05);
 babarStyle->SetPadRightMargin(0.12);
 babarStyle->SetPadBottomMargin(0.16);
 babarStyle->SetPadLeftMargin(0.13);
 
 // use large Times-Roman fonts
-babarStyle->SetTextFont(132);
-babarStyle->SetTextSize(0.08);
-babarStyle->SetLabelFont(132,"x");
-babarStyle->SetLabelFont(132,"y");
-babarStyle->SetLabelFont(132,"z");
+//babarStyle->SetTextFont(132);
+//babarStyle->SetTextSize(0.08);
+//babarStyle->SetLabelFont(132,"x");
+//babarStyle->SetLabelFont(132,"y");
+//babarStyle->SetLabelFont(132,"z");
 babarStyle->SetLabelSize(0.05,"x");
-babarStyle->SetTitleSize(0.06,"x");
+babarStyle->SetTitleSize(0.07,"x");
 babarStyle->SetLabelSize(0.05,"y");
-babarStyle->SetTitleSize(0.06,"y");
+babarStyle->SetTitleSize(0.07,"y");
 babarStyle->SetLabelSize(0.05,"z");
-babarStyle->SetTitleSize(0.06,"z");
+babarStyle->SetTitleSize(0.07,"z");
 
 // use bold lines and markers
 babarStyle->SetMarkerStyle(20);
@@ -78,4 +78,5 @@ cout << "For approved plots use: gROOT->SetStyle(\"BABAR\");"
 
 init_babar_style();
 init_custom_palette();
+gROOT->SetStyle("BABAR");
 }

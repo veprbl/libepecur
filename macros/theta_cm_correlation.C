@@ -147,7 +147,7 @@ void plot_kinematics()
 	g_pi_pi_theta_cm->Draw("AL");
 	g_pi_p_lab->Draw("SAME");
 	g_pi_pi_theta_cm->GetXaxis()->SetTitle("\\text{Pions's }\\Theta_{lab}");
-	legend = new TLegend(0.1,0.7,0.4,0.9);
+	legend = new TLegend(0.15,0.7,0.45,0.9);
 	legend->AddEntry(g_pi_pi_theta_cm, "\\text{Pion's }\\Theta_{cm}", "l");
 	legend->AddEntry(g_pi_p_lab, "\\text{Proton's }\\Theta_{lab}", "l");
 	legend->Draw();
@@ -157,10 +157,11 @@ void plot_kinematics()
 	g_p_pi_theta_cm->Draw("AL");
 	g_p_pi_lab->Draw("SAME");
 	g_p_pi_theta_cm->GetXaxis()->SetTitle("\\text{Proton's }\\Theta_{lab}");
-	legend = new TLegend(0.6,0.7,0.9,0.9);
+	legend = new TLegend(0.6-0.05,0.7,0.9-0.05,0.9);
 	legend->AddEntry(g_p_pi_theta_cm, "\\text{Pions' }\\Theta_{cm}", "l");
 	legend->AddEntry(g_p_pi_lab, "\\text{Pion's }\\Theta_{lab}", "l");
 	legend->Draw();
+	c1.SaveAs("elastic_kinematics.tex");
 }
 
 void plot_correlation()
@@ -181,12 +182,12 @@ void plot_correlation()
 	events->SetBranchAddress("theta_l", &theta_l);
 	events->SetBranchAddress("theta_r", &theta_r);
 
-	TH2F *h1 = new TH2F("h1", run_name, 400, -30, 30, 400, 0.0, 180.0);
+	TH2F *h1 = new TH2F("h1", run_name, 50, -30, 30, 50, 0.0, 180.0);
 	h1->SetXTitle("\\Theta_{cm,p,right} - \\Theta_{cm,pi,left}");
 	h1->SetYTitle("\\Theta_{cm,pi,left}");
 	h1->SetStats(kFALSE);
 	// right <-> left exchange
-	TH2F *h2 = new TH2F("h2", run_name, 400, -30, 30, 400, 0.0, 180.0);
+	TH2F *h2 = new TH2F("h2", run_name, 50, -30, 30, 50, 0.0, 180.0);
 	h2->SetXTitle("\\Theta_{cm,p,left} - \\Theta_{cm,pi,right}");
 	h2->SetYTitle("\\Theta_{cm,pi,right}");
 	h2->SetStats(kFALSE);
@@ -206,6 +207,7 @@ void plot_correlation()
 	c2 = new TCanvas(Form("c%s_thetacm_correlation", run_name), "", 1200, 600);
 	c2->Divide(2);
 	c2->cd(1); h1->Draw("ZCOL");
+	c2->cd(1)->SaveAs("elastic_kinematics_distribution.tex");
 	c2->cd(2); h2->Draw("ZCOL");
 }
 

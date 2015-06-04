@@ -29,7 +29,7 @@ public :
 
 	static constexpr double	BIN_MIN = 1550.;
 	static constexpr double	BIN_MAX = 1830.;
-	static constexpr int	BIN_COUNT = (BIN_MAX - BIN_MIN)/1.;
+	static constexpr int	BIN_COUNT = (BIN_MAX - BIN_MIN)/8.;
 
 	TTree          *fChain;   //!pointer to the analyzed TTree or TChain
 

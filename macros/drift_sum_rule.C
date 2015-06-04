@@ -39,13 +39,13 @@ void	mk_plot(int i, const char *chamber, int plane_id, bool select_same_plane, b
 	const char *var1, *var2, *units, *adjacent_selector;
 	if (time_domain)
 	{
-		bin_count = 380;
+		bin_count = 380/5;
 		bin_min = 0.0;
 		bin_max = 380;
 	}
 	else
 	{
-		bin_count = 100;
+		bin_count = 100/5;
 		bin_min = 0.0;
 		bin_max = 8.5;
 	}
@@ -149,6 +149,7 @@ void	drift_sum_rule()
 
 	c.Divide(2 * N, NUM_CHAMBERS);
 	int cell = 1;
+	gStyle->SetPaperSize(40,40);
 
 	for(int chamber_id = 0; chamber_id < NUM_CHAMBERS; chamber_id++)
 	{
@@ -156,9 +157,10 @@ void	drift_sum_rule()
 		{
 			for(int i = 1; i <= N; i++)
 			{
-				c.cd(cell++);
+				TVirtualPad *pad = c.cd(cell++);
 				double angle = STEP * (i - 1);
-				mk_plot(i, chamber[chamber_id], plane_id, false, false, angle, 0.5 * STEP);
+				mk_plot(i, chamber[chamber_id], plane_id, true, false, angle, 0.5 * STEP);
+				pad->SaveAs(Form("h%s_%i%i_%i.tex", chamber[chamber_id], plane_id, plane_id + 1, i));
 			}
 		}
 	}
