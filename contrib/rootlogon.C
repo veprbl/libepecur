@@ -48,7 +48,7 @@ babarStyle->SetLabelSize(0.05,"z");
 babarStyle->SetTitleSize(0.07,"z");
 
 // use bold lines and markers
-babarStyle->SetMarkerStyle(20);
+//babarStyle->SetMarkerStyle(20);
 babarStyle->SetHistLineWidth(1.85);
 babarStyle->SetLineStyleString(2,"[12 12]"); // postscript dashes
 
