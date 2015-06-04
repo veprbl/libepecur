@@ -62,7 +62,7 @@ void	final_plot()
 		c.Process("InelCrossSection.C+");
 
 		TH1F *r_r = (TH1F*)p->GetOutputList()->FindObject("fOutputRight");
-		r_r->GetXaxis()->SetTitle("p_\\pi, [MeV/c]");
+		r_r->GetXaxis()->SetTitle("W [MeV]");
 		r_r->GetYaxis()->SetTitle("\\sigma");
 		r_r->SetLineColor(color);
 		c_r.cd();
@@ -70,7 +70,7 @@ void	final_plot()
 
 
 		TH1F *r_l = (TH1F*)p->GetOutputList()->FindObject("fOutputLeft");
-		r_l->GetXaxis()->SetTitle("p_\\pi, [MeV/c]");
+		r_l->GetXaxis()->SetTitle("W [MeV]");
 		r_l->GetYaxis()->SetTitle("\\sigma");
 		r_l->SetLineColor(color);
 		c_l.cd();
@@ -89,7 +89,9 @@ void	final_plot()
 		c_r.Update();
 
 		TAxis *axis = r_r->GetXaxis();
-		TH1F *ratio = new TH1F("ratio", ";p_\\pi, [MeV/c];\\sigma_{\\text{right}} / \\sigma_{\\text{left}}", axis->GetNbins(), axis->GetXmin(), axis->GetXmax());
+		TH1F *ratio = new TH1F("ratio", "", axis->GetNbins(), axis->GetXmin(), axis->GetXmax());
+		ratio->GetXaxis()->SetTitle("W [MeV]");
+		ratio->GetYaxis()->SetTitle("\\sigma_{\\text{right}} / \\sigma_{\\text{left}}");
 		ratio->Divide(r_r, r_l);
 		ratio->GetYaxis()->SetRangeUser(0.8, 1.2);
 		ratio->SetLineColor(color);

@@ -29,11 +29,7 @@
 #include <TH2.h>
 #include <TStyle.h>
 
-
-static double sqr(double x)
-{
-	return x*x;
-}
+#include "kinematics_common.h"
 
 void InelCrossSection::Begin(TTree * /*tree*/)
 {
@@ -92,9 +88,10 @@ Bool_t InelCrossSection::Process(Long64_t entry)
 		&& (min_cycle_efficiency > 0.15)
 		)
 	{
+		const double W = calc_W(calc_beta(beam_momentum));
 		if ((event_cause & 0x2) == 0x2)
 		{
-			fNorm->Fill(beam_momentum);
+			fNorm->Fill(W);
 		}
 
 		if ((event_cause & 0x1) == 0x1)
@@ -109,7 +106,7 @@ Bool_t InelCrossSection::Process(Long64_t entry)
 				{
 					Warning("Process", "Found event with efficiency_r value");
 				}
-				fRawOutputRight->Fill(beam_momentum, 1.0 / efficiency_r);
+				fRawOutputRight->Fill(W, 1.0 / efficiency_r);
 			}
 			if (
 				   (F2L_x > -200) && (F2L_x < 120) && (LF2_x > -200) && (LF2_x < 120)
@@ -121,7 +118,7 @@ Bool_t InelCrossSection::Process(Long64_t entry)
 				{
 					Warning("Process", "Found event with efficiency_l value");
 				}
-				fRawOutputLeft->Fill(beam_momentum, 1.0 / efficiency_l);
+				fRawOutputLeft->Fill(W, 1.0 / efficiency_l);
 			}
 		}
 	}

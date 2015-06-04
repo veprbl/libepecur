@@ -27,3 +27,13 @@ static double calc_p(double beta)
 {
         return M_p * beta * calc_gamma(beta);
 }
+
+/**
+ * Calculate energy in center of inertia system.
+ */
+static double calc_W(double beta)
+{
+	double p = calc_p(beta);
+
+	return sqrt(sqr(M_pi) + sqr(p)) + sqrt(sqr(M_p) + sqr(p));
+}

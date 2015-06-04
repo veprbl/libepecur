@@ -27,8 +27,8 @@ public :
 	TH1F *fOutputLeft;  //! Xsec in left arm
 	TH1F *fOutputRight; //! Xsec in right arm
 
-	static constexpr double	BIN_MIN = 820.;
-	static constexpr double	BIN_MAX = 1250.;
+	static constexpr double	BIN_MIN = 1550.;
+	static constexpr double	BIN_MAX = 1830.;
 	static constexpr int	BIN_COUNT = (BIN_MAX - BIN_MIN)/1.;
 
 	TTree          *fChain;   //!pointer to the analyzed TTree or TChain
