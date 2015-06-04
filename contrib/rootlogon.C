@@ -49,11 +49,11 @@ babarStyle->SetTitleSize(0.07,"z");
 
 // use bold lines and markers
 //babarStyle->SetMarkerStyle(20);
-babarStyle->SetHistLineWidth(1.85);
-babarStyle->SetLineStyleString(2,"[12 12]"); // postscript dashes
+//babarStyle->SetHistLineWidth(1.85);
+//babarStyle->SetLineStyleString(2,"[12 12]"); // postscript dashes
 
 // get rid of X error bars and y error bar caps
-babarStyle->SetErrorX(0.001);
+//babarStyle->SetErrorX(0.001);
 
 // do not display any of the standard histogram decorations
 babarStyle->SetOptTitle(0);
