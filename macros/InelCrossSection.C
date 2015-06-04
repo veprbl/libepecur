@@ -98,7 +98,7 @@ Bool_t InelCrossSection::Process(Long64_t entry)
 		{
 			if (
 				   (F2R_x > -200) && (F2R_x < 120) && (RF2_x > -200) && (RF2_x < 120)
-				&& (theta_r > 0.4) && (theta_r < 1.1)
+				&& (theta_r > 0.6) && (theta_r < 0.9)
 				&& std::isnan(theta_l) // Require no track in the left arm
 				)
 			{
@@ -110,7 +110,7 @@ Bool_t InelCrossSection::Process(Long64_t entry)
 			}
 			if (
 				   (F2L_x > -200) && (F2L_x < 120) && (LF2_x > -200) && (LF2_x < 120)
-				&& (theta_l > 0.4) && (theta_l < 1.1)
+				&& (theta_l > 0.6) && (theta_l < 0.9)
 				&& std::isnan(theta_r) // Require no track in the right arm
 				)
 			{
