@@ -8,7 +8,7 @@
 
 using std::string;
 
-static TCanvas	c;
+static TCanvas	c("c", "", 1600/2,1600);
 static TFile	f(gSystem->Getenv("EPECUR_ROOTFILE2"), "READ");
 static int		pad_id = 0;
 static TTree	*events;
@@ -19,13 +19,13 @@ static void	plot_one_intersection_per_coord(string i, string j, string id)
 
 	if (i == "x")
 	{
-		nbins = 300;
+		nbins = 150;
 		ymin = -500;
 		ymax = 300;
 	}
 	else
 	{
-		nbins = 80;
+		nbins = 40;
 		ymin = -40;
 		ymax = 40;
 	}
@@ -34,13 +34,14 @@ static void	plot_one_intersection_per_coord(string i, string j, string id)
 	c.cd(++pad_id);
 	TH2F	*h =  new TH2F(
 		hist_name.c_str(),
-		(hist_name + ";" + (i + ", [mm];") + j + ", [mm]").c_str(),
-		80, -40, 40, nbins, ymin, ymax
+		(hist_name + ";" + (i + "\\text{, мм};") + j + "\\text{, мм};").c_str(),
+		40, -40, 40, nbins, ymin, ymax
 		);
 	h->SetOption("zcol");
 	events->Draw(
 		(id + "_" + i + ":" + id + "_" + j + " >> " + hist_name).c_str()
 		);
+	c.cd(pad_id)->SaveAs(("int" + hist_name + ".tex").c_str());
 }
 
 static void	plot_intersections_per_coords(string i, string j)
