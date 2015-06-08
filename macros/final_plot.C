@@ -4,6 +4,8 @@
 #include <TChain.h>
 #include <TH1F.h>
 
+#include "InelCrossSection.h"
+
 void	next_color(int &color)
 {
 	if (color < 9) color++;
@@ -88,8 +90,7 @@ void	final_plot()
 		c_l.Update();
 		c_r.Update();
 
-		TAxis *axis = r_r->GetXaxis();
-		TH1F *ratio = new TH1F("ratio", "", axis->GetNbins(), axis->GetXmin(), axis->GetXmax());
+		TH1F *ratio = new TH1F("ratio", "", InelCrossSection::BIN_COUNT, InelCrossSection::BIN_MIN, InelCrossSection::BIN_MAX);
 		ratio->GetXaxis()->SetTitle("W [\\text{МэВ}]");
 		ratio->GetYaxis()->SetTitle("\\sigma_{\\text{right}} / \\sigma_{\\text{left}}");
 		ratio->Divide(r_r, r_l);
