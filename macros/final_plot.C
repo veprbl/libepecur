@@ -35,7 +35,6 @@ void combine(const vector<TH1F*> &rs, TH1F *hcombine)
 	{
 		double sumw = 0;
 		double sumxw = 0;
-		double sume = 0;
 		for(auto it = rs.begin(); it != rs.end(); it++)
 		{
 			TH1F *r = *it;
@@ -44,7 +43,6 @@ void combine(const vector<TH1F*> &rs, TH1F *hcombine)
 				double w = 1 / r->GetBinError(bin) / r->GetBinError(bin);
 				sumw += w;
 				sumxw += r->GetBinContent(bin) * w;
-				sume += 1 / w;
 				cout << "[" << (long)r << "]" << r->GetBinContent(bin) << "\t";
 			}
 		}
@@ -52,7 +50,7 @@ void combine(const vector<TH1F*> &rs, TH1F *hcombine)
 		{
 			cout << sumxw / sumw << "\n";
 			hcombine->SetBinContent(bin, sumxw / sumw);
-			hcombine->SetBinError(bin, sqrt(sume / rs.size()));
+			hcombine->SetBinError(bin, sqrt(1 / sumw));
 		}
 	}
 }
