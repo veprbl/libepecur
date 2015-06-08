@@ -24,6 +24,39 @@ void	next_color(int &color)
 
 TCanvas c_l("c_l", "left"), c_r("c_r", "right");
 TCanvas c_ratio("c_ratio", "ratio");
+TCanvas c_combine("c_combine", "combine");
+TH1F hcombine("combine", ";W [\\text{МэВ}];\\sigma", InelCrossSection::BIN_COUNT, InelCrossSection::BIN_MIN, InelCrossSection::BIN_MAX);
+
+void combine(const vector<TH1F*> &rs, TH1F *hcombine)
+{
+	Int_t xfirst  = hcombine->GetXaxis()->GetFirst();
+	Int_t xlast   = hcombine->GetXaxis()->GetLast();
+	for(Int_t bin = xfirst; bin <= xlast; bin++)
+	{
+		double sumw = 0;
+		double sumxw = 0;
+		double sume = 0;
+		for(auto it = rs.begin(); it != rs.end(); it++)
+		{
+			TH1F *r = *it;
+			if (r->GetBinContent(bin) != 0)
+			{
+				double w = 1 / r->GetBinError(bin) / r->GetBinError(bin);
+				sumw += w;
+				sumxw += r->GetBinContent(bin) * w;
+				sume += 1 / w;
+				cout << "[" << (long)r << "]" << r->GetBinContent(bin) << "\t";
+			}
+		}
+		if (sumw != 0)
+		{
+			cout << sumxw / sumw << "\n";
+			hcombine->SetBinContent(bin, sumxw / sumw);
+			hcombine->SetBinError(bin, sqrt(sume / rs.size()));
+		}
+	}
+}
+
 
 void	final_plot()
 {
@@ -43,6 +76,8 @@ void	final_plot()
 	ymin = FLT_MAX;
 	ymax = FLT_MIN;
 	int color = 1;
+
+	vector<TH1F*> rs;
 
 	for(set<int>::iterator it = momentums.begin(); it != momentums.end(); it++)
 	{
@@ -101,6 +136,13 @@ void	final_plot()
 		c_ratio.Update();
 
 		next_color(color);
+
+		rs.push_back(r_l);
+		c_combine.cd();
+		combine(rs, &hcombine);
+		hcombine.GetYaxis()->SetRangeUser(0.98 * ymin, 1.02 * ymax);
+		hcombine.Draw();
+		c_combine.Update();
 	}
 	fclose(fp);
 }
