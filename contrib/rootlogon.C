@@ -26,6 +26,7 @@ babarStyle->SetPadColor(0);
 babarStyle->SetCanvasColor(0);
 babarStyle->SetStatColor(0);
 //babarStyle->SetFillColor(0);
+babarStyle->SetLineColor(kBlack);
 
 // set the paper & margin sizes
 babarStyle->SetPaperSize(15,15);
@@ -79,4 +80,5 @@ cout << "For approved plots use: gROOT->SetStyle(\"BABAR\");"
 init_babar_style();
 init_custom_palette();
 gROOT->SetStyle("BABAR");
+gROOT->ForceStyle();
 }
