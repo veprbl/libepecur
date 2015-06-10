@@ -12,7 +12,7 @@
 using std::string;
 
 static TCanvas	c1, c2, c3;
-static const double	ANGLE_MAX = 2.0;
+static const double	ANGLE_MAX = 2.0 * TMath::RadToDeg();
 static const int	ANGLE_BINS = 25;
 static const double	X_MIN = -200;
 static const double	X_MAX = 120;
@@ -83,11 +83,11 @@ TH1F*	make_drift_efficiency_hist(char arm, char axis, TTree *events)
 
 	c2.cd(canvas_cell);
 	events->Draw(
-		Form("RL_x:theta_%c >> %s", arm, any_theta_x->GetName()),
+		Form("RL_x:theta_%c * TMath::RadToDeg() >> %s", arm, any_theta_x->GetName()),
 		cut
 		);
 	events->Draw(
-		Form("RL_x:theta_%c >> %s", arm, four_hit_theta_x->GetName()),
+		Form("RL_x:theta_%c * TMath::RadToDeg() >> %s", arm, four_hit_theta_x->GetName()),
 		Form("(t%c%c_hits_count[0] == 4) && %s", arm_chamber, axis, cut)
 		);
 	TH2F *u_tx = new TH2F(
@@ -96,18 +96,18 @@ TH1F*	make_drift_efficiency_hist(char arm, char axis, TTree *events)
 		X_BINS, X_MIN, X_MAX
 		);
 	u_tx->Divide(four_hit_theta_x, any_theta_x);
-	u_tx->GetXaxis()->SetTitle("\\Theta, rad");
+	u_tx->GetXaxis()->SetTitle("\\Theta");
 	u_tx->GetYaxis()->SetTitle("X coordinate on target, mm");
 	u_tx->SetOption("zcol");
 	u_tx->Draw("zcol");
 
 	c3.cd(canvas_cell);
 	events->Draw(
-		Form("theta_%c >> %s", arm, any_theta->GetName()),
+		Form("theta_%c * TMath::RadToDeg() >> %s", arm, any_theta->GetName()),
 		cut
 		);
 	events->Draw(
-		Form("theta_%c >> %s", arm, four_hit_theta->GetName()),
+		Form("theta_%c * TMath::RadToDeg() >> %s", arm, four_hit_theta->GetName()),
 		Form("(t%c%c_hits_count[0] == 4) && %s", arm_chamber, axis, cut)
 		);
 	TH1F *u_t = new TH1F(
@@ -115,7 +115,7 @@ TH1F*	make_drift_efficiency_hist(char arm, char axis, TTree *events)
 		ANGLE_BINS, 0, ANGLE_MAX
 		);
 	u_t->Divide(four_hit_theta, any_theta);
-	u_t->GetXaxis()->SetTitle("\\Theta, rad");
+	u_t->GetXaxis()->SetTitle("\\Theta");
 	u_t->GetYaxis()->SetTitle("Efficiency, 1");
 	u_t->GetYaxis()->SetRangeUser(0.0, 1.0);
 	u_t->Draw();
