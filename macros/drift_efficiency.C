@@ -15,7 +15,7 @@ static TCanvas	c1, c2, c3;
 static const double	ANGLE_MAX = 2.0 * TMath::RadToDeg();
 static const int	ANGLE_BINS = 25;
 static const double	X_MIN = -200;
-static const double	X_MAX = 120;
+static const double	X_MAX = 60;
 static const int	X_BINS = 50;
 
 TH1F*	make_drift_efficiency_hist(char arm, char axis, TTree *events)
@@ -96,10 +96,11 @@ TH1F*	make_drift_efficiency_hist(char arm, char axis, TTree *events)
 		X_BINS, X_MIN, X_MAX
 		);
 	u_tx->Divide(four_hit_theta_x, any_theta_x);
-	u_tx->GetXaxis()->SetTitle("\\Theta");
-	u_tx->GetYaxis()->SetTitle("X coordinate on target, mm");
+	u_tx->GetXaxis()->SetTitle("\\Theta_{\\text{лаб}}");
+	u_tx->GetYaxis()->SetTitle("x\\text{, мм}");
 	u_tx->SetOption("zcol");
 	u_tx->Draw("zcol");
+	c2.cd(canvas_cell)->SaveAs("efficiency_theta_x.tex");
 
 	c3.cd(canvas_cell);
 	events->Draw(
@@ -115,10 +116,11 @@ TH1F*	make_drift_efficiency_hist(char arm, char axis, TTree *events)
 		ANGLE_BINS, 0, ANGLE_MAX
 		);
 	u_t->Divide(four_hit_theta, any_theta);
-	u_t->GetXaxis()->SetTitle("\\Theta");
-	u_t->GetYaxis()->SetTitle("Efficiency, 1");
+	u_t->GetXaxis()->SetTitle("\\Theta_{\\text{лаб}}");
+	u_t->GetYaxis()->SetTitle("\\text{Эффективность}, 1");
 	u_t->GetYaxis()->SetRangeUser(0.0, 1.0);
 	u_t->Draw();
+	c3.cd(canvas_cell)->SaveAs("efficiency_theta.tex");
 
 	return u_t;
 }
