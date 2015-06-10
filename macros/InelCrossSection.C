@@ -104,7 +104,7 @@ Bool_t InelCrossSection::Process(Long64_t entry)
 			{
 				if (efficiency_r < 0.5)
 				{
-					Warning("Process", "Found event with efficiency_r value");
+					throw "Found event with efficiency_r value";
 				}
 				fRawOutputRight->Fill(W, 1.0 / efficiency_r);
 			}
@@ -116,7 +116,7 @@ Bool_t InelCrossSection::Process(Long64_t entry)
 			{
 				if (efficiency_l < 0.5)
 				{
-					Warning("Process", "Found event with efficiency_l value");
+					throw "Found event with efficiency_l value";
 				}
 				fRawOutputLeft->Fill(W, 1.0 / efficiency_l);
 			}
