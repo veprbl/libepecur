@@ -11,4 +11,6 @@ void drift_pickups()
 	c.SaveAs("d3Y1_pickups.tex");
 	events->Draw("abs(d3Y1_time[0]-d3Y1_time[1]) >> h", "(abs(abs(d3Y1_wire_pos[0] - d3Y1_wire_pos[1]) - 2.) < 0.1) && (d3Y1_num_wires >= 2)");
 	c.SaveAs("d3Y1_pickups_adj.tex");
+	events->Draw("abs(d3Y1_time[0]-d3Y1_time[1]) >> h", "(abs(d3Y1_wire_pos[0] - d3Y1_wire_pos[1]) > 2.1) && (d3Y1_num_wires >= 2)");
+	c.SaveAs("d3Y1_pickups_adj_sep.tex");
 }
