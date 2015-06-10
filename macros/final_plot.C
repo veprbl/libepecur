@@ -114,9 +114,9 @@ void	final_plot()
 		static TH1F *r_r_first = r_r;
 		static TH1F *r_l_first = r_l;
 
-		//ymin = std::min(r_r->GetMinimum(0.), ymin);
+		ymin = std::min(r_r->GetMinimum(0.), ymin);
 		ymin = std::min(r_l->GetMinimum(0.), ymin);
-		//ymax = std::max(r_r->GetMaximum(), ymax);
+		ymax = std::max(r_r->GetMaximum(), ymax);
 		ymax = std::max(r_l->GetMaximum(), ymax);
 		r_l_first->GetYaxis()->SetRangeUser(0.98 * ymin, 1.02 * ymax);
 		r_r_first->GetYaxis()->SetRangeUser(0.98 * ymin, 1.02 * ymax);
