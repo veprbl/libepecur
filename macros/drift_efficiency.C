@@ -8,6 +8,7 @@
 #include <TH2F.h>
 #include <TSystem.h>
 #include <TTree.h>
+#include <TMath.h>
 
 using std::string;
 
