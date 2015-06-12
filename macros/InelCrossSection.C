@@ -137,6 +137,8 @@ void InelCrossSection::Terminate()
 	// a query. It always runs on the client, it can be used to present
 	// the results graphically or save the results to file.
 
+	fRawOutputLeft->Add(fRawOutputRight);
+
 	fOutputLeft = new TH1F("fOutputLeft", "Output in the left arm", BIN_COUNT, BIN_MIN, BIN_MAX);
 	fOutputLeft->Sumw2();
 	fOutputLeft->Divide(fRawOutputLeft, fNorm, 1, 100);
