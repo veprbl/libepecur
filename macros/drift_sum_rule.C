@@ -38,6 +38,7 @@ void	mk_plot(int i, const char *chamber, int plane_id, bool select_same_plane, b
 	char *hname = Form("h%s_%i%i_%i", chamber, plane_id, plane_id + 1, i);
 	double bin_count, bin_min, bin_max;
 	const char *var1, *var2, *units, *adjacent_selector;
+	const char *realvar1, *realvar2;
 	if (time_domain)
 	{
 		bin_count = 380/5;
@@ -59,10 +60,14 @@ void	mk_plot(int i, const char *chamber, int plane_id, bool select_same_plane, b
 		if (select_same_plane)
 		{
 			var2 = Form("d%%s%i_time[1]", plane_id);
+			realvar1 = Form("d%%s%i_time[Entry$ %%%% 2]", plane_id);
+			realvar2 = Form("d%%s%i_time[!(Entry$ %%%% 2)]", plane_id);
 		}
 		else
 		{
 			var2 = Form("d%%s%i_time[0]", plane_id + 1);
+			realvar1 = var1;
+			realvar2 = var2;
 		}
 	}
 	else
@@ -72,14 +77,20 @@ void	mk_plot(int i, const char *chamber, int plane_id, bool select_same_plane, b
 		if (select_same_plane)
 		{
 			var2 = Form("d%%s%i_drift_offset[1]", plane_id);
+			realvar1 = Form("d%%s%i_drift_offset[Entry$ %%%% 2]", plane_id);
+			realvar2 = Form("d%%s%i_drift_offset[!(Entry$ %%%% 2)]", plane_id);
 		}
 		else
 		{
 			var2 = Form("d%%s%i_drift_offset[0]", plane_id + 1);
+			realvar1 = var1;
+			realvar2 = var2;
 		}
 	}
 	var1 = Form(var1, chamber, plane_id);
 	var2 = Form(var2, chamber);
+	realvar1 = Form(realvar1, chamber, plane_id);
+	realvar2 = Form(realvar2, chamber);
 	if (select_same_plane)
 	{
 		adjacent_selector = "(d%s%i_num_wires == 2)"
@@ -95,7 +106,7 @@ void	mk_plot(int i, const char *chamber, int plane_id, bool select_same_plane, b
 	h->SetXTitle(Form("%s, %s", var2, units));
 	h->SetYTitle(Form("%s, %s", var1, units));
 	events->Draw(
-		Form("%s:%s >> %s", var1, var2, hname),
+		Form("%s:%s >> %s", realvar1, realvar2, hname),
 		Form(
 			"%s"
 			" && (t%s_track_count == 1)"
