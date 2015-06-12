@@ -34,6 +34,8 @@ for min_angle, max_angle in [(40, 50), (50, 60), (60, 70), (70, 80), (80, 90), (
 	c_combine.cd();
 	c_combine.SaveAs("final_plot_2track_elastic_%i_%i.tex");
 	exit(0);
-	""" % (min_angle, max_angle, min_angle, max_angle))
+	""" % (min_angle, max_angle))
 	import os
 	os.system("root final_plot.C")
+	import time
+	time.sleep(10)
