@@ -4,7 +4,7 @@ void calib_func()
 {
 	TFile *f = new TFile("~/pass1_full/20041008.root");
 	TTree *events = (TTree*)f->Get("events");
-	gStyle->SetPaperSize(5,5);
+	gStyle->SetPaperSize(8,8);
 	TH1F *h = new TH1F("h", ";T_{\\text{дрейфа}}, 1;\\frac{dN}{d T_{\\text{дрейфа}}}", 400, 0, 400.);
 	h->GetYaxis()->SetNdivisions(3);
 	events->Draw("d3Y1_time >> h");
