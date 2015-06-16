@@ -25,7 +25,7 @@ void	next_color(int &color)
 TCanvas c_l("c_l", "left"), c_r("c_r", "right");
 TCanvas c_ratio("c_ratio", "ratio");
 TCanvas c_combine("c_combine", "combine", 600, 600);
-TH1F hcombine("combine", ";W [\\text{МэВ}];\\sigma", InelCrossSection::BIN_COUNT, InelCrossSection::BIN_MIN, InelCrossSection::BIN_MAX);
+TH1F hcombine("combine", ";W [\\text{МэВ}];\\varkappa", InelCrossSection::BIN_COUNT, InelCrossSection::BIN_MIN, InelCrossSection::BIN_MAX);
 
 void combine(const vector<TH1F*> &rs, TH1F *hcombine)
 {
