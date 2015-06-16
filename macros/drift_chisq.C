@@ -14,8 +14,8 @@
 
 using std::string;
 
-static TCanvas	c1;
-static TCanvas	c2;
+static TCanvas	c1("c1", "", 600, 600);
+static TCanvas	c2("c2", "", 600, 600);
 static TFile	f(gSystem->Getenv("EPECUR_ROOTFILE"), "READ");
 static TTree	*events;
 
@@ -31,36 +31,17 @@ TH1F*	makehist( string id, int ndf )
 	cut += "_hits_count == ";
 	cut += hits_count;
 	float	min_x = 0;
-	float	max_x = (ndf == 2) ? 2.0 : 0.5;
-	TH1F	*hist = new TH1F(hist_name.Data(), cut, 1000, min_x, max_x);
-	events->Draw(Form("%s_chisq >> %s", id.c_str(), hist_name.Data()), cut);
+	float	max_x = (ndf == 2) ? 2.5 : 0.5;
+	TH1F	*hist = new TH1F(hist_name.Data(), "", 1000, min_x, max_x);
+	events->Draw(Form("%s_chisq[0] >> %s", id.c_str(), hist_name.Data()), cut);
 	if (hits_count > 3)
 	{
 		TF1 *func = new TF1("func", "[0]*exp([1]*x)+[2]");
 		TFitResultPtr fit = hist->Fit(func, "SQ", "", 0.0, 0.5); // S - return fit result, Q - quiet
-		std::cout << hist_name << "\tslope: " << fit->Parameter(1) << "\tadd const: " << fit->Parameter(2) << std::endl;
+		std::cout << hist_name << "\tp1: " << fit->Parameter(1) << "\tsigma: " << sqrt(-1.0/2/fit->Parameter(1)) << "\tadd const: " << fit->Parameter(2) << std::endl;
 	}
-	if (id[1] == '3')
-	{
-		title += "Left ";
-	}
-	else
-	{
-		title += "Right ";
-	}
-	title += id[2];
-	title += " (";
-	title += cut;
-	title += ")";
-	hist->SetTitle(title);
-	hist->SetLabelSize(0.04, "X");
-	hist->SetLabelSize(0.04, "Y");
-	hist->SetTitleSize(0.05, "X");
-	hist->SetTitleSize(0.05, "Y");
-	hist->SetTitleOffset(0.9, "X");
-	hist->SetTitleOffset(1.1, "Y");
-	hist->GetXaxis()->SetTitle("#chi^2, [mm]");
-	hist->GetYaxis()->SetTitle("N");
+	hist->GetXaxis()->SetTitle("\\chi^2\\text{, мм}^2");
+	gPad->SaveAs(hist_name + ".tex");
 
 	return hist;
 }
@@ -69,42 +50,16 @@ void	drift_chisq()
 {
 	int	i;
 
+	gStyle->SetPaperSize(8,8);
+
 	events = (TTree*)f.Get("events");
 
-	c1.Divide(2, 2, 0.01, 0.02);
-	c2.Divide(2, 2, 0.01, 0.02);
-
 	i = 0;
-	c1.cd(++i);
+	c1.cd();
 	makehist("t3X", 2);
-	c1.cd(++i);
 	makehist("t4X", 2);
-	c1.cd(++i);
 	makehist("t3Y", 2);
-	c1.cd(++i);
 	makehist("t4Y", 2);
-
-	i = 0;
-	c2.cd(++i);
-	makehist("t3X", 1);
-	c2.cd(++i);
-	makehist("t4X", 1);
-	c2.cd(++i);
-	makehist("t3Y", 1);
-	c2.cd(++i);
-	makehist("t4Y", 1);
-
-	TText	*t;
-	TTree	*info = (TTree*)f.FindObjectAny("info");
-	TString	info_str = get_info_str(info);
-	c1.cd(0);
-	t = new TText(0.005, 0.005, info_str);
-	t->SetTextSize(0.02);
-	t->Draw();
-	c2.cd(0);
-	t = new TText(0.005, 0.005, info_str);
-	t->SetTextSize(0.02);
-	t->Draw();
 
 	c1.Show();
 	c2.Show();
