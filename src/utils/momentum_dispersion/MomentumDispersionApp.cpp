@@ -83,7 +83,7 @@ void	MomentumDistributionApp::ParseCommandLine()
 	data_filepath = vm["input-file"].as< vector<string> >()[0];
 	geometry_filepath = vm["geometry-file"].as<string>();
 }
-#include "/home/veprbl/libepecur/contrib/rootlogon.C"
+#include "../../../contrib/rootlogon.C"
 
 void	MomentumDistributionApp::PlotResults( uint chambers[][WIRES_COUNT] )
 {
