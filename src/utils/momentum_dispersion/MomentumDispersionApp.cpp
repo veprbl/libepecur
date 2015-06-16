@@ -12,6 +12,7 @@
 #include <TApplication.h>
 #include <TCanvas.h>
 #include <TH1I.h>
+#include <TStyle.h>
 
 #include <epecur/geometry.hpp>
 #include <epecur/loadfile.hpp>
@@ -82,31 +83,32 @@ void	MomentumDistributionApp::ParseCommandLine()
 	data_filepath = vm["input-file"].as< vector<string> >()[0];
 	geometry_filepath = vm["geometry-file"].as<string>();
 }
+#include "/home/veprbl/libepecur/contrib/rootlogon.C"
 
 void	MomentumDistributionApp::PlotResults( uint chambers[][WIRES_COUNT] )
 {
-	main_canvas = new TCanvas("main_canvas", ApplicationName(), 200, 10, 1000, 500);
-	main_canvas->Connect("Closed()", "TApplication", this, "Terminate()");
+rootlogon();
+gStyle->SetPaperSize(6,6);
+	main_canvas = new TCanvas("main_canvas", ApplicationName(), 600, 600);
 
 	int	rows_count = floor(sqrt(MAX_CHAMBER_ID));
 	int	cols_count = ceil(MAX_CHAMBER_ID / (float)rows_count);
 
-	main_canvas->Divide(rows_count, cols_count, 0, 0);
-
 	for(chamber_id_t chamber_id = 0; chamber_id < MAX_CHAMBER_ID; chamber_id++)
 	{
+if (chamber_id != 6) continue;
 		string	name = boost::lexical_cast<string>(chamber_id);
-		string	title = geometry_filepath + ":" + name + " " + GIT_COMMIT_ID;
+		string	title = ";X_{1^{\\text{й}}\\text{ фокус}}\\text{, мм}";
 		TH1I*	hist = new TH1I(name.c_str(), title.c_str(), WIRES_COUNT, -WIRES_COUNT/2, WIRES_COUNT/2);
 
-		main_canvas->cd(chamber_id + 1);
 
 		for(int wire_id = 0; wire_id < WIRES_COUNT; wire_id++)
 		{
-			hist->Fill(wire_id - WIRES_COUNT/2, chambers[chamber_id][wire_id]);
+			hist->SetBinContent(hist->FindBin(wire_id - WIRES_COUNT/2), chambers[chamber_id][wire_id]);
 		}
 
 		hist->Draw();
+		main_canvas->SaveAs("out.tex");
 		th.push_back(hist);
 	}
 
