@@ -28,7 +28,6 @@
 #include "InelCrossSection.h"
 #include <TH2.h>
 #include <TStyle.h>
-#include <TMath.h>
 
 #include "kinematics_common.h"
 
@@ -98,7 +97,9 @@ Bool_t InelCrossSection::Process(Long64_t entry)
 		if ((event_cause & 0x1) == 0x1)
 		{
 			if (
-#include "r.inc"
+				   (F2R_x > -200) && (F2R_x < 120) && (RF2_x > -200) && (RF2_x < 120)
+				&& (theta_r > 0.6) && (theta_r < 0.9)
+				&& std::isnan(theta_l) // Require no track in the left arm
 				)
 			{
 				if (efficiency_r < 0.5)
@@ -108,7 +109,9 @@ Bool_t InelCrossSection::Process(Long64_t entry)
 				fRawOutputRight->Fill(W, 1.0 / efficiency_r);
 			}
 			if (
-#include "l.inc"
+				   (F2L_x > -200) && (F2L_x < 120) && (LF2_x > -200) && (LF2_x < 120)
+				&& (theta_l > 0.6) && (theta_l < 0.9)
+				&& std::isnan(theta_r) // Require no track in the right arm
 				)
 			{
 				if (efficiency_l < 0.5)

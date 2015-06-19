@@ -143,5 +143,4 @@ void	final_plot()
 		c_combine.Update();
 	}
 	fclose(fp);
-#include "finalization.inc"
 }
