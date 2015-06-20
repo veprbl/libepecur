@@ -34,7 +34,7 @@ static void	plot_one_intersection_per_coord(string i, string j, string id)
 	c.cd(++pad_id);
 	TH2F	*h =  new TH2F(
 		hist_name.c_str(),
-		(hist_name + ";" + (i + "\\text{, мм};") + j + "\\text{, мм};").c_str(),
+		(hist_name + ";" + (j + "\\text{, мм};") + i + "\\text{, мм};").c_str(),
 		40, -40, 40, nbins, ymin, ymax
 		);
 	h->SetOption("zcol");
