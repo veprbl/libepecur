@@ -19,13 +19,13 @@ static void	plot_one_intersection_per_coord(string i, string j, string id)
 
 	if (i == "x")
 	{
-		nbins = 150;
+		nbins = 300;
 		ymin = -500;
 		ymax = 300;
 	}
 	else
 	{
-		nbins = 40;
+		nbins = 80;
 		ymin = -40;
 		ymax = 40;
 	}
