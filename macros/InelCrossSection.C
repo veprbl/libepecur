@@ -99,27 +99,13 @@ Bool_t InelCrossSection::Process(Long64_t entry)
 		{
 			if (
 				   (F2R_x > -200) && (F2R_x < 120) && (RF2_x > -200) && (RF2_x < 120)
+				&& (F2L_x > -200) && (F2L_x < 120) && (LF2_x > -200) && (LF2_x < 120)
+				&& (abs(RL_x - RL_x) < 10) && (abs(RL_y - RL_y) < 10) && (abs(RL_z - RL_z) < 10)
 				&& (theta_r > 25 * TMath::DegToRad()) && (theta_r < 70 * TMath::DegToRad())
-				&& std::isnan(theta_l) // Require no track in the left arm
-				)
-			{
-				if (efficiency_r < 0.5)
-				{
-					throw "Found event with efficiency_r value";
-				}
-				fRawOutputRight->Fill(W, 1.0 / efficiency_r);
-			}
-			if (
-				   (F2L_x > -200) && (F2L_x < 120) && (LF2_x > -200) && (LF2_x < 120)
 				&& (theta_l > 25 * TMath::DegToRad()) && (theta_l < 70 * TMath::DegToRad())
-				&& std::isnan(theta_r) // Require no track in the right arm
 				)
 			{
-				if (efficiency_l < 0.5)
-				{
-					throw "Found event with efficiency_l value";
-				}
-				fRawOutputLeft->Fill(W, 1.0 / efficiency_l);
+				fRawOutputLeft->Fill(W);
 			}
 		}
 	}

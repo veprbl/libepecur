@@ -30,7 +30,7 @@ double  Psi_L = 1.0447;
 double  Psi_R = -1.0209;
 
 template<cham_group_t cham_group>
-track3d_t make_track( int event_id, TrackGroup &tg_X, TrackGroup &tg_Y )
+track3d_t make_track( int event_id, TrackGroup &tg_X, TrackGroup &tg_Y, int i )
 {
 	static ublas::matrix<double> m1(3, 3), m2(3, 3), A(3, 3);
 
@@ -88,13 +88,13 @@ track3d_t make_track( int event_id, TrackGroup &tg_X, TrackGroup &tg_Y )
 	}
 
 	b(0) = 1;
-	b(1) = tg_Y.c1[0];
-	b(2) = tg_X.c1[0];
+	b(1) = tg_Y.c1[i];
+	b(2) = tg_X.c1[i];
 	b = ublas::prod(A, b);
 
 	ublas::unit_vector<double> xk(3, 1);
 	ublas::unit_vector<double> xl(3, 2);
-	a = o + ublas::prod(A, xk) * tg_Y.c0[0] + ublas::prod(A, xl) * tg_X.c0[0];
+	a = o + ublas::prod(A, xk) * tg_Y.c0[i] + ublas::prod(A, xl) * tg_X.c0[i];
 
 	return track3d_t({a, b});
 }
@@ -261,7 +261,7 @@ TTree*	Process( TTree *events, TTree *cycle_efficiency, Geometry &geom, double c
 		events->GetEntry(i);
 		cycle_efficiency->GetEntry(i);
 
-		bool	left_arm = (tg_LX.track_count == 1) && (tg_LY.track_count == 1);
+		bool	left_arm = (tg_LX.track_count == 2) && (tg_LY.track_count == 2);
 		bool	right_arm = (tg_RX.track_count == 1) && (tg_RY.track_count == 1);
 		bool	incident =
 		    (tg_F1X.track_count == 1) && (tg_F1Y.track_count == 1) &&
@@ -272,7 +272,7 @@ TTree*	Process( TTree *events, TTree *cycle_efficiency, Geometry &geom, double c
 			continue;
 		}
 
-		t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y);
+		t_F2 = make_track<cham_group_t::prop_2nd>(i, tg_F2X, tg_F2Y, 0);
 
 		double	F1_x = tg_F1X.c0[0] + F1_length * tg_F1X.c1[0];
 		const double	DISPERSION = (1.0 / 55) * 0.01; // 55 mm/%
@@ -280,11 +280,19 @@ TTree*	Process( TTree *events, TTree *cycle_efficiency, Geometry &geom, double c
 
 		if (left_arm)
 		{
-			t_L = make_track<cham_group_t::drift_left>(i, tg_LX, tg_LY);
+			t_L = make_track<cham_group_t::drift_left>(i, tg_LX, tg_LY, 0);
 			theta_l = calc_theta(t_L);
 			phi_l = calc_phi(t_L);
 			find_intersection_points(t_F2, t_L, &s->i_f2l, &s->i_lf2);
 			incident_momentum_l = calc_incident_momentum(beam_momentum, s->i_f2l, s->i_lf2);
+
+			t_R = make_track<cham_group_t::drift_left>(i, tg_LX, tg_LY, 1);
+			theta_r = calc_theta(t_R);
+			phi_r = calc_phi(t_R);
+			find_intersection_points(t_F2, t_R, &s->i_f2r, &s->i_rf2);
+			incident_momentum_r = calc_incident_momentum(beam_momentum, s->i_f2r, s->i_rf2);
+
+			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
 		}
 		else
 		{
@@ -293,30 +301,11 @@ TTree*	Process( TTree *events, TTree *cycle_efficiency, Geometry &geom, double c
 			s->i_f2l.x = NAN; s->i_f2l.y = NAN; s->i_f2l.z = NAN;
 			s->i_lf2.x = NAN; s->i_lf2.y = NAN; s->i_lf2.z = NAN;
 			incident_momentum_l = NAN;
-		}
-		if (right_arm)
-		{
-			t_R = make_track<cham_group_t::drift_right>(i, tg_RX, tg_RY);
-			theta_r = calc_theta(t_R);
-			phi_r = calc_phi(t_R);
-			find_intersection_points(t_F2, t_R, &s->i_f2r, &s->i_rf2);
-			incident_momentum_r = calc_incident_momentum(beam_momentum, s->i_f2r, s->i_rf2);
-		}
-		else
-		{
 			theta_r = NAN;
 			phi_r = NAN;
 			s->i_f2r.x = NAN; s->i_f2r.y = NAN; s->i_f2r.z = NAN;
 			s->i_rf2.x = NAN; s->i_rf2.y = NAN; s->i_rf2.z = NAN;
 			incident_momentum_r = NAN;
-		}
-
-		if (left_arm && right_arm)
-		{
-			find_intersection_points(t_L, t_R, &s->i_lr, &s->i_rl);
-		}
-		else
-		{
 			s->i_lr.x = NAN; s->i_lr.y = NAN; s->i_lr.z = NAN;
 			s->i_rl.x = NAN; s->i_rl.y = NAN; s->i_rl.z = NAN;
 		}
