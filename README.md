@@ -3,18 +3,20 @@
 Intro
 =====
 
-This is the software for alternative analysis of the data taken at EPECUR
-experiment conducted at 10 GeV proton synchrotron located at ITEP,
-Moscow. The existing mainline analysis provides differential cross sections
-for elastic pion-proton scattering. This data shows some peculiarity, which may
-signify existence of the N(1685) resonance. The idea of this analysis is to try
-to look at inelastic scattering events to see if an additional conformation for
-this peculiarity can be obtained. Because the current setup is designed for
-elastic event observation there are not many options to approach this. In this
-analysis we will look at one track event output as a function of incident
-momentum and some angle. Branching of N(1685) to inelastic events is predicted
-to be high, so we expect resonance to manifest itself clear enough in the
-dependency of output on incident momentum.
+This is a software for alternative analysis of the data taken at EPECUR
+experiment conducted at 10 GeV proton synchrotron located at ITEP, Moscow. The
+existing mainline analysis provides differential cross sections for elastic
+pion-proton scattering. This data shows some peculiarity, which may signify
+existence of the N(1685) resonance. The idea of this analysis is to try to look
+at inelastic scattering events to see if an additional conformation for this
+peculiarity can be obtained. Because the current experimental setup is designed
+for elastic event observation there are not many options to approach this. In
+this analysis we are looking at inclusive one track event cross-section-like
+observable as a function of incident momentum.  Branching of N(1685) to
+inelastic events is predicted to be high, so we expect resonance to manifest
+itself clear enough in the dependency of output on incident momentum. The only
+signature of the sought resonance would be it's narrow width (less than 30 GeV)
+and it's mass.
 
 Quick start
 ===========
