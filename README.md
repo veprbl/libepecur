@@ -14,7 +14,7 @@ for elastic event observation there are not many options to approach this. In
 this analysis we are looking at inclusive one track event cross-section-like
 observable as a function of incident momentum.  Branching of N(1685) to
 inelastic events is predicted to be high, so we expect resonance to manifest
-itself clear enough in the dependency of output on incident momentum. The only
+itself clear enough in the dependency of yield on incident momentum. The only
 signature of the sought resonance would be it's narrow width (less than 30 GeV)
 and it's mass.
 
