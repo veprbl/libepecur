@@ -18,6 +18,15 @@ itself clear enough in the dependency of yield on incident momentum. The only
 signature of the sought resonance would be it's narrow width (less than 30 GeV)
 and it's mass.
 
+Outro
+=====
+
+The analysis is over. We see no evidence of the aforementioned resonance in
+the inelastic data. You can find more information on this analysis in my [masters
+thesis](https://github.com/veprbl/masters-thesis) and [my analysis journal]
+(http://veprbl.github.io/libepecur/). For information on elastic analysis
+please check recent EPECUR papers on the arXiv.
+
 Quick start
 ===========
 
