@@ -1,0 +1,8 @@
+title: Анализ данных неупругого рассеяния эксперимента ЭПЕКУР
+description: >
+  Архив промежуточных результатов моего анализа.
+baseurl: "/libepecur"
+url: "http://veprbl.github.com/"
+
+# Build settings
+markdown: kramdown
